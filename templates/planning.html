@@ -105,11 +105,6 @@
             transition: all 0.3s;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
         .btn-print {
             background: #2ecc71;
             color: white;
@@ -125,15 +120,15 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            min-width: 1200px;
         }
 
         th,
         td {
-            padding: 12px;
+            padding: 8px;
             border: 1px solid #ddd;
             text-align: center;
-            position: relative;
+            font-size: 11px;
+            min-width: 35px;
         }
 
         th {
@@ -142,30 +137,40 @@
             font-weight: 600;
             position: sticky;
             top: 0;
+            z-index: 10;
         }
 
-        .agent-name {
+        .agent-cell {
             font-weight: 600;
             text-align: left;
             background: #f8f9fa;
+            position: sticky;
+            left: 0;
+            z-index: 5;
+            min-width: 150px;
+            padding: 8px;
+        }
+
+        .agent-name {
+            font-size: 12px;
+            margin-bottom: 4px;
         }
 
         .agent-badges {
             display: flex;
             gap: 3px;
             flex-wrap: wrap;
-            margin-top: 3px;
         }
 
         .badge-mini {
-            width: 18px;
-            height: 18px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             display: inline-block;
-            font-size: 9px;
+            font-size: 8px;
             font-weight: bold;
             color: white;
-            line-height: 18px;
+            line-height: 16px;
             text-align: center;
         }
 
@@ -193,11 +198,33 @@
             background: #e67e22;
         }
 
-        tr:nth-child(even) {
-            background: #f8f9fa;
+        .day-cell {
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
         }
 
-        tr:hover {
+        .day-cell:hover {
+            background: #e3f2fd;
+        }
+
+        .day-cell.weekend {
+            background: #ffe0e0;
+        }
+
+        .day-cell.present {
+            background: #d4edda;
+        }
+
+        .day-cell.absent {
+            background: #f8d7da;
+        }
+
+        .day-cell.conge {
+            background: #fff3cd;
+        }
+
+        tr:nth-child(even) .agent-cell {
             background: #e9ecef;
         }
 
@@ -208,37 +235,6 @@
             color: #7f8c8d;
         }
 
-        /* Vue annuelle */
-        .view-annuel table {
-            font-size: 11px;
-        }
-
-        .view-annuel th,
-        .view-annuel td {
-            padding: 6px;
-        }
-
-        /* Vue trimestrielle */
-        .view-trimestriel table {
-            font-size: 12px;
-        }
-
-        .view-trimestriel th,
-        .view-trimestriel td {
-            padding: 8px;
-        }
-
-        /* Vue mensuel */
-        .view-mensuel table {
-            font-size: 13px;
-        }
-
-        /* Vue bi-hebdo */
-        .view-bihebdo table {
-            font-size: 14px;
-        }
-
-        /* Style d'impression */
         @media print {
             body {
                 background: white;
@@ -246,8 +242,9 @@
             }
 
             header nav,
-            .controls {
-                display: none;
+            .controls,
+            .view-tabs {
+                display: none !important;
             }
 
             .planning-container {
@@ -255,12 +252,17 @@
                 border-radius: 0;
             }
 
-            table {
-                page-break-inside: avoid;
-            }
-
             .agent-badges {
                 display: flex !important;
+            }
+
+            table {
+                font-size: 9px;
+            }
+
+            th,
+            td {
+                padding: 4px;
             }
         }
     </style>
@@ -292,7 +294,7 @@
             </div>
         </header>
 
-        <div class="planning-container" id="planningView">
+        <div class="planning-container">
             <div id="planningTable" class="loading">
                 Sélectionnez une période pour afficher le planning
             </div>
@@ -305,7 +307,6 @@
 
         const periodSelector = document.getElementById('periodSelector');
         const planningTable = document.getElementById('planningTable');
-        const planningView = document.getElementById('planningView');
 
         async function loadAgents() {
             try {
@@ -367,7 +368,6 @@
             document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
             event.target.classList.add('active');
 
-            planningView.className = 'planning-container view-' + view;
             updatePeriodSelector();
             planningTable.innerHTML = '<div class="loading">Sélectionnez une période</div>';
         }
@@ -380,7 +380,7 @@
                 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 
             if (currentView === 'annuel') {
-                // Années
+                // Années complètes
                 for (let y = 2025; y <= 2027; y++) {
                     const option = document.createElement('option');
                     option.value = y;
@@ -389,12 +389,18 @@
                 }
             } else if (currentView === 'trimestriel') {
                 // Trimestres
-                for (let q = 1; q <= 4; q++) {
+                const trimestres = [
+                    { value: 'Q1-2026', label: 'T1 2026 (Jan-Mar)', months: [0, 1, 2] },
+                    { value: 'Q2-2026', label: 'T2 2026 (Avr-Jun)', months: [3, 4, 5] },
+                    { value: 'Q3-2026', label: 'T3 2026 (Jul-Sep)', months: [6, 7, 8] },
+                    { value: 'Q4-2026', label: 'T4 2026 (Oct-Déc)', months: [9, 10, 11] }
+                ];
+                trimestres.forEach(t => {
                     const option = document.createElement('option');
-                    option.value = `${currentYear}-T${q}`;
-                    option.textContent = `T${q} ${currentYear}`;
+                    option.value = t.value;
+                    option.textContent = t.label;
                     periodSelector.appendChild(option);
-                }
+                });
             } else if (currentView === 'mensuel') {
                 // Mois
                 months.forEach((month, idx) => {
@@ -404,11 +410,13 @@
                     periodSelector.appendChild(option);
                 });
             } else if (currentView === 'bihebdo') {
-                // Semaines (bi-hebdo = 2 semaines)
+                // Périodes de 2 semaines
                 for (let w = 1; w <= 26; w++) {
+                    const startWeek = (w - 1) * 2 + 1;
+                    const endWeek = startWeek + 1;
                     const option = document.createElement('option');
-                    option.value = `${currentYear}-BH${w}`;
-                    option.textContent = `Bi-hebdo ${w} - ${currentYear}`;
+                    option.value = `${currentYear}-W${startWeek}`;
+                    option.textContent = `Semaines ${startWeek}-${endWeek} (${currentYear})`;
                     periodSelector.appendChild(option);
                 }
             }
@@ -422,26 +430,33 @@
         });
 
         function generatePlanning(period) {
-            planningTable.innerHTML = '<div class="loading">Génération...</div>';
+            planningTable.innerHTML = '<div class="loading">Génération du planning...</div>';
 
             setTimeout(() => {
                 let html = '<table><thead><tr>';
-                html += '<th>Agent</th>';
+                html += '<th style="min-width: 150px;">Agent</th>';
 
-                // Générer les colonnes selon la vue
-                const days = getDaysForPeriod(period);
-                days.forEach(day => {
-                    html += `<th>${day}</th>`;
+                // Générer les en-têtes de colonnes selon la vue
+                const columns = getColumnsForPeriod(period);
+                columns.forEach(col => {
+                    html += `<th>${col.label}</th>`;
                 });
                 html += '</tr></thead><tbody>';
 
-                // Générer les lignes agents
+                // Générer les lignes d'agents
                 allAgents.forEach(agent => {
                     html += '<tr>';
-                    html += `<td class="agent-name">${agent.fullName}${getAgentBadges(agent)}</td>`;
+                    html += `<td class="agent-cell">
+                        <div class="agent-name">${agent.fullName}</div>
+                        ${getAgentBadges(agent)}
+                    </td>`;
 
-                    days.forEach(() => {
-                        html += '<td></td>';
+                    // Cellules vides pour chaque colonne
+                    columns.forEach(col => {
+                        const isWeekend = col.isWeekend || false;
+                        html += `<td class="day-cell ${isWeekend ? 'weekend' : ''}" 
+                                    data-agent="${agent.index}" 
+                                    data-date="${col.date || ''}"></td>`;
                     });
                     html += '</tr>';
                 });
@@ -453,9 +468,17 @@
 
         function getAgentBadges(agent) {
             const badges = [];
+            const seen = new Set();
 
             agent.aptitudes.forEach(apt => {
                 const nomLower = apt.nom.toLowerCase();
+                
+                // Filtrer anniversaire et visites
+                if (nomLower.includes('anniversaire') || nomLower.includes('visite') ||
+                    nomLower.includes('dernière') || nomLower.includes('prochaine')) {
+                    return;
+                }
+
                 let badgeClass = '';
                 let badgeText = '';
 
@@ -480,8 +503,9 @@
                     badgeText = 'S';
                 }
 
-                if (badgeClass && !badges.some(b => b.text === badgeText)) {
+                if (badgeClass && !seen.has(badgeText)) {
                     badges.push({ class: badgeClass, text: badgeText });
+                    seen.add(badgeText);
                 }
             });
 
@@ -492,37 +516,75 @@
                 '</div>';
         }
 
-        function getDaysForPeriod(period) {
+        function getColumnsForPeriod(period) {
             if (currentView === 'annuel') {
-                // 12 mois
-                return ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+                // 12 mois de l'année
+                const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jui', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+                return months.map((m, idx) => ({
+                    label: m,
+                    date: `${period}-${String(idx + 1).padStart(2, '0')}`
+                }));
             } else if (currentView === 'trimestriel') {
-                // ~13 semaines
-                const weeks = [];
-                for (let w = 1; w <= 13; w++) {
-                    weeks.push(`S${w}`);
-                }
-                return weeks;
+                // 3 mois avec environ 13 semaines chacun
+                const columns = [];
+                const quarterMonths = {
+                    'Q1-2026': ['Janvier', 'Février', 'Mars'],
+                    'Q2-2026': ['Avril', 'Mai', 'Juin'],
+                    'Q3-2026': ['Juillet', 'Août', 'Septembre'],
+                    'Q4-2026': ['Octobre', 'Novembre', 'Décembre']
+                };
+                
+                const months = quarterMonths[period] || ['Jan', 'Fév', 'Mar'];
+                months.forEach(month => {
+                    // 4-5 semaines par mois
+                    for (let w = 1; w <= 4; w++) {
+                        columns.push({
+                            label: `${month.substring(0, 3)} S${w}`,
+                            date: `${month}-W${w}`
+                        });
+                    }
+                });
+                return columns;
             } else if (currentView === 'mensuel') {
-                // Jours du mois
+                // Tous les jours du mois
                 const [year, month] = period.split('-');
                 const daysInMonth = new Date(year, month, 0).getDate();
-                const days = [];
+                const columns = [];
+                
                 for (let d = 1; d <= daysInMonth; d++) {
-                    days.push(d);
+                    const date = new Date(year, parseInt(month) - 1, d);
+                    const dayOfWeek = date.getDay();
+                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                    
+                    columns.push({
+                        label: d.toString(),
+                        date: `${year}-${month}-${String(d).padStart(2, '0')}`,
+                        isWeekend
+                    });
                 }
-                return days;
+                return columns;
             } else if (currentView === 'bihebdo') {
                 // 14 jours (2 semaines)
-                const days = [];
-                for (let d = 1; d <= 14; d++) {
-                    days.push(`J${d}`);
+                const columns = [];
+                const dayNames = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+                
+                for (let d = 0; d < 14; d++) {
+                    const dayOfWeek = d % 7;
+                    const isWeekend = dayOfWeek === 5 || dayOfWeek === 6;
+                    const weekNum = Math.floor(d / 7) + 1;
+                    
+                    columns.push({
+                        label: `S${weekNum} ${dayNames[dayOfWeek]}`,
+                        date: `W${weekNum}-D${d + 1}`,
+                        isWeekend
+                    });
                 }
-                return days;
+                return columns;
             }
             return [];
         }
 
+        // Charger les agents au démarrage
         loadAgents().then(() => {
             updatePeriodSelector();
         });
