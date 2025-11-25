@@ -376,12 +376,26 @@
 
             <div class="controls">
                 <input type="text" id="searchBox" placeholder="🔍 Rechercher un agent...">
+                <select id="groupFilter"
+                    style="padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
+                    <option value="all">Tous les groupes</option>
+                    <option value="Encadrant">Encadrant</option>
+                    <option value="Surveillant de travaux">Surveillant de travaux</option>
+                    <option value="Encadrant Propreté">Encadrant Propreté</option>
+                    <option value="Agents Voirie">Agents Voirie</option>
+                    <option value="Agent EV">Agent EV</option>
+                    <option value="COMMUN - Magasinier">COMMUN - Magasinier</option>
+                </select>
             </div>
 
             <div class="stats">
                 <div class="stat-card">
-                    <div class="stat-value" id="visitesCount">0</div>
-                    <div class="stat-label">⚠️ Dates à échéance (3 mois)</div>
+                    <div class="stat-value" id="echeances3mois">0</div>
+                    <div class="stat-label">⚠️ Échéances 3 mois</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="echeances1an">0</div>
+                    <div class="stat-label">📅 Échéances 1 an</div>
                 </div>
             </div>
         </header>
@@ -431,6 +445,7 @@
         };
 
         searchBox.addEventListener('input', filterAgents);
+        document.getElementById('groupFilter').addEventListener('change', filterAgents);
 
         async function loadAgents() {
             try {
@@ -559,13 +574,16 @@
         }
 
         function updateStats() {
-            // Calculer la date dans 3 mois
+            // Calculer les dates limites
             const today = new Date();
             const threeMonthsLater = new Date();
             threeMonthsLater.setMonth(today.getMonth() + 3);
+            const oneYearLater = new Date();
+            oneYearLater.setFullYear(today.getFullYear() + 1);
 
-            // Trouver tous les agents avec une date qui expire dans les 3 prochains mois
-            const agentsExpiring = [];
+            // Trouver tous les agents avec dates qui expirent
+            const expiring3Months = [];
+            const expiring1Year = [];
 
             allAgents.forEach(agent => {
                 // Vérifier toutes les dates de l'agent (colonnes 7+)
@@ -573,13 +591,20 @@
                     if (idx >= 7 && value) {
                         try {
                             const dateValue = new Date(value);
-                            if (!isNaN(dateValue.getTime()) && dateValue >= today && dateValue <= threeMonthsLater) {
+                            if (!isNaN(dateValue.getTime()) && dateValue >= today) {
                                 const header = headers[idx] || `Colonne ${idx}`;
-                                agentsExpiring.push({
+                                const expiration = {
                                     nom: agent.fullName,
                                     type: header,
-                                    date: dateValue.toLocaleDateString('fr-FR')
-                                });
+                                    date: dateValue.toLocaleDateString('fr-FR'),
+                                    dateObj: dateValue
+                                };
+
+                                if (dateValue <= threeMonthsLater) {
+                                    expiring3Months.push(expiration);
+                                } else if (dateValue <= oneYearLater) {
+                                    expiring1Year.push(expiration);
+                                }
                             }
                         } catch (e) {
                             // Ignorer les valeurs non-dates
@@ -588,23 +613,30 @@
                 });
             });
 
-            // Afficher le nombre d'expirations à venir
-            const statsElement = document.getElementById('visitesCount');
-            statsElement.textContent = agentsExpiring.length;
+            // Afficher les compteurs
+            document.getElementById('echeances3mois').textContent = expiring3Months.length;
+            document.getElementById('echeances1an').textContent = expiring1Year.length;
 
-            // Afficher la liste des agents concernés dans la console pour debug
-            if (agentsExpiring.length > 0) {
-                console.log('⚠️ Dates arrivant à échéance dans 3 mois:', agentsExpiring);
+            // Afficher la liste dans la console pour debug
+            if (expiring3Months.length > 0) {
+                console.log('⚠️ Échéances dans 3 mois:', expiring3Months);
+            }
+            if (expiring1Year.length > 0) {
+                console.log('📅 Échéances dans 1 an:', expiring1Year);
             }
         }
 
         function filterAgents() {
             const term = searchBox.value.toLowerCase();
+            const selectedGroup = document.getElementById('groupFilter').value;
+
             document.querySelectorAll('.agent-card').forEach((card, idx) => {
                 const agent = allAgents[idx];
-                const match = agent.fullName.toLowerCase().includes(term) ||
+                const matchSearch = agent.fullName.toLowerCase().includes(term) ||
                     agent.matricule.toLowerCase().includes(term);
-                card.style.display = match ? '' : 'none';
+                const matchGroup = selectedGroup === 'all' || agent.groupe === selectedGroup;
+
+                card.style.display = (matchSearch && matchGroup) ? '' : 'none';
             });
         }
 
