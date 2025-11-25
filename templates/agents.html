@@ -380,20 +380,8 @@
 
             <div class="stats">
                 <div class="stat-card">
-                    <div class="stat-value" id="totalAgents">0</div>
-                    <div class="stat-label">Total Agents</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="r482aCount">0</div>
-                    <div class="stat-label">R.482 A</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="permisCount">0</div>
-                    <div class="stat-label">Avec Permis</div>
-                </div>
-                <div class="stat-card">
                     <div class="stat-value" id="visitesCount">0</div>
-                    <div class="stat-label">Visites Programmées</div>
+                    <div class="stat-label">🏥 Prochaines Visites Médicales</div>
                 </div>
             </div>
         </header>
@@ -575,9 +563,6 @@
         }
 
         function updateStats() {
-            document.getElementById('totalAgents').textContent = allAgents.length;
-            document.getElementById('r482aCount').textContent = allAgents.filter(a => a.r482a).length;
-            document.getElementById('permisCount').textContent = allAgents.filter(a => a.permis).length;
             document.getElementById('visitesCount').textContent = allAgents.filter(a => a.visiteMed).length;
         }
 
@@ -643,52 +628,18 @@
                     fieldType = 'date';
                 }
 
-                // Champs de date pour les CACES (R.482)
+                // Champs de date pour les CACES (R.482) - toujours afficher un champ date
                 if (label.toLowerCase().includes('r.482') || 
                     label.toLowerCase().includes('r482') ||
                     label.toLowerCase().includes('caces')) {
-                    // Si c'est une croix, c'est une checkbox avec date de validité
-                    if (isCheckbox) {
-                        isDateField = true; // On va afficher une date en plus
-                    }
+                    isCheckbox = false; // Forcer en champ de date
+                    isDateField = true;
+                    fieldType = 'date';
                 }
 
                 let displayValue = value;
 
-                if (isCheckbox && isDateField) {
-                    // Checkbox CACES avec champ de date de validité
-                    const checked = (value.toLowerCase() === 'x' || value === '✓') ? 'checked' : '';
-                    
-                    // Chercher une date de validité dans la colonne suivante (si elle existe)
-                    const nextValue = agent.data[colIdx + 1] || '';
-                    let dateValue = '';
-                    if (nextValue && !isNaN(Date.parse(nextValue))) {
-                        try {
-                            dateValue = new Date(nextValue).toISOString().split('T')[0];
-                        } catch (e) {
-                            dateValue = '';
-                        }
-                    }
-                    
-                    formHTML += `
-                        <div class="form-group">
-                            <label>
-                                <input type="checkbox" 
-                                       id="field_${colIdx}" 
-                                       ${checked}
-                                       data-col="${colIdx}"
-                                       style="width: auto; margin-right: 8px;">
-                                ${label}
-                            </label>
-                            <input type="date" 
-                                   id="field_${colIdx}_date" 
-                                   value="${dateValue}" 
-                                   data-col="${colIdx}_date"
-                                   placeholder="Date de validité"
-                                   style="margin-top: 8px;">
-                        </div>
-                    `;
-                } else if (isCheckbox) {
+                if (isCheckbox) {
                     // Case à cocher simple (sans date)
                     const checked = (value.toLowerCase() === 'x' || value === '✓') ? 'checked' : '';
                     formHTML += `
@@ -763,15 +714,9 @@
                     // Si c'est une checkbox, stocker 'x' ou vide
                     if (input.type === 'checkbox') {
                         data[colIdx] = input.checked ? 'x' : '';
-                        
-                        // Vérifier s'il y a un champ de date associé
-                        const dateInput = document.getElementById(`field_${colIdx}_date`);
-                        if (dateInput && dateInput.value) {
-                            // Stocker la date dans la colonne suivante
-                            data[colIdx + 1] = dateInput.value;
-                        }
                     } else {
-                        data[colIdx] = input.value;
+                        // Pour les champs de date et texte, si vide on met une chaîne vide
+                        data[colIdx] = input.value || '';
                     }
                 }
             });
