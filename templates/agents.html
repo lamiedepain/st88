@@ -615,32 +615,15 @@
                 let isCheckbox = false;
                 let isDateField = false;
 
-                // Champs de date pour anniversaire et visites médicales
-                if (label.toLowerCase().includes('anniversaire') ||
-                    label.toLowerCase().includes('visite') ||
-                    label.toLowerCase().includes('médical')) {
-                    isDateField = true;
-                    fieldType = 'date';
-                }
-
-                // Champs de date pour les CACES (R.482) - SAUF tronçonneuse et remorque
-                if ((label.toLowerCase().includes('r.482') ||
-                    label.toLowerCase().includes('r482') ||
-                    label.toLowerCase().includes('caces')) &&
-                    !label.toLowerCase().includes('tronço') &&
-                    !label.toLowerCase().includes('remorque')) {
-                    isDateField = true;
-                    fieldType = 'date';
-                }
-
-                // Cases à cocher pour tronçonneuse, remorque, permis, FIMO, AIPR, premiers secours
+                // Cases à cocher UNIQUEMENT pour tronçonneuse et remorque
                 if (label.toLowerCase().includes('tronço') ||
-                    label.toLowerCase().includes('remorque') ||
-                    label.toLowerCase().includes('permis') ||
-                    label.toLowerCase().includes('fimo') ||
-                    label.toLowerCase().includes('aipr') ||
-                    label.toLowerCase().includes('secours')) {
+                    label.toLowerCase().includes('remorque')) {
                     isCheckbox = true;
+                } 
+                // TOUS les autres champs sont des dates de validité
+                else if (colIdx >= 7) { // Colonne 7 et plus (après prénom)
+                    isDateField = true;
+                    fieldType = 'date';
                 }
 
                 let displayValue = value;
@@ -722,7 +705,7 @@
 
             const data = [...editingAgent.data];
 
-            // Récupérer toutes les valeurs des champs
+            // Récupérer UNIQUEMENT les valeurs des champs modifiés ou remplis
             headers.forEach((header, colIdx) => {
                 if (colIdx < 4) return; // Ignorer les 4 premières colonnes
 
@@ -731,9 +714,18 @@
                     // Si c'est une checkbox, stocker 'x' ou vide
                     if (input.type === 'checkbox') {
                         data[colIdx] = input.checked ? 'x' : '';
+                    } else if (input.type === 'date') {
+                        // Pour les dates, ne mettre à jour QUE si une valeur est saisie
+                        // Sinon garder l'ancienne valeur
+                        if (input.value) {
+                            data[colIdx] = input.value;
+                        }
+                        // Si vide, on garde data[colIdx] tel quel (ancienne valeur)
                     } else {
-                        // Pour les champs de date et texte, si vide on met une chaîne vide
-                        data[colIdx] = input.value || '';
+                        // Pour les champs texte
+                        if (input.value) {
+                            data[colIdx] = input.value;
+                        }
                     }
                 }
             });
