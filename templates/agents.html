@@ -610,15 +610,10 @@
                 // Déterminer le label (utiliser "Colonne X" si pas de header)
                 let label = header && typeof header === 'string' ? header : `Colonne ${colIdx}`;
 
-                // Déterminer le type de champ
+                // Déterminer le type de champ UNIQUEMENT selon le nom de la colonne, pas la valeur
                 let fieldType = 'text';
                 let isCheckbox = false;
                 let isDateField = false;
-
-                // Cases à cocher pour les champs R.482, Permis, certifications (si valeur = 'x' ou 'X')
-                if (typeof value === 'string' && (value.toLowerCase() === 'x' || value === '✓')) {
-                    isCheckbox = true;
-                }
 
                 // Champs de date pour anniversaire et visites médicales
                 if (label.toLowerCase().includes('anniversaire') ||
@@ -634,9 +629,18 @@
                     label.toLowerCase().includes('caces')) &&
                     !label.toLowerCase().includes('tronço') &&
                     !label.toLowerCase().includes('remorque')) {
-                    isCheckbox = false; // Forcer en champ de date
                     isDateField = true;
                     fieldType = 'date';
+                }
+
+                // Cases à cocher pour tronçonneuse, remorque, permis, FIMO, AIPR, premiers secours
+                if (label.toLowerCase().includes('tronço') ||
+                    label.toLowerCase().includes('remorque') ||
+                    label.toLowerCase().includes('permis') ||
+                    label.toLowerCase().includes('fimo') ||
+                    label.toLowerCase().includes('aipr') ||
+                    label.toLowerCase().includes('secours')) {
+                    isCheckbox = true;
                 }
 
                 let displayValue = value;
