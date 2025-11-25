@@ -331,6 +331,13 @@
             padding: 12px;
         }
 
+        .agent-details {
+            margin-bottom: 12px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
         .detail-row {
             display: flex;
             justify-content: space-between;
@@ -460,13 +467,31 @@
                         }
                     }
 
+                    // Extraire les certifications cochées
+                    const certifications = [];
+                    agent.data.forEach((val, idx) => {
+                        const header = data.headers[idx];
+                        if (header && typeof val === 'string' && val.toLowerCase() === 'x') {
+                            certifications.push(header);
+                        }
+                    });
+
+                    // Extraire les dates importantes
+                    const anniversaire = agent.data[7] || null; // Colonne 7 = Anniversaire
+                    const derniereVisite = agent.data[8] || null; // Colonne 8
+                    const prochaineVisite = agent.data[9] || null; // Colonne 9
+
                     return {
                         ...agent,
                         groupe,
                         fullName: `${agent.nom} ${agent.prenom}`,
+                        certifications,
+                        anniversaire,
+                        derniereVisite,
+                        prochaineVisite,
                         r482a: agent.data.some(d => d && d.toString().includes('R.482 A')),
                         permis: agent.data.some(d => d && d.toString().toLowerCase().includes('permis')),
-                        visiteMed: agent.data[agent.data.length - 1] || null
+                        visiteMed: prochaineVisite
                     };
                 });
 
@@ -495,12 +520,27 @@
 
             const initials = (agent.nom.charAt(0) + agent.prenom.charAt(0)).toUpperCase();
 
-            const badges = [];
-            if (agent.r482a) badges.push({ type: 'r482', text: 'R.482 A' });
-            if (agent.permis) badges.push({ type: 'permis', text: 'Permis' });
+            // Formater la date de prochaine visite
+            let visiteMedFormatted = '';
+            if (agent.prochaineVisite) {
+                try {
+                    const date = new Date(agent.prochaineVisite);
+                    visiteMedFormatted = date.toLocaleDateString('fr-FR');
+                } catch (e) {
+                    visiteMedFormatted = agent.prochaineVisite;
+                }
+            }
 
             const groupeBadge = agent.groupe !== 'default' ?
                 `<span class="badge groupe">${agent.groupe}</span>` : '';
+
+            // Badges des certifications
+            const certifBadges = agent.certifications.slice(0, 3).map(cert =>
+                `<span class="badge">${cert}</span>`
+            ).join('');
+
+            const moreCertif = agent.certifications.length > 3 ?
+                `<span class="badge">+${agent.certifications.length - 3} autres</span>` : '';
 
             card.innerHTML = `
                 <div class="agent-header">
@@ -511,9 +551,18 @@
                     </div>
                 </div>
                 
+                ${visiteMedFormatted ? `
+                <div class="agent-details">
+                    <div class="detail-row">
+                        <span class="detail-label">🏥 Prochaine visite</span>
+                        <span class="detail-value">${visiteMedFormatted}</span>
+                    </div>
+                </div>` : ''}
+                
                 <div class="badges">
                     ${groupeBadge}
-                    ${badges.map(b => `<span class="badge ${b.type}">${b.text}</span>`).join('')}
+                    ${certifBadges}
+                    ${moreCertif}
                 </div>
 
                 <div class="agent-actions">
@@ -576,15 +625,15 @@
                 // Déterminer le type de champ
                 let fieldType = 'text';
                 let isCheckbox = false;
-                
+
                 // Cases à cocher pour les champs R.482, Permis, certifications (si valeur = 'x' ou 'X')
                 if (typeof value === 'string' && (value.toLowerCase() === 'x' || value === '✓')) {
                     isCheckbox = true;
                 }
-                
+
                 // Champs de date
-                if (label.toLowerCase().includes('date') || 
-                    label.toLowerCase().includes('anniversaire') || 
+                if (label.toLowerCase().includes('date') ||
+                    label.toLowerCase().includes('anniversaire') ||
                     label.toLowerCase().includes('visite') ||
                     label.toLowerCase().includes('médical')) {
                     fieldType = 'date';
