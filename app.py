@@ -186,7 +186,7 @@ def get_planning_data(year, month):
         # Ligne 10 = en-têtes (Matricule, Nom, Prénom...)
         agents_data = []
         
-        for row_idx in range(11, 78):  # Lignes agents
+        for row_idx in range(11, 100):  # Lignes agents (augmenté pour récupérer tous les agents)
             row = sheet[row_idx]
             matricule = row[0].value
             nom = row[1].value
@@ -194,6 +194,9 @@ def get_planning_data(year, month):
             
             if not nom:  # Si pas de nom, on arrête
                 break
+            
+            # Nettoyer le nom (enlever espaces en trop)
+            nom = nom.strip() if isinstance(nom, str) else nom
             
             # Récupérer les statuts pour chaque jour (colonnes 15 à 45 = index 15 à 45)
             days_status = []

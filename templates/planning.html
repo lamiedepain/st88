@@ -488,7 +488,7 @@
                 try {
                     const response = await fetch(`/api/planning-data/${year}/${month}`);
                     const data = await response.json();
-                    
+
                     if (data.success) {
                         displayMonthlyPlanning(data.agents, year, month);
                     } else {
@@ -507,12 +507,12 @@
                 // Vue bi-hebdo : afficher 14 jours
                 displayBiweeklyView(period);
             }
-        }        function displayMonthlyPlanning(agents, year, month) {
+        } function displayMonthlyPlanning(agents, year, month) {
             const daysInMonth = new Date(year, month, 0).getDate();
 
             // Enrichir les agents avec leurs groupes
             const enrichedAgents = agents.map(agent => {
-                const nom = agent.nom.toUpperCase();
+                const nom = agent.nom.toUpperCase().trim(); // TRIM pour gérer les espaces
                 let groupe = 'default';
 
                 for (const [groupeName, noms] of Object.entries(groupes)) {
@@ -570,9 +570,9 @@
                     const dayOfWeek = date.getDay();
                     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
                     const isFerie = isJourFerie(year, parseInt(month), d + 1);
-                    
+
                     let status = agent.days[d] || '';
-                    
+
                     // Ne mettre "Présent" que si c'est un jour ouvré et qu'il n'y a pas de statut
                     if (!status && !isWeekend && !isFerie) {
                         status = 'Présent';
@@ -652,7 +652,7 @@
 
             // Construire le planning annuel
             const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jui', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
-            
+
             // Enrichir et trier les agents
             const firstMonthAgents = allMonthsData[0]?.agents || [];
             const enrichedAgents = firstMonthAgents.map(agent => {
@@ -728,7 +728,7 @@
                 'Q4-2026': [10, 11, 12]
             };
             const months = quarterMap[quarter] || [1, 2, 3];
-            
+
             // Récupérer données des 3 mois
             const allDaysData = [];
             for (const m of months) {
@@ -758,17 +758,17 @@
             // Format: 2026-W1 = semaine 1 de 2026
             const year = 2026;
             const weekNum = parseInt(period.split('-W')[1]);
-            
+
             // Calculer les dates (14 jours)
             const startDate = new Date(2026, 0, 1 + (weekNum - 1) * 14);
             const allDaysData = [];
-            
+
             for (let i = 0; i < 14; i++) {
                 const currentDate = new Date(startDate);
                 currentDate.setDate(startDate.getDate() + i);
                 const month = currentDate.getMonth() + 1;
                 const day = currentDate.getDate();
-                
+
                 try {
                     const response = await fetch(`/api/planning-data/${year}/${String(month).padStart(2, '0')}`);
                     const data = await response.json();
@@ -850,12 +850,12 @@
                 allDaysData.forEach(dayData => {
                     const agentDay = dayData.agents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
                     const dayIndex = dayData.day - 1;
-                    
+
                     const date = dayData.date || new Date(2026, dayData.month - 1, dayData.day);
                     const dayOfWeek = date.getDay();
                     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
                     const isFerie = isJourFerie(2026, dayData.month, dayData.day);
-                    
+
                     let status = agentDay ? agentDay.days[dayIndex] : '';
                     if (!status && !isWeekend && !isFerie) {
                         status = 'Présent';
