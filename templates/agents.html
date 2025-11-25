@@ -581,8 +581,8 @@
                         certifications,
                         anniversaire,
                         prochaineVisite,
-                        r482a: agent.data.some(d => d && d.toString().includes('R.482 A')),
-                        permis: agent.data.some(d => d.toString().toLowerCase().includes('permis')),
+                        r482a: agent.data.some(d => d && d !== null && d.toString().includes('R.482 A')),
+                        permis: agent.data.some(d => d && d !== null && d.toString().toLowerCase().includes('permis')),
                         visiteMed: prochaineVisite
                     };
                 });
@@ -622,7 +622,7 @@
                     anniversaireFormatted = agent.anniversaire;
                 }
             }
-            
+
             let visiteMedFormatted = '';
             if (agent.prochaineVisite) {
                 try {
