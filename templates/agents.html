@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Agents - ST88</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 32px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        nav a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        nav a:hover {
+            transform: translateY(-2px);
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 300px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+        }
+
+        .stat-card:nth-child(2) {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .stat-card:nth-child(3) {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .stat-card:nth-child(4) {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .agents-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .agent-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 5px solid;
+        }
+
+        .agent-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .agent-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .agent-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .agent-info {
+            flex: 1;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .agent-matricule {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        .badge.r482 {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .badge.permis {
+            background: #3498db;
+            color: white;
+        }
+
+        .badge.groupe {
+            background: #9b59b6;
+            color: white;
+        }
+
+        .agent-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .action-btn.edit {
+            background: #3498db;
+            color: white;
+        }
+
+        .action-btn.edit:hover {
+            background: #2980b9;
+        }
+
+        .action-btn.delete {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .action-btn.delete:hover {
+            background: #c0392b;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #2c3e50;
+        }
+
+        .close-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-actions button {
+            flex: 1;
+            padding: 12px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .detail-label {
+            color: #7f8c8d;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: white;
+            font-size: 18px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>👥 Gestion des Agents</h1>
+
+            <nav>
+                <a href="/" class="active">Agents</a>
+                <a href="/planning">Planning</a>
+                <a href="/generator">Générateur</a>
+            </nav>
+
+            <div class="controls">
+                <input type="text" id="searchBox" placeholder="🔍 Rechercher un agent...">
+            </div>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="stat-value" id="totalAgents">0</div>
+                    <div class="stat-label">Total Agents</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="r482aCount">0</div>
+                    <div class="stat-label">R.482 A</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="permisCount">0</div>
+                    <div class="stat-label">Avec Permis</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value" id="visitesCount">0</div>
+                    <div class="stat-label">Visites Programmées</div>
+                </div>
+            </div>
+        </header>
+
+        <div id="agentsContainer" class="agents-grid"></div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>✏️ Modifier l'agent</h2>
+                <button class="close-btn" onclick="closeEditModal()">×</button>
+            </div>
+            <div id="editForm"></div>
+            <div class="modal-actions">
+                <button class="action-btn edit" onclick="saveAgentEdit()">💾 Enregistrer</button>
+                <button class="action-btn delete" onclick="closeEditModal()">❌ Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let allAgents = [];
+        let editingAgent = null;
+        const agentsContainer = document.getElementById('agentsContainer');
+        const searchBox = document.getElementById('searchBox');
+        const editModal = document.getElementById('editModal');
+
+        const groupes = {
+            'Encadrant': ['DEBREYNE', 'DIANCOURT', 'GHAZAL', 'GRENET', 'HADDOU', 'PATTOU', 'PERTUS', 'PRETET', 'RIBEIRO', 'ROBBE'],
+            'Surveillant de travaux': ['BOURGOIN', 'CLABAUX', 'DUMETZ', 'JUIF', 'KERVARECH', 'PIEL'],
+            'Encadrant Propreté': ['GOURVIAT', 'HEMMEN', 'JENNES', 'LADRAGUE', 'LE BARS', 'NOURRI'],
+            'Agents Voirie': ['BERRIO-GAUDNER', 'BRIGHAM', 'COSTA', 'DECOCK', 'GOFFART', 'GOSSE', 'GUFFROY', 'MACRE', 'ROSIER', 'SOUILLART', 'WEISS'],
+            'Agent EV': ['DELANDE', 'DA SILVA REIS', 'ELMAGROUD', 'ESTEVE', 'KADRI', 'MALLET', 'MAURY', 'MOINGT', 'REY', 'TADJROUNA', 'VILLENEUVE'],
+            'COMMUN - Magasinier': ['VOL', 'BOSSU', 'DENIMAL', 'HAUBRAICHE']
+        };
+
+        const groupColors = {
+            'Encadrant': { gradient: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)', border: '#f5576c' },
+            'Surveillant de travaux': { gradient: 'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)', border: '#a8edea' },
+            'Encadrant Propreté': { gradient: 'linear-gradient(135deg, #72EDF2 0%, #5151E5 100%)', border: '#72EDF2' },
+            'Agents Voirie': { gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)', border: '#4facfe' },
+            'Agent EV': { gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)', border: '#43e97b' },
+            'COMMUN - Magasinier': { gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', border: '#fa709a' },
+            'default': { gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', border: '#667eea' }
+        };
+
+        searchBox.addEventListener('input', filterAgents);
+
+        async function loadAgents() {
+            try {
+                const response = await fetch('/api/agents');
+                const data = await response.json();
+
+                if (!data.success) {
+                    alert('❌ Erreur: ' + data.error);
+                    return;
+                }
+
+                allAgents = data.agents.map(agent => {
+                    const nom = agent.nom.toUpperCase();
+                    let groupe = 'default';
+
+                    for (const [groupeName, noms] of Object.entries(groupes)) {
+                        if (noms.some(n => nom === n)) {
+                            groupe = groupeName;
+                            break;
+                        }
+                    }
+
+                    return {
+                        ...agent,
+                        groupe,
+                        fullName: `${agent.nom} ${agent.prenom}`,
+                        r482a: agent.data.some(d => d && d.toString().includes('R.482 A')),
+                        permis: agent.data.some(d => d && d.toString().toLowerCase().includes('permis')),
+                        visiteMed: agent.data[agent.data.length - 1] || null
+                    };
+                });
+
+                displayAgents();
+                updateStats();
+            } catch (error) {
+                alert('❌ Erreur de chargement: ' + error.message);
+            }
+        }
+
+        function displayAgents() {
+            agentsContainer.innerHTML = '';
+
+            allAgents.forEach(agent => {
+                const card = createAgentCard(agent);
+                agentsContainer.appendChild(card);
+            });
+        }
+
+        function createAgentCard(agent) {
+            const card = document.createElement('div');
+            card.className = 'agent-card';
+
+            const colors = groupColors[agent.groupe] || groupColors.default;
+            card.style.borderLeftColor = colors.border;
+
+            const initials = (agent.nom.charAt(0) + agent.prenom.charAt(0)).toUpperCase();
+
+            const badges = [];
+            if (agent.r482a) badges.push({ type: 'r482', text: 'R.482 A' });
+            if (agent.permis) badges.push({ type: 'permis', text: 'Permis' });
+
+            const groupeBadge = agent.groupe !== 'default' ?
+                `<span class="badge groupe">${agent.groupe}</span>` : '';
+
+            card.innerHTML = `
+                <div class="agent-header">
+                    <div class="agent-avatar" style="background: ${colors.gradient}">${initials}</div>
+                    <div class="agent-info">
+                        <div class="agent-name">${agent.fullName}</div>
+                        <div class="agent-matricule">${agent.matricule}</div>
+                    </div>
+                </div>
+                
+                <div class="badges">
+                    ${groupeBadge}
+                    ${badges.map(b => `<span class="badge ${b.type}">${b.text}</span>`).join('')}
+                </div>
+
+                <div class="agent-actions">
+                    <button class="action-btn edit" onclick="editAgent(${agent.index})">✏️ Modifier</button>
+                    <button class="action-btn delete" onclick="deleteAgent(${agent.index})">🗑️ Supprimer</button>
+                </div>
+            `;
+
+            return card;
+        }
+
+        function updateStats() {
+            document.getElementById('totalAgents').textContent = allAgents.length;
+            document.getElementById('r482aCount').textContent = allAgents.filter(a => a.r482a).length;
+            document.getElementById('permisCount').textContent = allAgents.filter(a => a.permis).length;
+            document.getElementById('visitesCount').textContent = allAgents.filter(a => a.visiteMed).length;
+        }
+
+        function filterAgents() {
+            const term = searchBox.value.toLowerCase();
+            document.querySelectorAll('.agent-card').forEach((card, idx) => {
+                const agent = allAgents[idx];
+                const match = agent.fullName.toLowerCase().includes(term) ||
+                    agent.matricule.toLowerCase().includes(term);
+                card.style.display = match ? '' : 'none';
+            });
+        }
+
+        async function editAgent(index) {
+            const agent = allAgents.find(a => a.index === index);
+            if (!agent) {
+                alert('❌ Agent introuvable');
+                return;
+            }
+
+            editingAgent = agent;
+
+            let formHTML = `
+                <div class="form-group">
+                    <label>🏷️ Groupe</label>
+                    <select id="field_groupe">
+                        <option value="default" ${agent.groupe === 'default' ? 'selected' : ''}>-- Non défini --</option>
+                        <option value="Encadrant" ${agent.groupe === 'Encadrant' ? 'selected' : ''}>Encadrant</option>
+                        <option value="Surveillant de travaux" ${agent.groupe === 'Surveillant de travaux' ? 'selected' : ''}>Surveillant de travaux</option>
+                        <option value="Encadrant Propreté" ${agent.groupe === 'Encadrant Propreté' ? 'selected' : ''}>Encadrant Propreté</option>
+                        <option value="Agents Voirie" ${agent.groupe === 'Agents Voirie' ? 'selected' : ''}>Agents Voirie</option>
+                        <option value="Agent EV" ${agent.groupe === 'Agent EV' ? 'selected' : ''}>Agent EV</option>
+                        <option value="COMMUN - Magasinier" ${agent.groupe === 'COMMUN - Magasinier' ? 'selected' : ''}>COMMUN - Magasinier</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Matricule</label>
+                    <input type="text" id="field_4" value="${agent.data[4] || ''}">
+                </div>
+                <div class="form-group">
+                    <label>Nom</label>
+                    <input type="text" id="field_5" value="${agent.data[5] || ''}">
+                </div>
+                <div class="form-group">
+                    <label>Prénom</label>
+                    <input type="text" id="field_6" value="${agent.data[6] || ''}">
+                </div>
+            `;
+
+            document.getElementById('editForm').innerHTML = formHTML;
+            editModal.classList.add('active');
+        }
+
+        function closeEditModal() {
+            editModal.classList.remove('active');
+            editingAgent = null;
+        }
+
+        async function saveAgentEdit() {
+            if (!editingAgent) return;
+
+            const data = [...editingAgent.data];
+            data[4] = document.getElementById('field_4').value;
+            data[5] = document.getElementById('field_5').value;
+            data[6] = document.getElementById('field_6').value;
+
+            try {
+                const response = await fetch(`/api/agents/${editingAgent.index}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ data })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    closeEditModal();
+                    await loadAgents();
+                } else {
+                    alert('❌ Erreur: ' + result.error);
+                }
+            } catch (error) {
+                alert('❌ Erreur de sauvegarde: ' + error.message);
+            }
+        }
+
+        async function deleteAgent(index) {
+            const agent = allAgents.find(a => a.index === index);
+            if (!agent || !confirm(`Supprimer ${agent.fullName} ?`)) return;
+
+            try {
+                const response = await fetch(`/api/agents/${index}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    await loadAgents();
+                } else {
+                    alert('❌ Erreur: ' + result.error);
+                }
+            } catch (error) {
+                alert('❌ Erreur de suppression: ' + error.message);
+            }
+        }
+
+        // Charger les agents au démarrage
+        loadAgents();
+    </script>
+</body>
+
+</html>

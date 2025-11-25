@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning - ST88</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+
+        nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        nav a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .planning-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1200px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        tr:hover {
+            background: #e9ecef;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>📅 Planning</h1>
+
+            <nav>
+                <a href="/">Agents</a>
+                <a href="/planning" class="active">Planning</a>
+                <a href="/generator">Générateur</a>
+            </nav>
+
+            <div class="controls">
+                <select id="monthSelector">
+                    <option value="">Sélectionner un mois...</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="planning-container">
+            <div id="planningTable" class="loading">
+                Sélectionnez un mois pour afficher le planning
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const monthSelector = document.getElementById('monthSelector');
+        const planningTable = document.getElementById('planningTable');
+
+        async function loadMonths() {
+            try {
+                const response = await fetch('/api/months');
+                const data = await response.json();
+
+                if (data.success) {
+                    data.months.forEach(month => {
+                        const option = document.createElement('option');
+                        option.value = month;
+                        option.textContent = month;
+                        monthSelector.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                alert('❌ Erreur de chargement des mois: ' + error.message);
+            }
+        }
+
+        monthSelector.addEventListener('change', async () => {
+            const month = monthSelector.value;
+            if (!month) return;
+
+            planningTable.innerHTML = '<div class="loading">Chargement...</div>';
+
+            try {
+                const response = await fetch(`/api/planning/${encodeURIComponent(month)}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    displayPlanning(data.data);
+                } else {
+                    planningTable.innerHTML = `<div class="loading">❌ ${data.error}</div>`;
+                }
+            } catch (error) {
+                planningTable.innerHTML = `<div class="loading">❌ ${error.message}</div>`;
+            }
+        });
+
+        function displayPlanning(data) {
+            if (!data || data.length === 0) {
+                planningTable.innerHTML = '<div class="loading">Aucune donnée</div>';
+                return;
+            }
+
+            let html = '<table><thead><tr>';
+
+            // En-têtes
+            data[0].forEach(cell => {
+                html += `<th>${cell || ''}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            // Données
+            for (let i = 1; i < data.length; i++) {
+                html += '<tr>';
+                data[i].forEach(cell => {
+                    html += `<td>${cell || ''}</td>`;
+                });
+                html += '</tr>';
+            }
+
+            html += '</tbody></table>';
+            planningTable.innerHTML = html;
+        }
+
+        loadMonths();
+    </script>
+</body>
+
+</html>

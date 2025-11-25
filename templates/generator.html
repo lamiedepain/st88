@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur de Planning - ST88</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            font-size: 32px;
+        }
+
+        nav {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        nav a {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            color: #2c3e50;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        nav a.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .generator-box {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .form-group select,
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .info-box {
+            background: #e8f4fd;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .info-box p {
+            color: #2c3e50;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <h1>🎯 Générateur de Planning</h1>
+
+            <nav>
+                <a href="/">Agents</a>
+                <a href="/planning">Planning</a>
+                <a href="/generator" class="active">Générateur</a>
+            </nav>
+        </header>
+
+        <div class="generator-box">
+            <h2 style="margin-bottom: 20px; color: #2c3e50;">⚙️ Configuration</h2>
+
+            <div class="form-group">
+                <label>📅 Mois</label>
+                <select id="monthSelect">
+                    <option value="">Sélectionner un mois...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>👥 Mode de répartition</label>
+                <select id="modeSelect">
+                    <option value="equilibre">Équilibré (répartition égale)</option>
+                    <option value="competence">Par compétences</option>
+                    <option value="groupe">Par groupe</option>
+                </select>
+            </div>
+
+            <button onclick="generatePlanning()">✨ Générer le planning</button>
+
+            <div class="info-box">
+                <p><strong>ℹ️ Information:</strong></p>
+                <p>Le générateur créera automatiquement un planning en tenant compte des contraintes suivantes:</p>
+                <ul style="margin-top: 10px; margin-left: 20px;">
+                    <li>Répartition équitable des agents</li>
+                    <li>Respect des compétences (R.482, permis)</li>
+                    <li>Alternance des équipes</li>
+                    <li>Gestion des congés et absences</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function loadMonths() {
+            try {
+                const response = await fetch('/api/months');
+                const data = await response.json();
+
+                if (data.success) {
+                    const select = document.getElementById('monthSelect');
+                    data.months.forEach(month => {
+                        const option = document.createElement('option');
+                        option.value = month;
+                        option.textContent = month;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                alert('❌ Erreur: ' + error.message);
+            }
+        }
+
+        async function generatePlanning() {
+            const month = document.getElementById('monthSelect').value;
+            const mode = document.getElementById('modeSelect').value;
+
+            if (!month) {
+                alert('⚠️ Veuillez sélectionner un mois');
+                return;
+            }
+
+            alert('🚧 Fonctionnalité en développement\n\nCette fonctionnalité sera disponible prochainement.');
+        }
+
+        loadMonths();
+    </script>
+</body>
+
+</html>
