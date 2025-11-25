@@ -188,6 +188,7 @@ def get_planning_data(year, month):
         # Structure: ligne 11+ = agents, colonnes 16+ (colonne P) = jours 1 à 31
         # Ligne 10 = en-têtes (Matricule, Nom, Prénom...)
         agents_data = []
+        empty_rows_count = 0  # Compteur de lignes vides consécutives
         
         for row_idx in range(11, 100):  # Lignes agents (augmenté pour récupérer tous les agents)
             row = sheet[row_idx]
@@ -195,8 +196,13 @@ def get_planning_data(year, month):
             nom = row[1].value
             prenom = row[2].value
             
-            if not nom:  # Si pas de nom, on arrête
-                break
+            if not nom:  # Si pas de nom
+                empty_rows_count += 1
+                if empty_rows_count >= 5:  # Arrêter après 5 lignes vides consécutives
+                    break
+                continue  # Sauter cette ligne et continuer
+            
+            empty_rows_count = 0  # Réinitialiser le compteur si on trouve un agent
             
             # Nettoyer le nom et prénom (enlever espaces en trop)
             nom = nom.strip() if isinstance(nom, str) else nom
