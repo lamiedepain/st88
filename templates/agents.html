@@ -608,13 +608,13 @@
                 // Déterminer la classe selon le type d'aptitude
                 if (nomLower.includes('r.482') || nomLower.includes('r482') || nomLower.includes('caces')) {
                     badgeClass += ' caces';
-                } else if (nomLower.includes('permis') && !nomLower.includes('remorque')) {
+                } else if (nomLower.includes('permis') || nomLower.includes('remorque')) {
                     badgeClass += ' permis';
                 } else if (nomLower.includes('aipr')) {
                     badgeClass += ' aipr';
                 } else if (nomLower.includes('fimo')) {
                     badgeClass += ' fimo';
-                } else if (nomLower.includes('tronço') || nomLower.includes('remorque')) {
+                } else if (nomLower.includes('tronço')) {
                     badgeClass += ' tronco';
                 } else if (nomLower.includes('secours')) {
                     badgeClass += ' secours';

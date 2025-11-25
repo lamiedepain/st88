@@ -74,13 +74,19 @@ def update_agent(index):
         # index est déjà le numéro de ligne réel
         row_num = index
         
-        # Mettre à jour les cellules
+        # Mettre à jour les cellules - s'assurer que toutes les valeurs sont sérialisables
         for col_idx, value in enumerate(data.get('data', []), start=1):
+            # Convertir les valeurs None en chaîne vide
+            if value is None:
+                value = ''
             sheet.cell(row=row_num, column=col_idx, value=value)
         
         wb.save(EXCEL_FILE)
         return jsonify({'success': True})
     except Exception as e:
+        print(f"Erreur lors de la mise à jour de l'agent {index}: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)}), 500
 
 @app.route('/api/agents/<int:index>', methods=['DELETE'])
