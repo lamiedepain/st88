@@ -385,6 +385,32 @@
             color: white;
             font-size: 18px;
         }
+
+        .echeances-list {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 11px;
+            text-align: left;
+        }
+
+        .echeance-item {
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .echeance-agent {
+            font-weight: bold;
+        }
+
+        .echeance-aptitude {
+            opacity: 0.9;
+        }
+
+        .echeance-date {
+            float: right;
+            opacity: 0.8;
+        }
     </style>
 </head>
 
@@ -417,10 +443,12 @@
                 <div class="stat-card">
                     <div class="stat-value" id="echeances3mois">0</div>
                     <div class="stat-label">⚠️ Échéances 3 mois</div>
+                    <div class="echeances-list" id="liste3mois"></div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-value" id="echeances1an">0</div>
                     <div class="stat-label">📅 Échéances 1 an</div>
+                    <div class="echeances-list" id="liste1an"></div>
                 </div>
             </div>
         </header>
@@ -606,7 +634,7 @@
                 const nomLower = apt.nom.toLowerCase();
 
                 // Déterminer la classe selon le type d'aptitude
-                if (nomLower.includes('r.482') || nomLower.includes('r482') || nomLower.includes('caces') || 
+                if (nomLower.includes('r.482') || nomLower.includes('r482') || nomLower.includes('caces') ||
                     nomLower.includes('grue') || nomLower.includes('nacelle') || nomLower.includes('engin')) {
                     badgeClass += ' caces';
                 } else if (nomLower.includes('permis') || nomLower.includes('remorque')) {
@@ -687,22 +715,40 @@
                 });
             });
 
+            // Trier par date
+            expiring3Months.sort((a, b) => a.dateObj - b.dateObj);
+            expiring1Year.sort((a, b) => a.dateObj - b.dateObj);
+
             // Afficher les compteurs
             document.getElementById('echeances3mois').textContent = expiring3Months.length;
             document.getElementById('echeances1an').textContent = expiring1Year.length;
 
-            // Afficher la liste complète dans la console
+            // Afficher les listes
+            const liste3mois = document.getElementById('liste3mois');
+            const liste1an = document.getElementById('liste1an');
+
+            liste3mois.innerHTML = expiring3Months.map(exp => `
+                <div class="echeance-item">
+                    <span class="echeance-agent">${exp.agent}</span>: 
+                    <span class="echeance-aptitude">${exp.aptitude}</span>
+                    <span class="echeance-date">${exp.date}</span>
+                </div>
+            `).join('');
+
+            liste1an.innerHTML = expiring1Year.map(exp => `
+                <div class="echeance-item">
+                    <span class="echeance-agent">${exp.agent}</span>: 
+                    <span class="echeance-aptitude">${exp.aptitude}</span>
+                    <span class="echeance-date">${exp.date}</span>
+                </div>
+            `).join('');
+
+            // Log pour debug
             if (expiring3Months.length > 0) {
-                console.log('⚠️ ÉCHÉANCES 3 MOIS:');
-                expiring3Months.forEach(exp => {
-                    console.log(`  - ${exp.agent}: ${exp.aptitude} (${exp.date})`);
-                });
+                console.log('⚠️ ÉCHÉANCES 3 MOIS:', expiring3Months.length);
             }
             if (expiring1Year.length > 0) {
-                console.log('📅 ÉCHÉANCES 1 AN:');
-                expiring1Year.forEach(exp => {
-                    console.log(`  - ${exp.agent}: ${exp.aptitude} (${exp.date})`);
-                });
+                console.log('📅 ÉCHÉANCES 1 AN:', expiring1Year.length);
             }
         }
 
