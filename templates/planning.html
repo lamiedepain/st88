@@ -638,25 +638,34 @@
         async function displayAnnualView(year) {
             // Récupérer les données pour tous les mois de l'année
             const allMonthsData = [];
+            const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+            
             for (let m = 1; m <= 12; m++) {
                 try {
                     const response = await fetch(`/api/planning-data/${year}/${String(m).padStart(2, '0')}`);
                     const data = await response.json();
                     if (data.success) {
-                        allMonthsData.push({ month: m, agents: data.agents });
+                        allMonthsData.push({ 
+                            month: m, 
+                            monthName: monthNames[m - 1],
+                            agents: data.agents,
+                            daysInMonth: new Date(year, m, 0).getDate()
+                        });
                     }
                 } catch (error) {
                     console.error(`Erreur mois ${m}:`, error);
                 }
             }
 
-            // Construire le planning annuel
-            const monthNames = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jui', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+            if (allMonthsData.length === 0) {
+                planningTable.innerHTML = '<div class="loading">Aucune donnée</div>';
+                return;
+            }
 
-            // Enrichir et trier les agents
+            // Enrichir et trier les agents (prendre le premier mois avec données)
             const firstMonthAgents = allMonthsData[0]?.agents || [];
             const enrichedAgents = firstMonthAgents.map(agent => {
-                const nom = agent.nom.toUpperCase();
+                const nom = agent.nom.toUpperCase().trim();
                 let groupe = 'default';
                 for (const [groupeName, noms] of Object.entries(groupes)) {
                     if (noms.some(n => nom === n)) {
@@ -674,38 +683,83 @@
                 return indexA - indexB;
             });
 
-            let html = '<table><thead><tr>';
-            html += '<th style="min-width: 150px;">Agent</th>';
-            monthNames.forEach(m => html += `<th>${m}</th>`);
-            html += '</tr></thead><tbody>';
+            // Créer une section par mois avec TOUS les jours
+            let html = '';
+            
+            allMonthsData.forEach(monthData => {
+                html += `<h3 style="margin: 20px 0 10px 0; padding: 10px; background: #3498db; color: white;">${monthData.monthName} ${year}</h3>`;
+                html += '<table><thead><tr>';
+                html += '<th style="min-width: 150px;">Agent</th>';
 
-            let currentGroup = '';
-            enrichedAgents.forEach(agent => {
-                const fullName = `${agent.nom} ${agent.prenom}`;
-                const agentInfo = allAgents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
-                const colors = groupColors[agent.groupe] || groupColors.default;
-
-                if (currentGroup !== agent.groupe) {
-                    currentGroup = agent.groupe;
-                    html += `<tr><td colspan="13" style="background: ${colors.bg}; color: white; font-weight: bold; text-align: center; padding: 10px;">${agent.groupe}</td></tr>`;
+                // En-têtes des jours du mois
+                for (let d = 1; d <= monthData.daysInMonth; d++) {
+                    const date = new Date(year, monthData.month - 1, d);
+                    const dayOfWeek = date.getDay();
+                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                    const isFerie = isJourFerie(year, monthData.month, d);
+                    let bgColor = '';
+                    if (isFerie) bgColor = '#e67e22';
+                    else if (isWeekend) bgColor = '#e74c3c';
+                    html += `<th style="${bgColor ? 'background: ' + bgColor + ';' : ''}">${d}</th>`;
                 }
+                html += '</tr></thead><tbody>';
 
-                html += '<tr>';
-                html += `<td class="agent-cell" style="background: ${colors.bg}33; border-left: 3px solid ${colors.border};">
-                    <div class="agent-name">${fullName}</div>
-                    ${agentInfo ? getAgentBadges(agentInfo) : ''}
-                </td>`;
+                // Lignes des agents avec leurs statuts pour ce mois
+                let currentGroup = '';
+                enrichedAgents.forEach(agent => {
+                    const fullName = `${agent.nom} ${agent.prenom}`;
+                    const agentInfo = allAgents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
+                    const colors = groupColors[agent.groupe] || groupColors.default;
 
-                // Résumé pour chaque mois
-                allMonthsData.forEach(monthData => {
+                    // Ligne séparateur de groupe
+                    if (currentGroup !== agent.groupe) {
+                        currentGroup = agent.groupe;
+                        html += `<tr><td colspan="${monthData.daysInMonth + 1}" style="background: ${colors.bg}; color: white; font-weight: bold; text-align: center; padding: 10px;">${agent.groupe}</td></tr>`;
+                    }
+
+                    // Trouver les données de cet agent pour ce mois
                     const agentMonth = monthData.agents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
-                    const summary = agentMonth ? getMonthSummary(agentMonth.days) : '-';
-                    html += `<td>${summary}</td>`;
+                    const days = agentMonth ? agentMonth.days : [];
+
+                    html += '<tr>';
+                    html += `<td class="agent-cell" style="background: ${colors.bg}33; border-left: 3px solid ${colors.border};">
+                        <div class="agent-name">${fullName}</div>
+                        ${agentInfo ? getAgentBadges(agentInfo) : ''}
+                    </td>`;
+
+                    // Afficher chaque jour
+                    for (let d = 1; d <= monthData.daysInMonth; d++) {
+                        const date = new Date(year, monthData.month - 1, d);
+                        const dayOfWeek = date.getDay();
+                        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                        const isFerie = isJourFerie(year, monthData.month, d);
+                        
+                        const status = days[d - 1] || '';
+                        let cellContent = status;
+                        let cellStyle = '';
+
+                        // Si pas de statut et que c'est un jour travaillé
+                        if (!status && !isWeekend && !isFerie) {
+                            cellContent = 'Présent';
+                            cellStyle = 'background: #2ecc71; color: white;';
+                        } else if (status === 'PC') {
+                            cellStyle = 'background: #f39c12; color: white; font-weight: bold;';
+                        } else if (status === 'M') {
+                            cellStyle = 'background: #e74c3c; color: white; font-weight: bold;';
+                        } else if (isWeekend) {
+                            cellStyle = 'background: #e74c3c44;';
+                        } else if (isFerie) {
+                            cellStyle = 'background: #e67e2244;';
+                        }
+
+                        html += `<td style="${cellStyle}">${cellContent}</td>`;
+                    }
+                    html += '</tr>';
                 });
-                html += '</tr>';
+
+                html += '</tbody></table>';
             });
 
-            html += '</tbody></table>';
             planningTable.innerHTML = html;
         }
 
@@ -797,7 +851,7 @@
             // Enrichir et trier les agents
             const firstDay = allDaysData[0];
             const enrichedAgents = firstDay.agents.map(agent => {
-                const nom = agent.nom.toUpperCase();
+                const nom = agent.nom.toUpperCase().trim(); // TRIM pour gérer les espaces
                 let groupe = 'default';
                 for (const [groupeName, noms] of Object.entries(groupes)) {
                     if (noms.some(n => nom === n)) {
