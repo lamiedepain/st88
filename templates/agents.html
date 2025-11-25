@@ -197,17 +197,42 @@
         }
 
         .badge.r482 {
-            background: #e74c3c;
+            background: #f39c12;
+            color: white;
+        }
+
+        .badge.caces {
+            background: #f39c12;
             color: white;
         }
 
         .badge.permis {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .badge.aipr {
             background: #3498db;
             color: white;
         }
 
-        .badge.groupe {
+        .badge.fimo {
             background: #9b59b6;
+            color: white;
+        }
+
+        .badge.tronco {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .badge.secours {
+            background: #e67e22;
+            color: white;
+        }
+
+        .badge.groupe {
+            background: #1abc9c;
             color: white;
         }
 
@@ -470,7 +495,44 @@
                         }
                     }
 
-                    // Extraire les certifications cochées
+                    // Extraire TOUTES les aptitudes avec leurs dates/valeurs (colonnes 7+)
+                    const aptitudes = [];
+                    agent.data.forEach((val, idx) => {
+                        if (idx >= 7 && val) { // Colonne 7 et plus
+                            const header = data.headers[idx];
+                            if (header && typeof header === 'string') {
+                                // Si c'est une date
+                                try {
+                                    const dateValue = new Date(val);
+                                    if (!isNaN(dateValue.getTime())) {
+                                        aptitudes.push({
+                                            nom: header,
+                                            valeur: dateValue.toLocaleDateString('fr-FR'),
+                                            dateObj: dateValue
+                                        });
+                                    } else if (typeof val === 'string' && val.toLowerCase() === 'x') {
+                                        // Si c'est une croix (tronço, remorque)
+                                        aptitudes.push({
+                                            nom: header,
+                                            valeur: '✓',
+                                            dateObj: null
+                                        });
+                                    }
+                                } catch (e) {
+                                    // Si pas une date mais une croix
+                                    if (typeof val === 'string' && val.toLowerCase() === 'x') {
+                                        aptitudes.push({
+                                            nom: header,
+                                            valeur: '✓',
+                                            dateObj: null
+                                        });
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Extraire les certifications cochées pour compatibilité
                     const certifications = [];
                     agent.data.forEach((val, idx) => {
                         const header = data.headers[idx];
@@ -488,6 +550,7 @@
                         ...agent,
                         groupe,
                         fullName: `${agent.nom} ${agent.prenom}`,
+                        aptitudes,
                         certifications,
                         anniversaire,
                         derniereVisite,
@@ -537,10 +600,28 @@
             const groupeBadge = agent.groupe !== 'default' ?
                 `<span class="badge groupe">${agent.groupe}</span>` : '';
 
-            // Badges de TOUTES les certifications
-            const certifBadges = agent.certifications.map(cert =>
-                `<span class="badge">${cert}</span>`
-            ).join('');
+            // Badges de TOUTES les aptitudes SANS dates, avec couleurs par catégorie
+            const aptitudesBadges = agent.aptitudes.map(apt => {
+                let badgeClass = 'badge';
+                const nomLower = apt.nom.toLowerCase();
+
+                // Déterminer la classe selon le type d'aptitude
+                if (nomLower.includes('r.482') || nomLower.includes('r482') || nomLower.includes('caces')) {
+                    badgeClass += ' caces';
+                } else if (nomLower.includes('permis') && !nomLower.includes('remorque')) {
+                    badgeClass += ' permis';
+                } else if (nomLower.includes('aipr')) {
+                    badgeClass += ' aipr';
+                } else if (nomLower.includes('fimo')) {
+                    badgeClass += ' fimo';
+                } else if (nomLower.includes('tronço') || nomLower.includes('remorque')) {
+                    badgeClass += ' tronco';
+                } else if (nomLower.includes('secours')) {
+                    badgeClass += ' secours';
+                }
+
+                return `<span class="${badgeClass}">${apt.nom}</span>`;
+            }).join('');
 
             card.innerHTML = `
                 <div class="agent-header">
@@ -561,7 +642,7 @@
                 
                 <div class="badges">
                     ${groupeBadge}
-                    ${certifBadges}
+                    ${aptitudesBadges}
                 </div>
 
                 <div class="agent-actions">
@@ -586,28 +667,20 @@
             const expiring1Year = [];
 
             allAgents.forEach(agent => {
-                // Vérifier toutes les dates de l'agent (colonnes 7+)
-                agent.data.forEach((value, idx) => {
-                    if (idx >= 7 && value) {
-                        try {
-                            const dateValue = new Date(value);
-                            if (!isNaN(dateValue.getTime()) && dateValue >= today) {
-                                const header = headers[idx] || `Colonne ${idx}`;
-                                const expiration = {
-                                    nom: agent.fullName,
-                                    type: header,
-                                    date: dateValue.toLocaleDateString('fr-FR'),
-                                    dateObj: dateValue
-                                };
+                // Vérifier toutes les aptitudes avec dates
+                agent.aptitudes.forEach(apt => {
+                    if (apt.dateObj && apt.dateObj >= today) {
+                        const expiration = {
+                            agent: agent.fullName,
+                            aptitude: apt.nom,
+                            date: apt.valeur,
+                            dateObj: apt.dateObj
+                        };
 
-                                if (dateValue <= threeMonthsLater) {
-                                    expiring3Months.push(expiration);
-                                } else if (dateValue <= oneYearLater) {
-                                    expiring1Year.push(expiration);
-                                }
-                            }
-                        } catch (e) {
-                            // Ignorer les valeurs non-dates
+                        if (apt.dateObj <= threeMonthsLater) {
+                            expiring3Months.push(expiration);
+                        } else if (apt.dateObj <= oneYearLater) {
+                            expiring1Year.push(expiration);
                         }
                     }
                 });
@@ -617,12 +690,18 @@
             document.getElementById('echeances3mois').textContent = expiring3Months.length;
             document.getElementById('echeances1an').textContent = expiring1Year.length;
 
-            // Afficher la liste dans la console pour debug
+            // Afficher la liste complète dans la console
             if (expiring3Months.length > 0) {
-                console.log('⚠️ Échéances dans 3 mois:', expiring3Months);
+                console.log('⚠️ ÉCHÉANCES 3 MOIS:');
+                expiring3Months.forEach(exp => {
+                    console.log(`  - ${exp.agent}: ${exp.aptitude} (${exp.date})`);
+                });
             }
             if (expiring1Year.length > 0) {
-                console.log('📅 Échéances dans 1 an:', expiring1Year);
+                console.log('📅 ÉCHÉANCES 1 AN:');
+                expiring1Year.forEach(exp => {
+                    console.log(`  - ${exp.agent}: ${exp.aptitude} (${exp.date})`);
+                });
             }
         }
 
