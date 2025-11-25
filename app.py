@@ -44,11 +44,14 @@ def get_agents():
         for row_idx in range(3, 76):  # Lignes 3 à 75
             row = [cell.value for cell in sheet[row_idx]]
             if row[5]:  # Si le nom existe (colonne 6 = index 5)
+                nom = row[5].strip() if isinstance(row[5], str) else row[5]
+                prenom = row[6].strip() if isinstance(row[6], str) else row[6]
+                
                 agent = {
                     'index': row_idx,  # Numéro de ligne réel
                     'matricule': row[4] or '',
-                    'nom': row[5] or '',
-                    'prenom': row[6] or '',
+                    'nom': nom or '',
+                    'prenom': prenom or '',
                     'data': row
                 }
                 agents.append(agent)
@@ -195,8 +198,9 @@ def get_planning_data(year, month):
             if not nom:  # Si pas de nom, on arrête
                 break
             
-            # Nettoyer le nom (enlever espaces en trop)
+            # Nettoyer le nom et prénom (enlever espaces en trop)
             nom = nom.strip() if isinstance(nom, str) else nom
+            prenom = prenom.strip() if isinstance(prenom, str) else prenom
             
             # Récupérer les statuts pour chaque jour (colonnes 15 à 45 = index 15 à 45)
             days_status = []
