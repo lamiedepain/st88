@@ -410,6 +410,7 @@
 
     <script>
         let allAgents = [];
+        let headers = [];
         let editingAgent = null;
         const agentsContainer = document.getElementById('agentsContainer');
         const searchBox = document.getElementById('searchBox');
@@ -445,6 +446,8 @@
                     alert('❌ Erreur: ' + data.error);
                     return;
                 }
+
+                headers = data.headers;
 
                 allAgents = data.agents.map(agent => {
                     const nom = agent.nom.toUpperCase();
@@ -561,19 +564,39 @@
                         <option value="COMMUN - Magasinier" ${agent.groupe === 'COMMUN - Magasinier' ? 'selected' : ''}>COMMUN - Magasinier</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Matricule</label>
-                    <input type="text" id="field_4" value="${agent.data[4] || ''}">
-                </div>
-                <div class="form-group">
-                    <label>Nom</label>
-                    <input type="text" id="field_5" value="${agent.data[5] || ''}">
-                </div>
-                <div class="form-group">
-                    <label>Prénom</label>
-                    <input type="text" id="field_6" value="${agent.data[6] || ''}">
-                </div>
             `;
+
+            // Ajouter tous les champs du fichier Excel
+            headers.forEach((header, colIdx) => {
+                if (!header || typeof header !== 'string') return;
+                
+                const value = agent.data[colIdx] || '';
+                const fieldType = (header.toLowerCase().includes('date') || header.toLowerCase().includes('anniversaire')) ? 'date' : 'text';
+                let displayValue = value;
+
+                // Formater les dates
+                if (fieldType === 'date' && value) {
+                    if (value instanceof Date || typeof value === 'object') {
+                        try {
+                            displayValue = new Date(value).toISOString().split('T')[0];
+                        } catch (e) {
+                            displayValue = '';
+                        }
+                    } else if (typeof value === 'string') {
+                        displayValue = value.split('T')[0];
+                    }
+                }
+
+                formHTML += `
+                    <div class="form-group">
+                        <label>${header}</label>
+                        <input type="${fieldType}" 
+                               id="field_${colIdx}" 
+                               value="${displayValue}" 
+                               data-col="${colIdx}">
+                    </div>
+                `;
+            });
 
             document.getElementById('editForm').innerHTML = formHTML;
             editModal.classList.add('active');
@@ -588,9 +611,14 @@
             if (!editingAgent) return;
 
             const data = [...editingAgent.data];
-            data[4] = document.getElementById('field_4').value;
-            data[5] = document.getElementById('field_5').value;
-            data[6] = document.getElementById('field_6').value;
+            
+            // Récupérer toutes les valeurs des champs
+            headers.forEach((header, colIdx) => {
+                const input = document.getElementById(`field_${colIdx}`);
+                if (input) {
+                    data[colIdx] = input.value;
+                }
+            });
 
             try {
                 const response = await fetch(`/api/agents/${editingAgent.index}`, {
