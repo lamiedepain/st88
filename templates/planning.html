@@ -387,7 +387,7 @@
                             }
                         });
 
-                        const nom = agent.nom.toUpperCase();
+                        const nom = agent.nom.toUpperCase().trim(); // TRIM
                         let groupe = 'default';
 
                         for (const [groupeName, noms] of Object.entries(groupes)) {
@@ -510,6 +510,9 @@
         } function displayMonthlyPlanning(agents, year, month) {
             const daysInMonth = new Date(year, month, 0).getDate();
 
+            console.log('displayMonthlyPlanning - Nombre agents reçus:', agents.length);
+            console.log('displayMonthlyPlanning - Premiers agents:', agents.slice(0, 5).map(a => a.nom));
+
             // Enrichir les agents avec leurs groupes
             const enrichedAgents = agents.map(agent => {
                 const nom = agent.nom.toUpperCase().trim(); // TRIM pour gérer les espaces
@@ -524,6 +527,9 @@
 
                 return { ...agent, groupe };
             });
+
+            console.log('displayMonthlyPlanning - Agents enrichis:', enrichedAgents.length);
+            console.log('displayMonthlyPlanning - Groupes trouvés:', [...new Set(enrichedAgents.map(a => a.groupe))]);
 
             // Trier par groupe
             const groupOrder = ['Encadrant', 'Surveillant de travaux', 'Encadrant Propreté', 'Agents Voirie', 'Agent EV', 'COMMUN - Magasinier', 'default'];
@@ -639,14 +645,14 @@
             // Récupérer les données pour tous les mois de l'année
             const allMonthsData = [];
             const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
-            
+
             for (let m = 1; m <= 12; m++) {
                 try {
                     const response = await fetch(`/api/planning-data/${year}/${String(m).padStart(2, '0')}`);
                     const data = await response.json();
                     if (data.success) {
-                        allMonthsData.push({ 
-                            month: m, 
+                        allMonthsData.push({
+                            month: m,
                             monthName: monthNames[m - 1],
                             agents: data.agents,
                             daysInMonth: new Date(year, m, 0).getDate()
@@ -685,7 +691,7 @@
 
             // Créer une section par mois avec TOUS les jours
             let html = '';
-            
+
             allMonthsData.forEach(monthData => {
                 html += `<h3 style="margin: 20px 0 10px 0; padding: 10px; background: #3498db; color: white;">${monthData.monthName} ${year}</h3>`;
                 html += '<table><thead><tr>';
@@ -733,7 +739,7 @@
                         const dayOfWeek = date.getDay();
                         const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
                         const isFerie = isJourFerie(year, monthData.month, d);
-                        
+
                         const status = days[d - 1] || '';
                         let cellContent = status;
                         let cellStyle = '';
