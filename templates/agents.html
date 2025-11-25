@@ -568,10 +568,17 @@
 
             // Ajouter tous les champs du fichier Excel
             headers.forEach((header, colIdx) => {
-                if (!header || typeof header !== 'string') return;
-
                 const value = agent.data[colIdx] || '';
-                const fieldType = (header.toLowerCase().includes('date') || header.toLowerCase().includes('anniversaire')) ? 'date' : 'text';
+                
+                // Déterminer le label (utiliser "Colonne X" si pas de header)
+                let label = header && typeof header === 'string' ? header : `Colonne ${colIdx}`;
+                
+                // Déterminer le type de champ
+                let fieldType = 'text';
+                if (label.toLowerCase().includes('date') || label.toLowerCase().includes('anniversaire') || label.toLowerCase().includes('visite')) {
+                    fieldType = 'date';
+                }
+                
                 let displayValue = value;
 
                 // Formater les dates
@@ -589,7 +596,7 @@
 
                 formHTML += `
                     <div class="form-group">
-                        <label>${header}</label>
+                        <label>${label}</label>
                         <input type="${fieldType}" 
                                id="field_${colIdx}" 
                                value="${displayValue}" 
