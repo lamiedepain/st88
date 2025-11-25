@@ -417,12 +417,12 @@
         const editModal = document.getElementById('editModal');
 
         const groupes = {
-            'Encadrant': ['DEBREYNE', 'DIANCOURT', 'GHAZAL', 'GRENET', 'HADDOU', 'PATTOU', 'PERTUS', 'PRETET', 'RIBEIRO', 'ROBBE'],
-            'Surveillant de travaux': ['BOURGOIN', 'CLABAUX', 'DUMETZ', 'JUIF', 'KERVARECH', 'PIEL'],
-            'Encadrant Propreté': ['GOURVIAT', 'HEMMEN', 'JENNES', 'LADRAGUE', 'LE BARS', 'NOURRI'],
-            'Agents Voirie': ['BERRIO-GAUDNER', 'BRIGHAM', 'COSTA', 'DECOCK', 'GOFFART', 'GOSSE', 'GUFFROY', 'MACRE', 'ROSIER', 'SOUILLART', 'WEISS'],
+            'Encadrant': ['DEBREYNE', 'LUTARD', 'HAUTDECOEUR', 'GRENET', 'FOURCADE', 'GONCALVES', 'SIGALA', 'BETTINGER', 'TUCOULET', 'VRBOVSKA'],
+            'Surveillant de travaux': ['BOURGOIN', 'MERCADIEU', 'GARCIA', 'LARROUDE', 'SAMITIER', 'PIEL'],
+            'Encadrant Propreté': ['GOURVIAT', 'LARTIGUE', 'TRIQUENEAUX', 'ESPERON', 'ROUGLAN', 'NOURRI'],
+            'Agents Voirie': ['BERRIO-GAUDNER', 'FONTENEAU', 'GUIJARRO', 'GOUREAU', 'LABORIE', 'LARRIEU', 'LEVIGNAT', 'MARTIN-HERNANDEZ', 'PIERRE', 'SOLA', 'WEISS'],
             'Agent EV': ['DELANDE', 'DA SILVA REIS', 'ELMAGROUD', 'ESTEVE', 'KADRI', 'MALLET', 'MAURY', 'MOINGT', 'REY', 'TADJROUNA', 'VILLENEUVE'],
-            'COMMUN - Magasinier': ['VOL', 'BOSSU', 'DENIMAL', 'HAUBRAICHE']
+            'COMMUN - Magasinier': ['VOL', 'GENNA', 'BERNARD', 'HAUBRAICHE']
         };
 
         const groupColors = {
@@ -569,7 +569,7 @@
             // Ajouter tous les champs du fichier Excel
             headers.forEach((header, colIdx) => {
                 if (!header || typeof header !== 'string') return;
-                
+
                 const value = agent.data[colIdx] || '';
                 const fieldType = (header.toLowerCase().includes('date') || header.toLowerCase().includes('anniversaire')) ? 'date' : 'text';
                 let displayValue = value;
@@ -611,7 +611,7 @@
             if (!editingAgent) return;
 
             const data = [...editingAgent.data];
-            
+
             // Récupérer toutes les valeurs des champs
             headers.forEach((header, colIdx) => {
                 const input = document.getElementById(`field_${colIdx}`);
