@@ -66,6 +66,28 @@
             flex-wrap: wrap;
         }
 
+        .view-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+        }
+
+        .view-tab {
+            padding: 10px 20px;
+            border: none;
+            background: #f0f0f0;
+            color: #2c3e50;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .view-tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
         select {
             padding: 12px;
             border: 2px solid #e0e0e0;
@@ -88,6 +110,11 @@
             color: white;
         }
 
+        .btn-print {
+            background: #2ecc71;
+            color: white;
+        }
+
         .planning-container {
             background: white;
             border-radius: 12px;
@@ -106,6 +133,7 @@
             padding: 12px;
             border: 1px solid #ddd;
             text-align: center;
+            position: relative;
         }
 
         th {
@@ -114,6 +142,55 @@
             font-weight: 600;
             position: sticky;
             top: 0;
+        }
+
+        .agent-name {
+            font-weight: 600;
+            text-align: left;
+            background: #f8f9fa;
+        }
+
+        .agent-badges {
+            display: flex;
+            gap: 3px;
+            flex-wrap: wrap;
+            margin-top: 3px;
+        }
+
+        .badge-mini {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: inline-block;
+            font-size: 9px;
+            font-weight: bold;
+            color: white;
+            line-height: 18px;
+            text-align: center;
+        }
+
+        .badge-caces {
+            background: #f39c12;
+        }
+
+        .badge-permis {
+            background: #e74c3c;
+        }
+
+        .badge-aipr {
+            background: #3498db;
+        }
+
+        .badge-fimo {
+            background: #9b59b6;
+        }
+
+        .badge-tronco {
+            background: #95a5a6;
+        }
+
+        .badge-secours {
+            background: #e67e22;
         }
 
         tr:nth-child(even) {
@@ -130,6 +207,62 @@
             font-size: 18px;
             color: #7f8c8d;
         }
+
+        /* Vue annuelle */
+        .view-annuel table {
+            font-size: 11px;
+        }
+
+        .view-annuel th,
+        .view-annuel td {
+            padding: 6px;
+        }
+
+        /* Vue trimestrielle */
+        .view-trimestriel table {
+            font-size: 12px;
+        }
+
+        .view-trimestriel th,
+        .view-trimestriel td {
+            padding: 8px;
+        }
+
+        /* Vue mensuel */
+        .view-mensuel table {
+            font-size: 13px;
+        }
+
+        /* Vue bi-hebdo */
+        .view-bihebdo table {
+            font-size: 14px;
+        }
+
+        /* Style d'impression */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            header nav,
+            .controls {
+                display: none;
+            }
+
+            .planning-container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+
+            table {
+                page-break-inside: avoid;
+            }
+
+            .agent-badges {
+                display: flex !important;
+            }
+        }
     </style>
 </head>
 
@@ -144,90 +277,255 @@
                 <a href="/generator">Générateur</a>
             </nav>
 
+            <div class="view-tabs">
+                <button class="view-tab" onclick="changeView('annuel')">📆 Annuel</button>
+                <button class="view-tab" onclick="changeView('trimestriel')">📊 Trimestriel</button>
+                <button class="view-tab active" onclick="changeView('mensuel')">📅 Mensuel</button>
+                <button class="view-tab" onclick="changeView('bihebdo')">📋 Bi-hebdo</button>
+            </div>
+
             <div class="controls">
-                <select id="monthSelector">
-                    <option value="">Sélectionner un mois...</option>
+                <select id="periodSelector">
+                    <option value="">Sélectionner une période...</option>
                 </select>
+                <button class="btn-print" onclick="window.print()">🖨️ Imprimer</button>
             </div>
         </header>
 
-        <div class="planning-container">
+        <div class="planning-container" id="planningView">
             <div id="planningTable" class="loading">
-                Sélectionnez un mois pour afficher le planning
+                Sélectionnez une période pour afficher le planning
             </div>
         </div>
     </div>
 
     <script>
-        const monthSelector = document.getElementById('monthSelector');
-        const planningTable = document.getElementById('planningTable');
+        let currentView = 'mensuel';
+        let allAgents = [];
 
-        async function loadMonths() {
+        const periodSelector = document.getElementById('periodSelector');
+        const planningTable = document.getElementById('planningTable');
+        const planningView = document.getElementById('planningView');
+
+        async function loadAgents() {
             try {
-                const response = await fetch('/api/months');
+                const response = await fetch('/api/agents');
                 const data = await response.json();
 
                 if (data.success) {
-                    data.months.forEach(month => {
-                        const option = document.createElement('option');
-                        option.value = month;
-                        option.textContent = month;
-                        monthSelector.appendChild(option);
+                    allAgents = data.agents.map((agent, index) => {
+                        const aptitudes = [];
+                        agent.data.forEach((val, idx) => {
+                            const header = data.headers[idx];
+                            if (header && idx >= 7) {
+                                if (val && val !== '' && val !== null) {
+                                    try {
+                                        const date = new Date(val);
+                                        if (!isNaN(date.getTime()) && typeof val !== 'string') {
+                                            aptitudes.push({
+                                                nom: header,
+                                                valeur: date.toLocaleDateString('fr-FR'),
+                                                dateObj: date
+                                            });
+                                        } else if (typeof val === 'string' && val.toLowerCase() === 'x') {
+                                            aptitudes.push({
+                                                nom: header,
+                                                valeur: '✓',
+                                                dateObj: null
+                                            });
+                                        }
+                                    } catch (e) {
+                                        if (typeof val === 'string' && val.toLowerCase() === 'x') {
+                                            aptitudes.push({
+                                                nom: header,
+                                                valeur: '✓',
+                                                dateObj: null
+                                            });
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
+                        return {
+                            index,
+                            matricule: agent.matricule,
+                            nom: agent.nom,
+                            prenom: agent.prenom,
+                            fullName: `${agent.nom} ${agent.prenom}`,
+                            aptitudes
+                        };
                     });
                 }
             } catch (error) {
-                alert('❌ Erreur de chargement des mois: ' + error.message);
+                console.error('Erreur chargement agents:', error);
             }
         }
 
-        monthSelector.addEventListener('change', async () => {
-            const month = monthSelector.value;
-            if (!month) return;
+        function changeView(view) {
+            currentView = view;
+            document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
 
-            planningTable.innerHTML = '<div class="loading">Chargement...</div>';
+            planningView.className = 'planning-container view-' + view;
+            updatePeriodSelector();
+            planningTable.innerHTML = '<div class="loading">Sélectionnez une période</div>';
+        }
 
-            try {
-                const response = await fetch(`/api/planning/${encodeURIComponent(month)}`);
-                const data = await response.json();
+        function updatePeriodSelector() {
+            periodSelector.innerHTML = '<option value="">Sélectionner une période...</option>';
 
-                if (data.success) {
-                    displayPlanning(data.data);
-                } else {
-                    planningTable.innerHTML = `<div class="loading">❌ ${data.error}</div>`;
+            const currentYear = 2026;
+            const months = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
+                'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+
+            if (currentView === 'annuel') {
+                // Années
+                for (let y = 2025; y <= 2027; y++) {
+                    const option = document.createElement('option');
+                    option.value = y;
+                    option.textContent = y;
+                    periodSelector.appendChild(option);
                 }
-            } catch (error) {
-                planningTable.innerHTML = `<div class="loading">❌ ${error.message}</div>`;
+            } else if (currentView === 'trimestriel') {
+                // Trimestres
+                for (let q = 1; q <= 4; q++) {
+                    const option = document.createElement('option');
+                    option.value = `${currentYear}-T${q}`;
+                    option.textContent = `T${q} ${currentYear}`;
+                    periodSelector.appendChild(option);
+                }
+            } else if (currentView === 'mensuel') {
+                // Mois
+                months.forEach((month, idx) => {
+                    const option = document.createElement('option');
+                    option.value = `${currentYear}-${String(idx + 1).padStart(2, '0')}`;
+                    option.textContent = `${month} ${currentYear}`;
+                    periodSelector.appendChild(option);
+                });
+            } else if (currentView === 'bihebdo') {
+                // Semaines (bi-hebdo = 2 semaines)
+                for (let w = 1; w <= 26; w++) {
+                    const option = document.createElement('option');
+                    option.value = `${currentYear}-BH${w}`;
+                    option.textContent = `Bi-hebdo ${w} - ${currentYear}`;
+                    periodSelector.appendChild(option);
+                }
             }
+        }
+
+        periodSelector.addEventListener('change', () => {
+            const period = periodSelector.value;
+            if (!period) return;
+
+            generatePlanning(period);
         });
 
-        function displayPlanning(data) {
-            if (!data || data.length === 0) {
-                planningTable.innerHTML = '<div class="loading">Aucune donnée</div>';
-                return;
-            }
+        function generatePlanning(period) {
+            planningTable.innerHTML = '<div class="loading">Génération...</div>';
 
-            let html = '<table><thead><tr>';
+            setTimeout(() => {
+                let html = '<table><thead><tr>';
+                html += '<th>Agent</th>';
 
-            // En-têtes
-            data[0].forEach(cell => {
-                html += `<th>${cell || ''}</th>`;
-            });
-            html += '</tr></thead><tbody>';
-
-            // Données
-            for (let i = 1; i < data.length; i++) {
-                html += '<tr>';
-                data[i].forEach(cell => {
-                    html += `<td>${cell || ''}</td>`;
+                // Générer les colonnes selon la vue
+                const days = getDaysForPeriod(period);
+                days.forEach(day => {
+                    html += `<th>${day}</th>`;
                 });
-                html += '</tr>';
-            }
+                html += '</tr></thead><tbody>';
 
-            html += '</tbody></table>';
-            planningTable.innerHTML = html;
+                // Générer les lignes agents
+                allAgents.forEach(agent => {
+                    html += '<tr>';
+                    html += `<td class="agent-name">${agent.fullName}${getAgentBadges(agent)}</td>`;
+
+                    days.forEach(() => {
+                        html += '<td></td>';
+                    });
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table>';
+                planningTable.innerHTML = html;
+            }, 100);
         }
 
-        loadMonths();
+        function getAgentBadges(agent) {
+            const badges = [];
+
+            agent.aptitudes.forEach(apt => {
+                const nomLower = apt.nom.toLowerCase();
+                let badgeClass = '';
+                let badgeText = '';
+
+                if (nomLower.includes('r.482') || nomLower.includes('r482') || nomLower.includes('caces') ||
+                    nomLower.includes('grue') || nomLower.includes('nacelle') || nomLower.includes('engin')) {
+                    badgeClass = 'badge-caces';
+                    badgeText = 'C';
+                } else if (nomLower.includes('permis') || nomLower.includes('remorque')) {
+                    badgeClass = 'badge-permis';
+                    badgeText = 'P';
+                } else if (nomLower.includes('aipr')) {
+                    badgeClass = 'badge-aipr';
+                    badgeText = 'A';
+                } else if (nomLower.includes('fimo')) {
+                    badgeClass = 'badge-fimo';
+                    badgeText = 'F';
+                } else if (nomLower.includes('tronço')) {
+                    badgeClass = 'badge-tronco';
+                    badgeText = 'T';
+                } else if (nomLower.includes('secours')) {
+                    badgeClass = 'badge-secours';
+                    badgeText = 'S';
+                }
+
+                if (badgeClass && !badges.some(b => b.text === badgeText)) {
+                    badges.push({ class: badgeClass, text: badgeText });
+                }
+            });
+
+            if (badges.length === 0) return '';
+
+            return '<div class="agent-badges">' +
+                badges.map(b => `<span class="badge-mini ${b.class}">${b.text}</span>`).join('') +
+                '</div>';
+        }
+
+        function getDaysForPeriod(period) {
+            if (currentView === 'annuel') {
+                // 12 mois
+                return ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'];
+            } else if (currentView === 'trimestriel') {
+                // ~13 semaines
+                const weeks = [];
+                for (let w = 1; w <= 13; w++) {
+                    weeks.push(`S${w}`);
+                }
+                return weeks;
+            } else if (currentView === 'mensuel') {
+                // Jours du mois
+                const [year, month] = period.split('-');
+                const daysInMonth = new Date(year, month, 0).getDate();
+                const days = [];
+                for (let d = 1; d <= daysInMonth; d++) {
+                    days.push(d);
+                }
+                return days;
+            } else if (currentView === 'bihebdo') {
+                // 14 jours (2 semaines)
+                const days = [];
+                for (let d = 1; d <= 14; d++) {
+                    days.push(`J${d}`);
+                }
+                return days;
+            }
+            return [];
+        }
+
+        loadAgents().then(() => {
+            updatePeriodSelector();
+        });
     </script>
 </body>
 
