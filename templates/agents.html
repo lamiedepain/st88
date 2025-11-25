@@ -381,7 +381,7 @@
             <div class="stats">
                 <div class="stat-card">
                     <div class="stat-value" id="visitesCount">0</div>
-                    <div class="stat-label">🏥 Prochaines Visites Médicales</div>
+                    <div class="stat-label">⚠️ Dates à échéance (3 mois)</div>
                 </div>
             </div>
         </header>
@@ -522,13 +522,10 @@
             const groupeBadge = agent.groupe !== 'default' ?
                 `<span class="badge groupe">${agent.groupe}</span>` : '';
 
-            // Badges des certifications
-            const certifBadges = agent.certifications.slice(0, 3).map(cert =>
+            // Badges de TOUTES les certifications
+            const certifBadges = agent.certifications.map(cert =>
                 `<span class="badge">${cert}</span>`
             ).join('');
-
-            const moreCertif = agent.certifications.length > 3 ?
-                `<span class="badge">+${agent.certifications.length - 3} autres</span>` : '';
 
             card.innerHTML = `
                 <div class="agent-header">
@@ -550,7 +547,6 @@
                 <div class="badges">
                     ${groupeBadge}
                     ${certifBadges}
-                    ${moreCertif}
                 </div>
 
                 <div class="agent-actions">
@@ -563,7 +559,43 @@
         }
 
         function updateStats() {
-            document.getElementById('visitesCount').textContent = allAgents.filter(a => a.visiteMed).length;
+            // Calculer la date dans 3 mois
+            const today = new Date();
+            const threeMonthsLater = new Date();
+            threeMonthsLater.setMonth(today.getMonth() + 3);
+
+            // Trouver tous les agents avec une date qui expire dans les 3 prochains mois
+            const agentsExpiring = [];
+
+            allAgents.forEach(agent => {
+                // Vérifier toutes les dates de l'agent (colonnes 7+)
+                agent.data.forEach((value, idx) => {
+                    if (idx >= 7 && value) {
+                        try {
+                            const dateValue = new Date(value);
+                            if (!isNaN(dateValue.getTime()) && dateValue >= today && dateValue <= threeMonthsLater) {
+                                const header = headers[idx] || `Colonne ${idx}`;
+                                agentsExpiring.push({
+                                    nom: agent.fullName,
+                                    type: header,
+                                    date: dateValue.toLocaleDateString('fr-FR')
+                                });
+                            }
+                        } catch (e) {
+                            // Ignorer les valeurs non-dates
+                        }
+                    }
+                });
+            });
+
+            // Afficher le nombre d'expirations à venir
+            const statsElement = document.getElementById('visitesCount');
+            statsElement.textContent = agentsExpiring.length;
+
+            // Afficher la liste des agents concernés dans la console pour debug
+            if (agentsExpiring.length > 0) {
+                console.log('⚠️ Dates arrivant à échéance dans 3 mois:', agentsExpiring);
+            }
         }
 
         function filterAgents() {
@@ -619,7 +651,7 @@
                 if (label.toLowerCase().includes('tronço') ||
                     label.toLowerCase().includes('remorque')) {
                     isCheckbox = true;
-                } 
+                }
                 // TOUS les autres champs sont des dates de validité
                 else if (colIdx >= 7) { // Colonne 7 et plus (après prénom)
                     isDateField = true;
