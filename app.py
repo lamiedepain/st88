@@ -36,19 +36,20 @@ def get_agents():
         wb = openpyxl.load_workbook(EXCEL_FILE, data_only=True)
         sheet = wb['config']
         
-        # Lire les en-têtes
+        # Lire les en-têtes (ligne 2)
         headers = [cell.value for cell in sheet[2]]
         
-        # Lire les agents
+        # Lire les agents (lignes 3 à 75)
         agents = []
-        for idx, row in enumerate(sheet.iter_rows(min_row=3, max_row=75, values_only=True)):
-            if row[5]:  # Si le nom existe
+        for row_idx in range(3, 76):  # Lignes 3 à 75
+            row = [cell.value for cell in sheet[row_idx]]
+            if row[5]:  # Si le nom existe (colonne 6 = index 5)
                 agent = {
-                    'index': idx,
+                    'index': row_idx,  # Numéro de ligne réel
                     'matricule': row[4] or '',
                     'nom': row[5] or '',
                     'prenom': row[6] or '',
-                    'data': list(row)
+                    'data': row
                 }
                 agents.append(agent)
         
@@ -64,11 +65,14 @@ def get_agents():
 def update_agent(index):
     try:
         data = request.json
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+            
         wb = openpyxl.load_workbook(EXCEL_FILE)
         sheet = wb['config']
         
-        # index + 3 car les données commencent à la ligne 3
-        row_num = index + 3
+        # index est déjà le numéro de ligne réel
+        row_num = index
         
         # Mettre à jour les cellules
         for col_idx, value in enumerate(data.get('data', []), start=1):
@@ -85,7 +89,8 @@ def delete_agent(index):
         wb = openpyxl.load_workbook(EXCEL_FILE)
         sheet = wb['config']
         
-        row_num = index + 3
+        # index est déjà le numéro de ligne réel
+        row_num = index
         sheet.delete_rows(row_num, 1)
         
         wb.save(EXCEL_FILE)
@@ -121,6 +126,9 @@ def get_planning(month):
 def update_planning(month):
     try:
         data = request.json
+        if not data:
+            return jsonify({'success': False, 'error': 'No data provided'}), 400
+            
         wb = openpyxl.load_workbook(EXCEL_FILE)
         
         if month not in wb.sheetnames:
