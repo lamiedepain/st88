@@ -308,6 +308,25 @@
         const periodSelector = document.getElementById('periodSelector');
         const planningTable = document.getElementById('planningTable');
 
+        const groupes = {
+            'Encadrant': ['DEBREYNE', 'LUTARD', 'HAUTDECOEUR', 'GRENET', 'FOURCADE', 'GONCALVES', 'SIGALA', 'BETTINGER', 'TUCOULET', 'VRBOVSKA'],
+            'Surveillant de travaux': ['BOURGOIN', 'MERCADIEU', 'GARCIA', 'LARROUDE', 'SAMITIER', 'PIEL'],
+            'Encadrant Propreté': ['GOURVIAT', 'LARTIGUE', 'TRIQUENEAUX', 'ESPERON', 'ROUGLAN', 'NOURRI'],
+            'Agents Voirie': ['BERRIO-GAUDNER', 'FONTENEAU', 'GUIJARRO', 'GOUREAU', 'LABORIE', 'LARRIEU', 'LEVIGNAT', 'MARTIN-HERNANDEZ', 'PIERRE', 'SOLA', 'WEISS'],
+            'Agent EV': ['DELANDE', 'DA SILVA REIS', 'ELMAGROUD', 'ESTEVE', 'KADRI', 'MALLET', 'MAURY', 'MOINGT', 'REY', 'TADJROUNA', 'VILLENEUVE'],
+            'COMMUN - Magasinier': ['VOL', 'GENNA', 'BERNARD', 'HAUBRAICHE']
+        };
+
+        const groupColors = {
+            'Encadrant': { bg: '#f093fb', border: '#f5576c' },
+            'Surveillant de travaux': { bg: '#a8edea', border: '#a8edea' },
+            'Encadrant Propreté': { bg: '#72EDF2', border: '#5151E5' },
+            'Agents Voirie': { bg: '#4facfe', border: '#00f2fe' },
+            'Agent EV': { bg: '#43e97b', border: '#38f9d7' },
+            'COMMUN - Magasinier': { bg: '#fa709a', border: '#fee140' },
+            'default': { bg: '#667eea', border: '#764ba2' }
+        };
+
         async function loadAgents() {
             try {
                 const response = await fetch('/api/agents');
@@ -348,13 +367,24 @@
                             }
                         });
 
+                        const nom = agent.nom.toUpperCase();
+                        let groupe = 'default';
+
+                        for (const [groupeName, noms] of Object.entries(groupes)) {
+                            if (noms.some(n => nom === n)) {
+                                groupe = groupeName;
+                                break;
+                            }
+                        }
+
                         return {
                             index,
                             matricule: agent.matricule,
                             nom: agent.nom,
                             prenom: agent.prenom,
                             fullName: `${agent.nom} ${agent.prenom}`,
-                            aptitudes
+                            aptitudes,
+                            groupe
                         };
                     });
                 }
@@ -456,6 +486,29 @@
         function displayMonthlyPlanning(agents, year, month) {
             const daysInMonth = new Date(year, month, 0).getDate();
 
+            // Enrichir les agents avec leurs groupes
+            const enrichedAgents = agents.map(agent => {
+                const nom = agent.nom.toUpperCase();
+                let groupe = 'default';
+
+                for (const [groupeName, noms] of Object.entries(groupes)) {
+                    if (noms.some(n => nom === n)) {
+                        groupe = groupeName;
+                        break;
+                    }
+                }
+
+                return { ...agent, groupe };
+            });
+
+            // Trier par groupe
+            const groupOrder = ['Encadrant', 'Surveillant de travaux', 'Encadrant Propreté', 'Agents Voirie', 'Agent EV', 'COMMUN - Magasinier', 'default'];
+            enrichedAgents.sort((a, b) => {
+                const indexA = groupOrder.indexOf(a.groupe);
+                const indexB = groupOrder.indexOf(b.groupe);
+                return indexA - indexB;
+            });
+
             let html = '<table><thead><tr>';
             html += '<th style="min-width: 150px;">Agent</th>';
 
@@ -469,29 +522,44 @@
             html += '</tr></thead><tbody>';
 
             // Lignes des agents avec leurs statuts
-            agents.forEach(agent => {
+            let currentGroup = '';
+            enrichedAgents.forEach(agent => {
                 const fullName = `${agent.nom} ${agent.prenom}`;
                 const agentInfo = allAgents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
+                const colors = groupColors[agent.groupe] || groupColors.default;
+
+                // Séparateur de groupe
+                if (currentGroup !== agent.groupe) {
+                    currentGroup = agent.groupe;
+                    html += `<tr><td colspan="${daysInMonth + 1}" style="background: ${colors.bg}; color: white; font-weight: bold; text-align: center; padding: 10px;">${agent.groupe}</td></tr>`;
+                }
 
                 html += '<tr>';
-                html += `<td class="agent-cell">
+                html += `<td class="agent-cell" style="background: ${colors.bg}33; border-left: 3px solid ${colors.border};">
                     <div class="agent-name">${fullName}</div>
                     ${agentInfo ? getAgentBadges(agentInfo) : ''}
                 </td>`;
 
                 // Afficher les statuts pour chaque jour
                 for (let d = 0; d < daysInMonth; d++) {
-                    const status = agent.days[d] || '';
+                    const status = agent.days[d] || 'Présent';
                     const date = new Date(year, parseInt(month) - 1, d + 1);
                     const dayOfWeek = date.getDay();
                     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
 
                     let cellClass = 'day-cell';
-                    if (isWeekend) cellClass += ' weekend';
-                    if (status === 'PC') cellClass += ' conge';
-                    if (status === 'M') cellClass += ' absent';
+                    let cellStyle = '';
+                    if (isWeekend) {
+                        cellClass += ' weekend';
+                    } else if (status === 'PC') {
+                        cellClass += ' conge';
+                    } else if (status === 'M') {
+                        cellClass += ' absent';
+                    } else if (status === 'Présent') {
+                        cellStyle = 'background: #d4edda; color: #155724;';
+                    }
 
-                    html += `<td class="${cellClass}" data-status="${status}">${status}</td>`;
+                    html += `<td class="${cellClass}" style="${cellStyle}" data-status="${status}">${status}</td>`;
                 }
                 html += '</tr>';
             });
