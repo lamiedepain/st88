@@ -606,7 +606,8 @@
                 const nomLower = apt.nom.toLowerCase();
 
                 // Déterminer la classe selon le type d'aptitude
-                if (nomLower.includes('r.482') || nomLower.includes('r482') || nomLower.includes('caces')) {
+                if (nomLower.includes('r.482') || nomLower.includes('r482') || nomLower.includes('caces') || 
+                    nomLower.includes('grue') || nomLower.includes('nacelle') || nomLower.includes('engin')) {
                     badgeClass += ' caces';
                 } else if (nomLower.includes('permis') || nomLower.includes('remorque')) {
                     badgeClass += ' permis';
