@@ -628,10 +628,12 @@
                     fieldType = 'date';
                 }
 
-                // Champs de date pour les CACES (R.482) - toujours afficher un champ date
-                if (label.toLowerCase().includes('r.482') || 
+                // Champs de date pour les CACES (R.482) - SAUF tronçonneuse et remorque
+                if ((label.toLowerCase().includes('r.482') ||
                     label.toLowerCase().includes('r482') ||
-                    label.toLowerCase().includes('caces')) {
+                    label.toLowerCase().includes('caces')) &&
+                    !label.toLowerCase().includes('tronço') &&
+                    !label.toLowerCase().includes('remorque')) {
                     isCheckbox = false; // Forcer en champ de date
                     isDateField = true;
                     fieldType = 'date';
@@ -655,16 +657,27 @@
                         </div>
                     `;
                 } else if (isDateField) {
-                    // Champ de date simple
+                    // Champ de date simple - garder les dates existantes même si c'était une croix
                     if (value) {
-                        if (value instanceof Date || typeof value === 'object') {
+                        // Si c'est juste une croix, chercher une date existante ou laisser vide
+                        if (typeof value === 'string' && (value.toLowerCase() === 'x' || value === '✓')) {
+                            displayValue = ''; // Laisser vide pour permettre la saisie
+                        } else if (value instanceof Date || typeof value === 'object') {
                             try {
                                 displayValue = new Date(value).toISOString().split('T')[0];
                             } catch (e) {
                                 displayValue = '';
                             }
-                        } else if (typeof value === 'string') {
+                        } else if (typeof value === 'string' && value.includes('T')) {
                             displayValue = value.split('T')[0];
+                        } else if (typeof value === 'string' && !isNaN(Date.parse(value))) {
+                            try {
+                                displayValue = new Date(value).toISOString().split('T')[0];
+                            } catch (e) {
+                                displayValue = value;
+                            }
+                        } else {
+                            displayValue = value;
                         }
                     }
 
@@ -708,7 +721,7 @@
             // Récupérer toutes les valeurs des champs
             headers.forEach((header, colIdx) => {
                 if (colIdx < 4) return; // Ignorer les 4 premières colonnes
-                
+
                 const input = document.getElementById(`field_${colIdx}`);
                 if (input) {
                     // Si c'est une checkbox, stocker 'x' ou vide
