@@ -640,10 +640,10 @@
             const aptitudesBadges = agent.aptitudes
                 .filter(apt => {
                     const nomLower = apt.nom.toLowerCase();
-                    return !nomLower.includes('anniversaire') && 
-                           !nomLower.includes('visite') &&
-                           !nomLower.includes('dernière') &&
-                           !nomLower.includes('prochaine');
+                    return !nomLower.includes('anniversaire') &&
+                        !nomLower.includes('visite') &&
+                        !nomLower.includes('dernière') &&
+                        !nomLower.includes('prochaine');
                 })
                 .map(apt => {
                     let badgeClass = 'badge';

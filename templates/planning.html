@@ -429,41 +429,108 @@
             generatePlanning(period);
         });
 
-        function generatePlanning(period) {
+        async function generatePlanning(period) {
             planningTable.innerHTML = '<div class="loading">Génération du planning...</div>';
 
-            setTimeout(() => {
-                let html = '<table><thead><tr>';
-                html += '<th style="min-width: 150px;">Agent</th>';
+            // Pour la vue mensuelle, récupérer les données Excel
+            if (currentView === 'mensuel') {
+                const [year, month] = period.split('-');
+                try {
+                    const response = await fetch(`/api/planning-data/${year}/${month}`);
+                    const data = await response.json();
 
-                // Générer les en-têtes de colonnes selon la vue
-                const columns = getColumnsForPeriod(period);
-                columns.forEach(col => {
-                    html += `<th>${col.label}</th>`;
-                });
-                html += '</tr></thead><tbody>';
+                    if (data.success) {
+                        displayMonthlyPlanning(data.agents, year, month);
+                    } else {
+                        planningTable.innerHTML = `<div class="loading">❌ ${data.error}</div>`;
+                    }
+                } catch (error) {
+                    planningTable.innerHTML = `<div class="loading">❌ ${error.message}</div>`;
+                }
+            } else {
+                // Pour les autres vues, générer un planning vide
+                displayEmptyPlanning(period);
+            }
+        }
 
-                // Générer les lignes d'agents
-                allAgents.forEach(agent => {
-                    html += '<tr>';
-                    html += `<td class="agent-cell">
+        function displayMonthlyPlanning(agents, year, month) {
+            const daysInMonth = new Date(year, month, 0).getDate();
+
+            let html = '<table><thead><tr>';
+            html += '<th style="min-width: 150px;">Agent</th>';
+
+            // En-têtes des jours
+            for (let d = 1; d <= daysInMonth; d++) {
+                const date = new Date(year, parseInt(month) - 1, d);
+                const dayOfWeek = date.getDay();
+                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                html += `<th style="${isWeekend ? 'background: #e74c3c;' : ''}">${d}</th>`;
+            }
+            html += '</tr></thead><tbody>';
+
+            // Lignes des agents avec leurs statuts
+            agents.forEach(agent => {
+                const fullName = `${agent.nom} ${agent.prenom}`;
+                const agentInfo = allAgents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
+
+                html += '<tr>';
+                html += `<td class="agent-cell">
+                    <div class="agent-name">${fullName}</div>
+                    ${agentInfo ? getAgentBadges(agentInfo) : ''}
+                </td>`;
+
+                // Afficher les statuts pour chaque jour
+                for (let d = 0; d < daysInMonth; d++) {
+                    const status = agent.days[d] || '';
+                    const date = new Date(year, parseInt(month) - 1, d + 1);
+                    const dayOfWeek = date.getDay();
+                    const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+
+                    let cellClass = 'day-cell';
+                    if (isWeekend) cellClass += ' weekend';
+                    if (status === 'PC') cellClass += ' conge';
+                    if (status === 'M') cellClass += ' absent';
+
+                    html += `<td class="${cellClass}" data-status="${status}">${status}</td>`;
+                }
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            planningTable.innerHTML = html;
+        }
+
+        function displayEmptyPlanning(period) {
+            let html = '<table><thead><tr>';
+            html += '<th style="min-width: 150px;">Agent</th>';
+
+            // Générer les en-têtes de colonnes selon la vue
+            const columns = getColumnsForPeriod(period);
+            columns.forEach(col => {
+                html += `<th>${col.label}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            // Générer les lignes d'agents
+            allAgents.forEach(agent => {
+                html += '<tr>';
+                html += `<td class="agent-cell">
                         <div class="agent-name">${agent.fullName}</div>
                         ${getAgentBadges(agent)}
                     </td>`;
 
-                    // Cellules vides pour chaque colonne
-                    columns.forEach(col => {
-                        const isWeekend = col.isWeekend || false;
-                        html += `<td class="day-cell ${isWeekend ? 'weekend' : ''}" 
+                // Cellules vides pour chaque colonne
+                columns.forEach(col => {
+                    const isWeekend = col.isWeekend || false;
+                    html += `<td class="day-cell ${isWeekend ? 'weekend' : ''}" 
                                     data-agent="${agent.index}" 
                                     data-date="${col.date || ''}"></td>`;
-                    });
-                    html += '</tr>';
                 });
+                html += '</tr>';
+            });
 
-                html += '</tbody></table>';
-                planningTable.innerHTML = html;
-            }, 100);
+            html += '</tbody></table>';
+            planningTable.innerHTML = html;
         }
 
         function getAgentBadges(agent) {
@@ -472,7 +539,7 @@
 
             agent.aptitudes.forEach(apt => {
                 const nomLower = apt.nom.toLowerCase();
-                
+
                 // Filtrer anniversaire et visites
                 if (nomLower.includes('anniversaire') || nomLower.includes('visite') ||
                     nomLower.includes('dernière') || nomLower.includes('prochaine')) {
@@ -533,7 +600,7 @@
                     'Q3-2026': ['Juillet', 'Août', 'Septembre'],
                     'Q4-2026': ['Octobre', 'Novembre', 'Décembre']
                 };
-                
+
                 const months = quarterMonths[period] || ['Jan', 'Fév', 'Mar'];
                 months.forEach(month => {
                     // 4-5 semaines par mois
@@ -550,12 +617,12 @@
                 const [year, month] = period.split('-');
                 const daysInMonth = new Date(year, month, 0).getDate();
                 const columns = [];
-                
+
                 for (let d = 1; d <= daysInMonth; d++) {
                     const date = new Date(year, parseInt(month) - 1, d);
                     const dayOfWeek = date.getDay();
                     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                    
+
                     columns.push({
                         label: d.toString(),
                         date: `${year}-${month}-${String(d).padStart(2, '0')}`,
@@ -567,12 +634,12 @@
                 // 14 jours (2 semaines)
                 const columns = [];
                 const dayNames = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
-                
+
                 for (let d = 0; d < 14; d++) {
                     const dayOfWeek = d % 7;
                     const isWeekend = dayOfWeek === 5 || dayOfWeek === 6;
                     const weekNum = Math.floor(d / 7) + 1;
-                    
+
                     columns.push({
                         label: `S${weekNum} ${dayNames[dayOfWeek]}`,
                         date: `W${weekNum}-D${d + 1}`,

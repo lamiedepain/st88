@@ -166,5 +166,54 @@ def get_months():
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)}), 500
 
+@app.route('/api/planning-data/<year>/<month>', methods=['GET'])
+def get_planning_data(year, month):
+    try:
+        wb = openpyxl.load_workbook(EXCEL_FILE, data_only=True)
+        
+        # Trouver la feuille correspondante
+        month_names = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin',
+                      'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+        month_idx = int(month) - 1
+        sheet_name = f"{month_names[month_idx]} {year}"
+        
+        if sheet_name not in wb.sheetnames:
+            return jsonify({'success': False, 'error': 'Feuille introuvable'}), 404
+        
+        sheet = wb[sheet_name]
+        
+        # Structure: ligne 11+ = agents, colonnes 16+ (colonne P) = jours 1 à 31
+        # Ligne 10 = en-têtes (Matricule, Nom, Prénom...)
+        agents_data = []
+        
+        for row_idx in range(11, 78):  # Lignes agents
+            row = sheet[row_idx]
+            matricule = row[0].value
+            nom = row[1].value
+            prenom = row[2].value
+            
+            if not nom:  # Si pas de nom, on arrête
+                break
+            
+            # Récupérer les statuts pour chaque jour (colonnes 15 à 45 = index 15 à 45)
+            days_status = []
+            for col_idx in range(15, 46):  # Colonnes P à AT (31 jours max)
+                cell_value = row[col_idx].value
+                days_status.append(cell_value if cell_value else '')
+            
+            agents_data.append({
+                'matricule': matricule or '',
+                'nom': nom or '',
+                'prenom': prenom or '',
+                'days': days_status
+            })
+        
+        return jsonify({
+            'success': True,
+            'agents': agents_data
+        })
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
