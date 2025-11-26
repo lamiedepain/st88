@@ -381,5 +381,141 @@ def generate_week():
         traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)}), 500
 
+
+@app.route('/api/apply-week', methods=['POST'])
+def apply_week():
+    try:
+        data = request.json or {}
+        week = data.get('week')
+        group = data.get('group', 'all')
+        slots = int(data.get('slots', 1))
+
+        if not week:
+            return jsonify({'success': False, 'error': 'week is required'}), 400
+
+        # Reuse generate_week logic to build assignments
+        # We'll call the internal function by reusing the POST payload flow: generate_week already computes assignments,
+        # but to avoid duplicating code we will call generate_week() functionally is complicated; instead recompute here (duplicate of logic)
+
+        if '-W' in week:
+            parts = week.split('-W')
+            year = int(parts[0])
+            week_no = int(parts[1])
+        else:
+            parts = week.split('-')
+            year = int(parts[0])
+            week_no = int(parts[1].lstrip('W'))
+
+        dates = [datetime.fromisocalendar(year, week_no, wd) for wd in range(1,8)]
+
+        wb = openpyxl.load_workbook(EXCEL_FILE)
+
+        # create a timestamped backup
+        backup_file = os.path.join(BACKUP_DIR, f"apply_backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx")
+        wb.save(backup_file)
+
+        # Build availability like generate_week
+        absent_statuses = set(['CA','RTT','CEX','R','M','AT','F','AST','PC','TP','MA','TAD'])
+        availability = {}
+        pool = []
+        pool_map = {}
+
+        for d in dates:
+            month_names = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin',
+                          'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+            sheet_name = f"{month_names[d.month-1]} {d.year}"
+            day = d.day
+            available_agents = []
+
+            if sheet_name not in wb.sheetnames:
+                availability[d.strftime('%Y-%m-%d')] = []
+                continue
+
+            sheet = wb[sheet_name]
+            for row_idx in range(11, 100):
+                nom = sheet.cell(row=row_idx, column=2).value
+                prenom = sheet.cell(row=row_idx, column=3).value
+
+                if not nom:
+                    continue
+
+                nom_u = str(nom).strip().upper()
+                # group filter
+                if group != 'all':
+                    members = GROUPS.get(group, [])
+                    if nom_u not in members:
+                        continue
+
+                col_idx = 15 + day  # 1-based column index to write: day1 -> column 16 (P)
+                cell_value = None
+                try:
+                    cell_value = sheet.cell(row=row_idx, column=col_idx).value
+                except Exception:
+                    cell_value = None
+
+                status = str(cell_value).strip() if cell_value is not None else ''
+                if status.upper() in absent_statuses:
+                    is_available = False
+                else:
+                    is_available = True
+
+                if is_available:
+                    agent_info = {'matricule': sheet.cell(row=row_idx, column=1).value or '', 'nom': nom, 'prenom': prenom, 'fullName': f"{nom} {prenom}".strip(), 'row': row_idx}
+                    available_agents.append(agent_info)
+                    key = (agent_info['nom'], agent_info['prenom'])
+                    if key not in pool_map:
+                        pool_map[key] = agent_info
+                        pool.append(agent_info)
+
+            availability[d.strftime('%Y-%m-%d')] = available_agents
+
+        # Assign like generate_week
+        assignments = {}
+        if len(pool) == 0:
+            for d in dates:
+                assignments[d.strftime('%Y-%m-%d')] = {'assigned': [], 'available': availability.get(d.strftime('%Y-%m-%d'), [])}
+        else:
+            cursor = 0
+            for d in dates:
+                date_key = d.strftime('%Y-%m-%d')
+                avail = availability.get(date_key, [])
+                picked = []
+                if avail:
+                    attempts = 0
+                    while len(picked) < slots and attempts < len(pool) * 2:
+                        candidate = pool[cursor % len(pool)]
+                        cursor += 1
+                        attempts += 1
+                        if any((candidate['nom'] == a['nom'] and candidate['prenom'] == a['prenom']) for a in avail):
+                            if not any((candidate['nom'] == p['nom'] and candidate['prenom'] == p['prenom']) for p in picked):
+                                picked.append(candidate)
+                assignments[date_key] = {'assigned': picked, 'available': availability.get(date_key, [])}
+
+        # Write assigned markers into sheets (mark with 'P')
+        written = 0
+        for date_key, info in assignments.items():
+            d = datetime.strptime(date_key, '%Y-%m-%d')
+            sheet_name = f"{['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'][d.month-1]} {d.year}"
+            if sheet_name not in wb.sheetnames:
+                continue
+            sheet = wb[sheet_name]
+            day = d.day
+            for agent in info.get('assigned', []):
+                row_idx = agent['row']
+                col_idx = 15 + day
+                # Only write if empty or already 'P'
+                current = sheet.cell(row=row_idx, column=col_idx).value
+                if current is None or str(current).strip() == '' or str(current).strip().upper() == 'P' or str(current).strip().lower() in ['present','présent']:
+                    sheet.cell(row=row_idx, column=col_idx, value='P')
+                    written += 1
+
+        wb.save(EXCEL_FILE)
+
+        return jsonify({'success': True, 'written': written, 'backup': backup_file})
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)

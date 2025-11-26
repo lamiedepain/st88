@@ -225,6 +225,36 @@
                     return;
                 }
                 renderResult(data);
+                // ajouter bouton d'application
+                let applyBtn = document.getElementById('applyBtn');
+                if (!applyBtn) {
+                    applyBtn = document.createElement('button');
+                    applyBtn.id = 'applyBtn';
+                    applyBtn.textContent = '💾 Appliquer au planning (écrire dans Excel)';
+                    applyBtn.style.marginTop = '12px';
+                    applyBtn.onclick = applyWeek;
+                    document.querySelector('.generator-box').appendChild(applyBtn);
+                }
+            } catch (e) {
+                alert('Erreur: ' + e.message);
+            }
+        }
+
+        async function applyWeek() {
+            const week = document.getElementById('weekInput').value;
+            const group = document.getElementById('groupSelect').value;
+            const slots = parseInt(document.getElementById('slotsInput').value || '1', 10);
+            if (!week) { alert('Sélectionnez une semaine d'abord'); return; }
+            if (!confirm('⚠️ Confirmez-vous l\'écriture dans le fichier Excel ? Une sauvegarde sera créée automatiquement.')) return;
+
+            try {
+                const resp = await fetch('/api/apply-week', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ week, group, slots })
+                });
+                const data = await resp.json();
+                if (!data.success) return alert('Erreur: ' + data.error);
+                alert('✅ Application terminée — ' + (data.written || 0) + ' cellules écrites. Sauvegarde: ' + (data.backup || 'n/a'));
             } catch (e) {
                 alert('Erreur: ' + e.message);
             }
