@@ -356,14 +356,14 @@
                     <option value="Agent EV">Agent EV</option>
                     <option value="COMMUN - Magasinier">COMMUN - Magasinier</option>
                 </select>
-                
+
                 <select id="periodSelector">
                     <option value="">Sélectionner une période...</option>
                 </select>
-                
+
                 <button class="btn-print" onclick="window.print()">🖨️ Imprimer</button>
             </div>
-            
+
             <div style="display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; align-items: center;">
                 <div style="font-weight: 600; color: #2c3e50;">Légende :</div>
                 <div style="display: flex; align-items: center; gap: 5px;">
@@ -379,7 +379,20 @@
                     <span style="font-size: 14px;">Maladie (M)</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #e74c3c; opacity: 0.3; border-radius: 4px;"></div>
+                    <div style="width: 20px; height: 20px; background: #9b59b6; border-radius: 4px;"></div>
+                    <span style="font-size: 14px;">CEX</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <div style="width: 20px; height: 20px; background: #3498db; border-radius: 4px;"></div>
+                    <span style="font-size: 14px;">TP</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <div style="width: 20px; height: 20px; background: #1abc9c; border-radius: 4px;"></div>
+                    <span style="font-size: 14px;">MA</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <div style="width: 20px; height: 20px; background: #e74c3c; opacity: 0.3; border-radius: 4px;">
+                    </div>
                     <span style="font-size: 14px;">Week-end</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
@@ -707,6 +720,12 @@
                     } else if (status === 'M') {
                         cellClass += ' absent';
                         cellStyle = 'background: #e74c3c; color: white; font-weight: bold;';
+                    } else if (status === 'CEX') {
+                        cellStyle = 'background: #9b59b6; color: white; font-weight: bold;';
+                    } else if (status === 'TP') {
+                        cellStyle = 'background: #3498db; color: white; font-weight: bold;';
+                    } else if (status === 'MA') {
+                        cellStyle = 'background: #1abc9c; color: white; font-weight: bold;';
                     } else if (status === 'Présent') {
                         cellStyle = 'background: #2ecc71; color: white; font-weight: bold;';
                         // Ajouter les badges si l'agent est présent
@@ -873,6 +892,15 @@
                             cellContent = status;
                         } else if (status === 'M') {
                             cellStyle = 'background: #e74c3c; color: white; font-weight: bold;';
+                            cellContent = status;
+                        } else if (status === 'CEX') {
+                            cellStyle = 'background: #9b59b6; color: white; font-weight: bold;';
+                            cellContent = status;
+                        } else if (status === 'TP') {
+                            cellStyle = 'background: #3498db; color: white; font-weight: bold;';
+                            cellContent = status;
+                        } else if (status === 'MA') {
+                            cellStyle = 'background: #1abc9c; color: white; font-weight: bold;';
                             cellContent = status;
                         } else if (isWeekend) {
                             cellStyle = 'background: #e74c3c44;';
@@ -1059,10 +1087,18 @@
                         }
                     } else if (status === 'PC') {
                         cellClass += ' conge';
+                        cellStyle = 'background: #f39c12; color: white; font-weight: bold;';
                     } else if (status === 'M') {
                         cellClass += ' absent';
+                        cellStyle = 'background: #e74c3c; color: white; font-weight: bold;';
+                    } else if (status === 'CEX') {
+                        cellStyle = 'background: #9b59b6; color: white; font-weight: bold;';
+                    } else if (status === 'TP') {
+                        cellStyle = 'background: #3498db; color: white; font-weight: bold;';
+                    } else if (status === 'MA') {
+                        cellStyle = 'background: #1abc9c; color: white; font-weight: bold;';
                     } else if (status === 'Présent') {
-                        cellStyle = 'background: #d4edda; color: #155724;';
+                        cellStyle = 'background: #2ecc71; color: white; font-weight: bold;';
                     }
 
                     html += `<td class="${cellClass}" style="${cellStyle}">${cellContent}</td>`;
@@ -1194,7 +1230,7 @@
 
         function filterByGroup() {
             selectedGroup = document.getElementById('groupFilter').value;
-            
+
             // Re-afficher le planning avec le filtre
             if (currentPlanningData) {
                 displayMonthlyPlanning(currentPlanningData.agents.map(a => ({
