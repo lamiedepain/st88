@@ -646,6 +646,8 @@
 
                     let cellClass = 'day-cell';
                     let cellStyle = '';
+                    let cellContent = status;
+                    
                     if (isWeekend || isFerie) {
                         cellClass += ' weekend';
                         if (isFerie) {
@@ -657,9 +659,13 @@
                         cellClass += ' absent';
                     } else if (status === 'Présent') {
                         cellStyle = 'background: #d4edda; color: #155724;';
+                        // Ajouter les badges si l'agent est présent
+                        if (agentInfo) {
+                            cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
+                        }
                     }
 
-                    html += `<td class="${cellClass}" style="${cellStyle}" data-status="${status}">${status}</td>`;
+                    html += `<td class="${cellClass}" style="${cellStyle}" data-status="${status}">${cellContent}</td>`;
                 }
                 html += '</tr>';
             });
@@ -808,6 +814,10 @@
                         if (!status && !isWeekend && !isFerie) {
                             cellContent = 'Présent';
                             cellStyle = 'background: #2ecc71; color: white;';
+                            // Ajouter les badges si l'agent est présent
+                            if (agentInfo) {
+                                cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
+                            }
                         } else if (status === 'PC') {
                             cellStyle = 'background: #f39c12; color: white; font-weight: bold;';
                         } else if (status === 'M') {
@@ -977,8 +987,15 @@
                     const isFerie = isJourFerie(2026, dayData.month, dayData.day);
 
                     let status = agentDay ? agentDay.days[dayIndex] : '';
+                    let cellContent = status;
+                    
                     if (!status && !isWeekend && !isFerie) {
                         status = 'Présent';
+                        cellContent = 'Présent';
+                        // Ajouter les badges si l'agent est présent
+                        if (agentInfo) {
+                            cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
+                        }
                     }
 
                     let cellClass = 'day-cell';
@@ -996,7 +1013,7 @@
                         cellStyle = 'background: #d4edda; color: #155724;';
                     }
 
-                    html += `<td class="${cellClass}" style="${cellStyle}">${status}</td>`;
+                    html += `<td class="${cellClass}" style="${cellStyle}">${cellContent}</td>`;
                 });
                 html += '</tr>';
             });
