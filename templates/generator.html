@@ -135,7 +135,9 @@
             <h2 style="margin-bottom: 20px; color: #2c3e50;">⚙️ Configuration</h2>
 
             <div style="margin-bottom:12px;">
-                <button style="padding:8px 12px; background:#eee; color:#2c3e50; border-radius:8px; border:1px solid #ddd; cursor:pointer; margin-bottom:6px;" onclick="reloadExcel()">🔄 Recharger le fichier Excel</button>
+                <button
+                    style="padding:8px 12px; background:#eee; color:#2c3e50; border-radius:8px; border:1px solid #ddd; cursor:pointer; margin-bottom:6px;"
+                    onclick="reloadExcel()">🔄 Recharger le fichier Excel</button>
                 <span id="reloadStatus" style="margin-left:10px;color:#2c3e50;font-size:13px;"></span>
             </div>
 
@@ -250,38 +252,39 @@
             const group = document.getElementById('groupSelect').value;
             const slots = parseInt(document.getElementById('slotsInput').value || '1', 10);
             if (!week) {
-                alert('Sélectionnez une semaine d'abord'); return; }
+                alert('Sélectionnez une semaine d\'abord'); return;
+            }
             if (!confirm('⚠️ Confirmez-vous l\'écriture dans le fichier Excel ? Une sauvegarde sera créée automatiquement.')) return;
 
-                try {
-                    const resp = await fetch('/api/apply-week', {
-                        method: 'POST', headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ week, group, slots })
-                    });
-                    const data = await resp.json();
-                    if (!data.success) return alert('Erreur: ' + data.error);
-                    alert('✅ Application terminée — ' + (data.written || 0) + ' cellules écrites. Sauvegarde: ' + (data.backup || 'n/a'));
-                } catch (e) {
-                    alert('Erreur: ' + e.message);
-                }
+            try {
+                const resp = await fetch('/api/apply-week', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ week, group, slots })
+                });
+                const data = await resp.json();
+                if (!data.success) return alert('Erreur: ' + data.error);
+                alert('✅ Application terminée — ' + (data.written || 0) + ' cellules écrites. Sauvegarde: ' + (data.backup || 'n/a'));
+            } catch (e) {
+                alert('Erreur: ' + e.message);
             }
+        }
 
-            async function reloadExcel() {
-                const status = document.getElementById('reloadStatus');
-                status.textContent = 'Chargement...';
-                try {
-                    const resp = await fetch('/api/reload-excel', { method: 'POST' });
-                    const data = await resp.json();
-                    if (!data.success) {
-                        status.textContent = 'Erreur: ' + data.error;
-                        return;
-                    }
-                    const date = new Date(data.mtime * 1000).toLocaleString('fr-FR');
-                    status.textContent = `OK — ${data.sheets.length} feuilles — modifié: ${date}`;
-                } catch (e) {
-                    status.textContent = 'Erreur: ' + e.message;
+        async function reloadExcel() {
+            const status = document.getElementById('reloadStatus');
+            status.textContent = 'Chargement...';
+            try {
+                const resp = await fetch('/api/reload-excel', { method: 'POST' });
+                const data = await resp.json();
+                if (!data.success) {
+                    status.textContent = 'Erreur: ' + data.error;
+                    return;
                 }
+                const date = new Date(data.mtime * 1000).toLocaleString('fr-FR');
+                status.textContent = `OK — ${data.sheets.length} feuilles — modifié: ${date}`;
+            } catch (e) {
+                status.textContent = 'Erreur: ' + e.message;
             }
+        }
     </script>
 </body>
 
