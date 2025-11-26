@@ -1242,11 +1242,12 @@
             const seen = new Set();
 
             agent.aptitudes.forEach(apt => {
-                const nomLower = apt.nom.toLowerCase();
+                const nomLower = apt.nom ? apt.nom.toLowerCase() : '';
 
                 // Filtrer anniversaire et visites
                 if (nomLower.includes('anniversaire') || nomLower.includes('visite') ||
-                    nomLower.includes('dernière') || nomLower.includes('prochaine')) {
+                    nomLower.includes('dernière') || nomLower.includes('prochaine') ||
+                    nomLower.includes('derniere')) {
                     return;
                 }
 
@@ -1266,7 +1267,7 @@
                 } else if (nomLower.includes('fimo')) {
                     badgeClass = 'badge-fimo';
                     badgeText = 'F';
-                } else if (nomLower.includes('tronço')) {
+                } else if (nomLower.includes('tronço') || nomLower.includes('tronco')) {
                     badgeClass = 'badge-tronco';
                     badgeText = 'T';
                 } else if (nomLower.includes('secours')) {
