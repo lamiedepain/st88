@@ -517,5 +517,21 @@ def apply_week():
         traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)}), 500
 
+
+@app.route('/api/reload-excel', methods=['POST'])
+def reload_excel():
+    try:
+        if not os.path.exists(EXCEL_FILE):
+            return jsonify({'success': False, 'error': 'Excel file not found'}), 404
+        mtime = os.path.getmtime(EXCEL_FILE)
+        size = os.path.getsize(EXCEL_FILE)
+        wb = openpyxl.load_workbook(EXCEL_FILE, data_only=True)
+        sheets = wb.sheetnames
+        return jsonify({'success': True, 'mtime': mtime, 'size': size, 'sheets': sheets})
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
