@@ -3,6 +3,17 @@ import openpyxl
 from datetime import datetime
 import os
 import shutil
+import calendar
+
+# Groupes pour assignation (mêmes que côté frontend)
+GROUPS = {
+    'Encadrant': ['DEBREYNE', 'LUTARD', 'HAUTDECOEUR', 'GRENET', 'FOURCADE', 'GONCALVES', 'SIGALA', 'BETTINGER', 'TUCOULET', 'VRBOVSKA'],
+    'Surveillant de travaux': ['BOURGOIN', 'MERCADIEU', 'GARCIA', 'LARROUDE', 'SAMITIER', 'PIEL'],
+    'Encadrant Propreté': ['GOURVIAT', 'LARTIGUE', 'TRIQUENEAUX', 'ESPERON', 'ROUGLAN', 'NOURRI'],
+    'Agents Voirie': ['BERRIO-GAUDNER', 'FONTENEAU', 'GUIJARRO', 'GOUREAU', 'LABORIE', 'LARRIEU', 'LEVIGNAT', 'MARTIN-HERNANDEZ', 'PIERRE', 'SOLA', 'WEISS'],
+    'Agent EV': ['DELANDE', 'DA SILVA REIS', 'ELMAGROUD', 'ESTEVE', 'KADRI', 'MALLET', 'MAURY', 'MOINGT', 'REY', 'TADJROUNA', 'VILLENEUVE'],
+    'COMMUN - Magasinier': ['VOL', 'GENNA', 'BERNARD', 'HAUBRAICHE']
+}
 
 app = Flask(__name__)
 
@@ -226,6 +237,148 @@ def get_planning_data(year, month):
             'agents': agents_data
         })
     except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
+@app.route('/api/generate-week', methods=['POST'])
+def generate_week():
+    try:
+        data = request.json or {}
+        week = data.get('week')  # format 'YYYY-Www' from input[type=week]
+        group = data.get('group', 'all')
+        slots = int(data.get('slots', 1))
+
+        if not week:
+            return jsonify({'success': False, 'error': 'week is required'}), 400
+
+        # Parse week string
+        if '-W' in week:
+            parts = week.split('-W')
+            year = int(parts[0])
+            week_no = int(parts[1])
+        else:
+            # fallback: assume format 'YYYY-Www' anyway
+            parts = week.split('-')
+            year = int(parts[0])
+            week_no = int(parts[1].lstrip('W'))
+
+        # Compute dates for the ISO week (Monday..Sunday)
+        dates = []
+        for weekday in range(1, 8):
+            d = datetime.fromisocalendar(year, week_no, weekday)
+            dates.append(d)
+
+        wb = openpyxl.load_workbook(EXCEL_FILE, data_only=True)
+
+        # Helper to determine group membership
+        def in_group(nom, group_name):
+            if not nom:
+                return False
+            nom_u = str(nom).strip().upper()
+            if group_name == 'all':
+                return True
+            members = GROUPS.get(group_name, [])
+            return any(nom_u == m for m in members)
+
+        # statuses considered as absence
+        absent_statuses = set(['CA','RTT','CEX','R','M','AT','F','AST','PC','TP','MA','TAD'])
+
+        # Build availability per date
+        availability = {}
+        pool = []  # unique agents available at least once
+        pool_map = {}
+
+        for d in dates:
+            month_names = ['Janvier', 'Fevrier', 'Mars', 'Avril', 'Mai', 'Juin',
+                          'Juillet', 'Aout', 'Septembre', 'Octobre', 'Novembre', 'Décembre']
+            sheet_name = f"{month_names[d.month-1]} {d.year}"
+            day = d.day
+            available_agents = []
+
+            if sheet_name not in wb.sheetnames:
+                availability[d.strftime('%Y-%m-%d')] = []
+                continue
+
+            sheet = wb[sheet_name]
+            for row_idx in range(11, 100):
+                row = sheet[row_idx]
+                matricule = row[0].value
+                nom = row[1].value
+                prenom = row[2].value
+
+                if not nom:
+                    continue
+
+                if not in_group(nom, group):
+                    continue
+
+                col_idx = 14 + day  # day 1 => index 15 per existing logic
+                cell_value = None
+                try:
+                    cell_value = row[col_idx].value
+                except Exception:
+                    cell_value = None
+
+                status = str(cell_value).strip() if cell_value is not None else ''
+                if status.upper() in absent_statuses:
+                    is_available = False
+                else:
+                    # treat empty or 'P' as available
+                    if status == '' or status.upper() == 'P' or status.lower() == 'présent' or status.lower() == 'present':
+                        is_available = True
+                    else:
+                        # unknown code -> assume available
+                        is_available = True
+
+                if is_available:
+                    agent_info = {
+                        'matricule': matricule or '',
+                        'nom': nom or '',
+                        'prenom': prenom or '',
+                        'fullName': f"{nom} {prenom}".strip(),
+                        'row': row_idx
+                    }
+                    available_agents.append(agent_info)
+                    key = (agent_info['nom'], agent_info['prenom'])
+                    if key not in pool_map:
+                        pool_map[key] = agent_info
+                        pool.append(agent_info)
+
+            availability[d.strftime('%Y-%m-%d')] = available_agents
+
+        # Round-robin assign using the pool but only choosing agents available that day
+        assignments = {}
+        if len(pool) == 0:
+            # no available agents
+            for d in dates:
+                assignments[d.strftime('%Y-%m-%d')] = {'assigned': [], 'available': availability.get(d.strftime('%Y-%m-%d'), [])}
+        else:
+            cursor = 0
+            for d in dates:
+                date_key = d.strftime('%Y-%m-%d')
+                avail = availability.get(date_key, [])
+                assigned = []
+                if avail:
+                    # attempt to pick 'slots' distinct agents from pool who are in avail
+                    picked = []
+                    attempts = 0
+                    while len(picked) < slots and attempts < len(pool) * 2:
+                        candidate = pool[cursor % len(pool)]
+                        cursor += 1
+                        attempts += 1
+                        # is candidate available today?
+                        if any((candidate['nom'] == a['nom'] and candidate['prenom'] == a['prenom']) for a in avail):
+                            # avoid duplicates
+                            if not any((candidate['nom'] == p['nom'] and candidate['prenom'] == p['prenom']) for p in picked):
+                                picked.append(candidate)
+                    assigned = picked
+
+                assignments[date_key] = {'assigned': assigned, 'available': availability.get(date_key, [])}
+
+        return jsonify({'success': True, 'assignments': assignments})
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)}), 500
 
 if __name__ == '__main__':

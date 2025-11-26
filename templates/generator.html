@@ -135,22 +135,29 @@
             <h2 style="margin-bottom: 20px; color: #2c3e50;">⚙️ Configuration</h2>
 
             <div class="form-group">
-                <label>📅 Mois</label>
-                <select id="monthSelect">
-                    <option value="">Sélectionner un mois...</option>
+                <label>🗓️ Semaine</label>
+                <input type="week" id="weekInput">
+            </div>
+
+            <div class="form-group">
+                <label>👥 Groupe</label>
+                <select id="groupSelect">
+                    <option value="all">Tous</option>
+                    <option value="Encadrant">Encadrant</option>
+                    <option value="Surveillant de travaux">Surveillant de travaux</option>
+                    <option value="Encadrant Propreté">Encadrant Propreté</option>
+                    <option value="Agents Voirie">Agents Voirie</option>
+                    <option value="Agent EV">Agent EV</option>
+                    <option value="COMMUN - Magasinier">COMMUN - Magasinier</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label>👥 Mode de répartition</label>
-                <select id="modeSelect">
-                    <option value="equilibre">Équilibré (répartition égale)</option>
-                    <option value="competence">Par compétences</option>
-                    <option value="groupe">Par groupe</option>
-                </select>
+                <label>🔢 Slots par jour</label>
+                <input type="number" id="slotsInput" value="1" min="1" max="10">
             </div>
 
-            <button onclick="generatePlanning()">✨ Générer le planning</button>
+            <button onclick="generateWeek()">✨ Générer la semaine</button>
 
             <div class="info-box">
                 <p><strong>ℹ️ Information:</strong></p>
@@ -166,38 +173,62 @@
     </div>
 
     <script>
-        async function loadMonths() {
-            try {
-                const response = await fetch('/api/months');
-                const data = await response.json();
-
-                if (data.success) {
-                    const select = document.getElementById('monthSelect');
-                    data.months.forEach(month => {
-                        const option = document.createElement('option');
-                        option.value = month;
-                        option.textContent = month;
-                        select.appendChild(option);
-                    });
-                }
-            } catch (error) {
-                alert('❌ Erreur: ' + error.message);
+        // Afficher le résultat de la génération
+        function renderResult(result) {
+            const containerId = 'resultBox';
+            let container = document.getElementById(containerId);
+            if (!container) {
+                container = document.createElement('div');
+                container.id = containerId;
+                container.style.marginTop = '20px';
+                document.querySelector('.generator-box').appendChild(container);
             }
+            // Construire un tableau
+            const assignments = result.assignments || {};
+            let html = '<h3 style="margin-top:10px;color:#2c3e50;">Résultat génération</h3>';
+            html += '<table style="width:100%; border-collapse: collapse; margin-top:10px;">';
+            html += '<thead><tr><th style="text-align:left; padding:8px; border-bottom:1px solid #ddd">Date</th><th style="text-align:left; padding:8px; border-bottom:1px solid #ddd">Assignations</th><th style="text-align:left; padding:8px; border-bottom:1px solid #ddd">Disponibles</th></tr></thead>';
+            html += '<tbody>';
+            for (const day of Object.keys(assignments)) {
+                const info = assignments[day];
+                const assigned = info.assigned || [];
+                const available = info.available || [];
+                html += `<tr><td style="padding:8px; border-bottom:1px solid #eee">${day}</td>`;
+                html += `<td style="padding:8px; border-bottom:1px solid #eee">${assigned.map(a=>a.fullName).join(', ')}</td>`;
+                html += `<td style="padding:8px; border-bottom:1px solid #eee">${available.map(a=>a.fullName).join(', ')}</td>`;
+                html += '</tr>';
+            }
+            html += '</tbody></table>';
+            container.innerHTML = html;
         }
 
-        async function generatePlanning() {
-            const month = document.getElementById('monthSelect').value;
-            const mode = document.getElementById('modeSelect').value;
+        async function generateWeek() {
+            const week = document.getElementById('weekInput').value;
+            const group = document.getElementById('groupSelect').value;
+            const slots = parseInt(document.getElementById('slotsInput').value || '1', 10);
 
-            if (!month) {
-                alert('⚠️ Veuillez sélectionner un mois');
+            if (!week) {
+                alert('⚠️ Veuillez sélectionner une semaine (YYYY-Www)');
                 return;
             }
 
-            alert('🚧 Fonctionnalité en développement\n\nCette fonctionnalité sera disponible prochainement.');
+            // Format attendu: YYYY-Www (HTML input week)
+            try {
+                const response = await fetch('/api/generate-week', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ week, group, slots })
+                });
+                const data = await response.json();
+                if (!data.success) {
+                    alert('Erreur génération: ' + data.error);
+                    return;
+                }
+                renderResult(data);
+            } catch (e) {
+                alert('Erreur: ' + e.message);
+            }
         }
-
-        loadMonths();
     </script>
 </body>
 
