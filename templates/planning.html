@@ -549,31 +549,31 @@
                         agent.data.forEach((val, idx) => {
                             const header = data.headers[idx];
                             if (header && idx >= 7) {
-                                if (val && val !== '' && val !== null) {
-                                    try {
-                                        const date = new Date(val);
-                                        if (!isNaN(date.getTime()) && typeof val !== 'string') {
-                                            aptitudes.push({
-                                                nom: header,
-                                                valeur: date.toLocaleDateString('fr-FR'),
-                                                dateObj: date
-                                            });
-                                        } else if (typeof val === 'string' && val.toLowerCase() === 'x') {
-                                            aptitudes.push({
-                                                nom: header,
-                                                valeur: '✓',
-                                                dateObj: null
-                                            });
+                                // Accepter toute valeur non vide comme aptitude : date, 'x', texte libre (ex: 'Dec-28')
+                                if (val !== null && val !== undefined && String(val).toString().trim() !== '') {
+                                    let dateObj = null;
+                                    let display = '';
+
+                                    // Essayer de parser en date
+                                    const parsed = new Date(val);
+                                    if (!isNaN(parsed.getTime())) {
+                                        dateObj = parsed;
+                                        try {
+                                            display = parsed.toLocaleDateString('fr-FR');
+                                        } catch (e) {
+                                            display = String(val);
                                         }
-                                    } catch (e) {
-                                        if (typeof val === 'string' && val.toLowerCase() === 'x') {
-                                            aptitudes.push({
-                                                nom: header,
-                                                valeur: '✓',
-                                                dateObj: null
-                                            });
-                                        }
+                                    } else if (typeof val === 'string' && val.trim().toLowerCase() === 'x') {
+                                        display = '✓';
+                                    } else {
+                                        display = String(val).trim();
                                     }
+
+                                    aptitudes.push({
+                                        nom: header,
+                                        valeur: display,
+                                        dateObj: dateObj
+                                    });
                                 }
                             }
                         });
@@ -1253,12 +1253,25 @@
 
                 let badgeClass = '';
                 let badgeText = '';
+                const val = apt.valeur ? String(apt.valeur) : '';
 
-                if (nomLower.includes('r.482') || nomLower.includes('r482') || nomLower.includes('caces') ||
-                    nomLower.includes('grue') || nomLower.includes('nacelle') || nomLower.includes('engin')) {
+                // Correspondances plus larges : utiliser le nom de l'en-tête (header) pour décider
+                if (nomLower.includes('r.482') || nomLower.includes('r482') || nomLower.includes('caces')) {
                     badgeClass = 'badge-caces';
                     badgeText = 'C';
-                } else if (nomLower.includes('permis') || nomLower.includes('remorque')) {
+                } else if (nomLower.includes('grue') || nomLower.includes('nacelle') || nomLower.includes('r.490') || nomLower.includes('nacelle')) {
+                    badgeClass = 'badge-caces';
+                    badgeText = 'C';
+                } else if (nomLower.includes('chariot') || nomLower.includes('r.489')) {
+                    badgeClass = 'badge-caces';
+                    badgeText = 'C';
+                } else if (nomLower.includes('tondeuse')) {
+                    badgeClass = 'badge-tondeuse';
+                    badgeText = 'Tn';
+                } else if (nomLower.includes('tronço') || nomLower.includes('tronco')) {
+                    badgeClass = 'badge-tronco';
+                    badgeText = 'T';
+                } else if (nomLower.includes('permis') || nomLower.includes('remorque') || nomLower.includes('perm')) {
                     badgeClass = 'badge-permis';
                     badgeText = 'P';
                 } else if (nomLower.includes('aipr')) {
@@ -1267,16 +1280,22 @@
                 } else if (nomLower.includes('fimo')) {
                     badgeClass = 'badge-fimo';
                     badgeText = 'F';
-                } else if (nomLower.includes('tronço') || nomLower.includes('tronco')) {
-                    badgeClass = 'badge-tronco';
-                    badgeText = 'T';
-                } else if (nomLower.includes('secours')) {
+                } else if (nomLower.includes('secours') || nomLower.includes('premiers secours')) {
                     badgeClass = 'badge-secours';
                     badgeText = 'S';
+                } else {
+                    // Si l'en-tête n'est pas reconnu mais la valeur est présente, créer une pastille générique
+                    if (val && val !== '✓') {
+                        badgeClass = 'badge-generic';
+                        // texte court basé sur le header (2-3 chars)
+                        const words = nomLower.split(/\s+/);
+                        badgeText = (words[0] || '').substring(0, 3).toUpperCase();
+                    }
                 }
 
-                if (badgeClass && !seen.has(badgeText)) {
-                    badges.push({ class: badgeClass, text: badgeText });
+                if (badgeClass && badgeText && !seen.has(badgeText)) {
+                    const title = val && val !== '✓' ? `${apt.nom}: ${val}` : apt.nom;
+                    badges.push({ class: badgeClass, text: badgeText, title });
                     seen.add(badgeText);
                 }
             });
@@ -1284,7 +1303,7 @@
             if (badges.length === 0) return '';
 
             return '<div class="agent-badges">' +
-                badges.map(b => `<span class="badge-mini ${b.class}">${b.text}</span>`).join('') +
+                badges.map(b => `<span class="badge-mini ${b.class}" title="${b.title}">${b.text}</span>`).join('') +
                 '</div>';
         }
 

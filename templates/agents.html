@@ -399,6 +399,33 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
+        /* Mini badges (cohérence avec planning) */
+        .agent-badges {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .badge-mini {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: inline-block;
+            font-size: 10px;
+            font-weight: bold;
+            color: white;
+            line-height: 18px;
+            text-align: center;
+        }
+
+        .badge-tondeuse {
+            background: #2ecc71;
+        }
+
+        .badge-generic {
+            background: #7f8c8d;
+        }
+
         .echeance-agent {
             font-weight: bold;
         }
@@ -646,26 +673,46 @@
                         !nomLower.includes('prochaine');
                 })
                 .map(apt => {
-                    let badgeClass = 'badge';
                     const nomLower = apt.nom.toLowerCase();
+                    const val = apt.valeur ? String(apt.valeur) : '';
 
-                    // Déterminer la classe selon le type d'aptitude
+                    let cls = '';
+                    let text = '';
+
                     if (nomLower.includes('r.482') || nomLower.includes('r482') || nomLower.includes('caces') ||
-                        nomLower.includes('grue') || nomLower.includes('nacelle') || nomLower.includes('engin')) {
-                        badgeClass += ' caces';
-                    } else if (nomLower.includes('permis') || nomLower.includes('remorque')) {
-                        badgeClass += ' permis';
+                        nomLower.includes('grue') || nomLower.includes('nacelle') || nomLower.includes('r.490') || nomLower.includes('engin') || nomLower.includes('chariot') || nomLower.includes('r.489')) {
+                        cls = 'badge-caces';
+                        text = 'C';
+                    } else if (nomLower.includes('tondeuse')) {
+                        cls = 'badge-tondeuse';
+                        text = 'Tn';
+                    } else if (nomLower.includes('tronço') || nomLower.includes('tronco')) {
+                        cls = 'badge-tronco';
+                        text = 'T';
+                    } else if (nomLower.includes('permis') || nomLower.includes('remorque') || nomLower.includes('perm')) {
+                        cls = 'badge-permis';
+                        text = 'P';
                     } else if (nomLower.includes('aipr')) {
-                        badgeClass += ' aipr';
+                        cls = 'badge-aipr';
+                        text = 'A';
                     } else if (nomLower.includes('fimo')) {
-                        badgeClass += ' fimo';
-                    } else if (nomLower.includes('tronço')) {
-                        badgeClass += ' tronco';
-                    } else if (nomLower.includes('secours')) {
-                        badgeClass += ' secours';
+                        cls = 'badge-fimo';
+                        text = 'F';
+                    } else if (nomLower.includes('secours') || nomLower.includes('premiers secours')) {
+                        cls = 'badge-secours';
+                        text = 'S';
+                    } else {
+                        // pastille générique pour en-têtes non reconnus
+                        if (val && val !== '✓') {
+                            cls = 'badge-generic';
+                            const words = nomLower.split(/\s+/);
+                            text = (words[0] || '').substring(0, 3).toUpperCase();
+                        }
                     }
 
-                    return `<span class="${badgeClass}">${apt.nom}</span>`;
+                    if (!cls || !text) return '';
+                    const title = val && val !== '✓' ? `${apt.nom}: ${val}` : apt.nom;
+                    return `<span class="badge-mini ${cls}" title="${title}">${text}</span>`;
                 }).join('');
 
             card.innerHTML = `
