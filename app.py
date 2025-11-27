@@ -665,8 +665,14 @@ def generate_teams():
         TEMPLATE_FILE = 'TEMPLATE PLANNIFICATION.xlsm'
         output_file = f"planning_semaine_{week}.xlsx"
         
+        # Charger le template et défusionner les cellules pour éviter l'erreur MergedCell
         wb_template = openpyxl.load_workbook(TEMPLATE_FILE)
         sheet = wb_template.active  # Première feuille du template
+        
+        # Défusionner toutes les cellules fusionnées
+        merged_cells_list = list(sheet.merged_cells.ranges)
+        for merged_range in merged_cells_list:
+            sheet.unmerge_cells(str(merged_range))
         
         # Structure supposée du template:
         # Colonne A: jours de la semaine (Lundi, Mardi, etc.)
@@ -680,12 +686,14 @@ def generate_teams():
             teams = daily_teams.get(date_key, [])
             
             # Colonne A: jour + date
-            sheet.cell(row=row_offset, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
+            cell = sheet.cell(row=row_offset, column=1)
+            cell.value = f"{day_name} {d.strftime('%d/%m/%Y')}"
             
             # Colonnes B, C, D, etc.: équipes
             for team_idx, team in enumerate(teams, start=2):
                 team_members = ', '.join([a['fullName'] for a in team])
-                sheet.cell(row=row_offset, column=team_idx, value=team_members)
+                cell = sheet.cell(row=row_offset, column=team_idx)
+                cell.value = team_members
         
         wb_template.save(output_file)
         
