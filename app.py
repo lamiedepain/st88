@@ -1,9 +1,10 @@
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, send_file
 import openpyxl
 from datetime import datetime
 import os
 import shutil
 import calendar
+from io import BytesIO
 
 # Groupes pour assignation (mêmes que côté frontend)
 GROUPS = {
@@ -695,13 +696,17 @@ def generate_teams():
                 cell = sheet.cell(row=row_offset, column=team_idx)
                 cell.value = team_members
         
-        wb_template.save(output_file)
+        # Sauvegarder en mémoire et renvoyer comme fichier téléchargeable
+        output = BytesIO()
+        wb_template.save(output)
+        output.seek(0)
         
-        return jsonify({
-            'success': True,
-            'file': output_file,
-            'teams': daily_teams
-        })
+        return send_file(
+            output,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name=output_file
+        )
         
     except Exception as e:
         import traceback

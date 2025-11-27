@@ -199,44 +199,31 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ week, group, team_size: teamSize })
                 });
-                const data = await response.json();
 
+                // Vérifier si c'est un fichier Excel (téléchargement)
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('spreadsheet')) {
+                    // Télécharger le fichier
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `planning_semaine_${week}.xlsx`;
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                    
+                    alert(`✅ Planning téléchargé avec succès!\nFichier: planning_semaine_${week}.xlsx`);
+                    return;
+                }
+
+                // Sinon traiter comme JSON (erreur)
+                const data = await response.json();
                 if (!data.success) {
                     alert('Erreur: ' + data.error);
                     return;
                 }
-
-                // Afficher résultat
-                let html = '<h3 style="margin-top:20px;color:#2c3e50;">✅ Équipes générées</h3>';
-                html += `<p style="color:#2c3e50;margin-top:10px;">Fichier créé: <strong>${data.file}</strong></p>`;
-                html += '<div style="margin-top:15px;">';
-
-                const teams = data.teams || {};
-                for (const [date, dayTeams] of Object.entries(teams)) {
-                    html += `<div style="margin-bottom:15px;padding:10px;background:#f8f9fa;border-radius:8px;">`;
-                    html += `<strong>${date}</strong>`;
-                    if (dayTeams.length === 0) {
-                        html += '<p style="margin:5px 0;color:#999;">Aucun agent disponible</p>';
-                    } else {
-                        dayTeams.forEach((team, idx) => {
-                            const members = team.map(a => a.fullName).join(', ');
-                            html += `<p style="margin:5px 0;">Équipe ${idx + 1}: ${members}</p>`;
-                        });
-                    }
-                    html += '</div>';
-                }
-                html += '</div>';
-
-                let container = document.getElementById('resultBox');
-                if (!container) {
-                    container = document.createElement('div');
-                    container.id = 'resultBox';
-                    container.style.marginTop = '20px';
-                    document.querySelector('.generator-box').appendChild(container);
-                }
-                container.innerHTML = html;
-
-                alert(`✅ Planning généré avec succès!\nFichier: ${data.file}`);
             } catch (e) {
                 alert('Erreur: ' + e.message);
             }
