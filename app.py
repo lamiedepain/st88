@@ -555,11 +555,11 @@ def generate_teams():
         else:
             return jsonify({'success': False, 'error': 'Invalid week format'}), 400
 
-        # Calculer les dates (lundi à dimanche)
+        # Calculer les dates (lundi à vendredi seulement - 5 jours)
         import datetime
         jan1 = datetime.date(year, 1, 1)
         week_start = jan1 + datetime.timedelta(weeks=week_num - 1, days=-jan1.weekday())
-        dates = [week_start + datetime.timedelta(days=i) for i in range(7)]
+        dates = [week_start + datetime.timedelta(days=i) for i in range(5)]  # Seulement lundi à vendredi
 
         # Lire les agents disponibles depuis le fichier principal
         wb_source = openpyxl.load_workbook(EXCEL_FILE, data_only=True)
@@ -675,26 +675,37 @@ def generate_teams():
         for merged_range in merged_cells_list:
             sheet.unmerge_cells(str(merged_range))
         
-        # Structure supposée du template:
-        # Colonne A: jours de la semaine (Lundi, Mardi, etc.)
-        # Colonnes suivantes: Équipe 1, Équipe 2, Équipe 3, etc.
-        # On va écrire à partir de la ligne 2 (ligne 1 = en-têtes)
+        # Remplir le tableau : 2 colonnes (DATE | EQUIPE)
+        # En-têtes en ligne 1
+        sheet.cell(row=1, column=1, value='DATE')
+        sheet.cell(row=1, column=2, value='EQUIPE')
         
-        day_names_fr = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+        day_names_fr = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']
         
-        for row_offset, (d, day_name) in enumerate(zip(dates, day_names_fr), start=2):
+        current_row = 2
+        for d, day_name in zip(dates, day_names_fr):
             date_key = d.strftime('%Y-%m-%d')
             teams = daily_teams.get(date_key, [])
             
-            # Colonne A: jour + date
-            cell = sheet.cell(row=row_offset, column=1)
-            cell.value = f"{day_name} {d.strftime('%d/%m/%Y')}"
-            
-            # Colonnes B, C, D, etc.: équipes
-            for team_idx, team in enumerate(teams, start=2):
-                team_members = ', '.join([a['fullName'] for a in team])
-                cell = sheet.cell(row=row_offset, column=team_idx)
-                cell.value = team_members
+            if len(teams) == 0:
+                # Aucune équipe : une ligne vide
+                sheet.cell(row=current_row, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
+                sheet.cell(row=current_row, column=2, value='')
+                current_row += 1
+            else:
+                # Première équipe : afficher la date
+                first_team = teams[0]
+                team_members = ', '.join([a['fullName'] for a in first_team])
+                sheet.cell(row=current_row, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
+                sheet.cell(row=current_row, column=2, value=team_members)
+                current_row += 1
+                
+                # Équipes suivantes : cellule date vide, une ligne par équipe
+                for team in teams[1:]:
+                    team_members = ', '.join([a['fullName'] for a in team])
+                    sheet.cell(row=current_row, column=1, value='')
+                    sheet.cell(row=current_row, column=2, value=team_members)
+                    current_row += 1
         
         # Sauvegarder en mémoire et renvoyer comme fichier téléchargeable
         output = BytesIO()
