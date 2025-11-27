@@ -446,7 +446,7 @@ def apply_week():
                     if nom_u not in members:
                         continue
 
-                col_idx = 15 + day  # 1-based column index to write: day1 -> column 16 (P)
+                col_idx = 14 + day  # align with read logic: day1 -> column 15 (P)
                 cell_value = None
                 try:
                     cell_value = sheet.cell(row=row_idx, column=col_idx).value
