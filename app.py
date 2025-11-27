@@ -533,5 +533,173 @@ def reload_excel():
         traceback.print_exc()
         return jsonify({'success': False, 'error': str(e)}), 500
 
+
+@app.route('/api/generate-teams', methods=['POST'])
+def generate_teams():
+    """Génère les équipes et remplit le template Excel"""
+    try:
+        data = request.json or {}
+        week = data.get('week')
+        group = data.get('group', 'all')
+        team_size = int(data.get('team_size', 3))  # 2 ou 3 agents par équipe
+
+        if not week:
+            return jsonify({'success': False, 'error': 'week is required'}), 400
+
+        # Parse semaine ISO
+        if '-W' in week:
+            parts = week.split('-W')
+            year = int(parts[0])
+            week_num = int(parts[1])
+        else:
+            return jsonify({'success': False, 'error': 'Invalid week format'}), 400
+
+        # Calculer les dates (lundi à dimanche)
+        import datetime
+        jan1 = datetime.date(year, 1, 1)
+        week_start = jan1 + datetime.timedelta(weeks=week_num - 1, days=-jan1.weekday())
+        dates = [week_start + datetime.timedelta(days=i) for i in range(7)]
+
+        # Lire les agents disponibles depuis le fichier principal
+        wb_source = openpyxl.load_workbook(EXCEL_FILE, data_only=True)
+        
+        def in_group(nom, group):
+            if group == 'all':
+                return True
+            nom_upper = nom.upper() if nom else ''
+            group_noms = GROUPS.get(group, [])
+            return any(gn.upper() in nom_upper or nom_upper in gn.upper() for gn in group_noms)
+
+        absent_statuses = {'CA','RTT','CEX','R','M','AT','F','AST','PC','TP','MA','TAD'}
+
+        # Collecter agents disponibles par jour
+        daily_available = {}
+        for d in dates:
+            month_name = d.strftime('%B %Y')
+            month_name_fr = {
+                'January': 'Janvier', 'February': 'Fevrier', 'March': 'Mars',
+                'April': 'Avril', 'May': 'Mai', 'June': 'Juin',
+                'July': 'Juillet', 'August': 'Aout', 'September': 'Septembre',
+                'October': 'Octobre', 'November': 'Novembre', 'December': 'Décembre'
+            }.get(month_name.split()[0], month_name.split()[0])
+            sheet_name = f"{month_name_fr} {d.year}"
+            
+            available = []
+            if sheet_name not in wb_source.sheetnames:
+                daily_available[d.strftime('%Y-%m-%d')] = []
+                continue
+
+            sheet = wb_source[sheet_name]
+            day = d.day
+            col_idx = 14 + day
+
+            for row_idx in range(11, 100):
+                row = sheet[row_idx]
+                nom = row[1].value
+                prenom = row[2].value
+                
+                if not nom or not in_group(nom, group):
+                    continue
+
+                cell_value = row[col_idx].value
+                status = str(cell_value).strip() if cell_value else ''
+                
+                if status.upper() not in absent_statuses and (status == '' or status.upper() == 'P'):
+                    available.append({
+                        'nom': nom,
+                        'prenom': prenom,
+                        'fullName': f"{nom} {prenom}".strip()
+                    })
+            
+            daily_available[d.strftime('%Y-%m-%d')] = available
+
+        # Répartir en équipes (2 ou 3 par équipe)
+        daily_teams = {}
+        for date_key, agents in daily_available.items():
+            teams = []
+            if len(agents) > 0:
+                num_agents = len(agents)
+                # Stratégie optimisée pour répartition équilibrée
+                if num_agents % 3 == 0:
+                    # Parfait pour équipes de 3
+                    for i in range(0, num_agents, 3):
+                        teams.append(agents[i:i+3])
+                elif num_agents % 2 == 0:
+                    # Parfait pour équipes de 2
+                    for i in range(0, num_agents, 2):
+                        teams.append(agents[i:i+2])
+                elif num_agents == 7:
+                    # 7 agents: 2 équipes de 2 + 1 équipe de 3
+                    teams.append(agents[0:2])
+                    teams.append(agents[2:4])
+                    teams.append(agents[4:7])
+                elif num_agents % 3 == 1:
+                    # Ex: 10 agents -> 3 équipes de 3 + reste 1 -> 2 équipes de 2 + reste équipes de 3
+                    # Stratégie: créer 2 équipes de 2, puis le reste en équipes de 3
+                    if num_agents >= 7:
+                        teams.append(agents[0:2])
+                        teams.append(agents[2:4])
+                        for i in range(4, num_agents, 3):
+                            teams.append(agents[i:i+3])
+                    else:
+                        # Moins de 7: faire des équipes de 2
+                        for i in range(0, num_agents - 1, 2):
+                            teams.append(agents[i:i+2])
+                        if num_agents % 2 == 1:
+                            # Agent seul restant
+                            teams.append([agents[-1]])
+                elif num_agents % 3 == 2:
+                    # Ex: 5 agents -> 1 équipe de 3 + 1 équipe de 2
+                    # Ex: 8 agents -> 2 équipes de 3 + 1 équipe de 2
+                    num_teams_of_3 = (num_agents - 2) // 3
+                    idx = 0
+                    for _ in range(num_teams_of_3):
+                        teams.append(agents[idx:idx+3])
+                        idx += 3
+                    # Le reste forme une équipe de 2
+                    teams.append(agents[idx:idx+2])
+            
+            daily_teams[date_key] = teams
+
+        # Copier le template et remplir
+        TEMPLATE_FILE = 'TEMPLATE PLANNIFICATION.xlsm'
+        output_file = f"planning_semaine_{week}.xlsx"
+        
+        wb_template = openpyxl.load_workbook(TEMPLATE_FILE)
+        sheet = wb_template.active  # Première feuille du template
+        
+        # Structure supposée du template:
+        # Colonne A: jours de la semaine (Lundi, Mardi, etc.)
+        # Colonnes suivantes: Équipe 1, Équipe 2, Équipe 3, etc.
+        # On va écrire à partir de la ligne 2 (ligne 1 = en-têtes)
+        
+        day_names_fr = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche']
+        
+        for row_offset, (d, day_name) in enumerate(zip(dates, day_names_fr), start=2):
+            date_key = d.strftime('%Y-%m-%d')
+            teams = daily_teams.get(date_key, [])
+            
+            # Colonne A: jour + date
+            sheet.cell(row=row_offset, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
+            
+            # Colonnes B, C, D, etc.: équipes
+            for team_idx, team in enumerate(teams, start=2):
+                team_members = ', '.join([a['fullName'] for a in team])
+                sheet.cell(row=row_offset, column=team_idx, value=team_members)
+        
+        wb_template.save(output_file)
+        
+        return jsonify({
+            'success': True,
+            'file': output_file,
+            'teams': daily_teams
+        })
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
