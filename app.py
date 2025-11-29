@@ -762,8 +762,8 @@ def generate_teams():
         sheet.column_dimensions['B'].width = 50
         sheet.column_dimensions['C'].width = 30
         
-        # Configurer l'impression - sans utiliser fitToPage qui cause des problèmes
-        sheet.page_setup.orientation = sheet.ORIENTATION_LANDSCAPE
+        # Configurer l'impression en PORTRAIT comme le template
+        sheet.page_setup.orientation = sheet.ORIENTATION_PORTRAIT
         sheet.page_setup.paperSize = sheet.PAPERSIZE_A4
         sheet.page_setup.fitToHeight = 0
         sheet.page_setup.fitToWidth = 1
