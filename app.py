@@ -757,10 +757,10 @@ def generate_teams():
                         sheet.cell(row=current_row, column=col).fill = day_fill
                     current_row += 1
         
-        # Ajuster les largeurs de colonnes pour portrait
-        sheet.column_dimensions['A'].width = 20
-        sheet.column_dimensions['B'].width = 40
-        sheet.column_dimensions['C'].width = 25
+        # Ajuster les largeurs de colonnes comme le template
+        sheet.column_dimensions['A'].width = 17.0
+        sheet.column_dimensions['B'].width = 35.5703125
+        sheet.column_dimensions['C'].width = 22.5703125
         
         # Ne pas configurer l'impression - garder les paramètres du template
         
