@@ -679,7 +679,7 @@ def generate_teams():
         # En-têtes en ligne 1
         sheet.cell(row=1, column=1, value='DATE')
         sheet.cell(row=1, column=2, value='EQUIPE')
-        sheet.cell(row=1, column=3, value='INTERVENANTS')
+        sheet.cell(row=1, column=3, value='INTERVENTION')
         
         # Styles pour en-têtes
         from openpyxl.styles import Font, PatternFill, Alignment
