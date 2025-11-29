@@ -1724,8 +1724,23 @@
 
         // Gestion de l'orientation d'impression
         document.getElementById('printOrientation').addEventListener('change', function () {
+            const orientation = this.value;
             document.body.classList.remove('landscape-print', 'portrait-print');
-            document.body.classList.add(this.value + '-print');
+            document.body.classList.add(orientation + '-print');
+            
+            // Mettre à jour le style @page dynamiquement
+            let styleSheet = document.getElementById('dynamic-print-style');
+            if (!styleSheet) {
+                styleSheet = document.createElement('style');
+                styleSheet.id = 'dynamic-print-style';
+                document.head.appendChild(styleSheet);
+            }
+            
+            if (orientation === 'landscape') {
+                styleSheet.textContent = '@media print { @page { size: A3 landscape; } }';
+            } else {
+                styleSheet.textContent = '@media print { @page { size: A3 portrait; } }';
+            }
         });
 
         // Modal de génération
