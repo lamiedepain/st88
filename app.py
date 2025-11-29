@@ -757,18 +757,12 @@ def generate_teams():
                         sheet.cell(row=current_row, column=col).fill = day_fill
                     current_row += 1
         
-        # Ajuster les largeurs de colonnes
-        sheet.column_dimensions['A'].width = 25
-        sheet.column_dimensions['B'].width = 50
-        sheet.column_dimensions['C'].width = 30
+        # Ajuster les largeurs de colonnes pour portrait
+        sheet.column_dimensions['A'].width = 20
+        sheet.column_dimensions['B'].width = 40
+        sheet.column_dimensions['C'].width = 25
         
-        # Configurer l'impression en PORTRAIT comme le template
-        sheet.page_setup.orientation = sheet.ORIENTATION_PORTRAIT
-        sheet.page_setup.paperSize = sheet.PAPERSIZE_A4
-        sheet.page_setup.fitToHeight = 0
-        sheet.page_setup.fitToWidth = 1
-        sheet.print_options.horizontalCentered = True
-        sheet.print_options.verticalCentered = True
+        # Ne pas configurer l'impression - garder les paramètres du template
         
         # Sauvegarder en mémoire et renvoyer comme fichier téléchargeable
         output = BytesIO()
