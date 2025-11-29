@@ -412,6 +412,8 @@
                 <input type="file" id="excelUpload" accept=".xlsx,.xlsm" style="display: none;" onchange="loadExcelPlanning(event)">
                 <button class="btn-print" onclick="document.getElementById('excelUpload').click()" style="background: #3498db;">📂 Charger Excel</button>
 
+                <button class="btn-print" onclick="window.location.href='/generator'" style="background: #9b59b6;">⚡ Générer</button>
+
                 <select id="printOrientation" style="min-width: 150px;">
                     <option value="portrait">A3 Portrait</option>
                     <option value="landscape">A3 Paysage</option>
