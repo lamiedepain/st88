@@ -725,5 +725,55 @@ def generate_teams():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
+@app.route('/api/load-planning', methods=['POST'])
+def load_planning():
+    try:
+        if 'file' not in request.files:
+            return jsonify({'success': False, 'error': 'Aucun fichier fourni'}), 400
+        
+        file = request.files['file']
+        if file.filename == '':
+            return jsonify({'success': False, 'error': 'Nom de fichier vide'}), 400
+        
+        # Charger le fichier Excel
+        wb = openpyxl.load_workbook(file, data_only=True)
+        
+        # Prendre la première feuille
+        sheet = wb.active
+        
+        # Lire les en-têtes (première ligne non vide)
+        headers = []
+        first_row = None
+        for row_idx in range(1, min(10, sheet.max_row + 1)):
+            row_values = [cell.value for cell in sheet[row_idx]]
+            if any(v for v in row_values):
+                headers = [str(v) if v else '' for v in row_values]
+                first_row = row_idx
+                break
+        
+        if not headers:
+            return jsonify({'success': False, 'error': 'Aucun en-tête trouvé'}), 400
+        
+        # Lire toutes les lignes de données
+        rows = []
+        for row_idx in range(first_row + 1, sheet.max_row + 1):
+            row_values = [cell.value for cell in sheet[row_idx]]
+            # Ignorer les lignes complètement vides
+            if any(v for v in row_values):
+                rows.append([str(v) if v else '' for v in row_values])
+        
+        return jsonify({
+            'success': True,
+            'title': f'Planning - {file.filename}',
+            'headers': headers,
+            'rows': rows
+        })
+        
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)

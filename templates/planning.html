@@ -409,6 +409,9 @@
                     <option value="">Sélectionner une période...</option>
                 </select>
 
+                <input type="file" id="excelUpload" accept=".xlsx,.xlsm" style="display: none;" onchange="loadExcelPlanning(event)">
+                <button class="btn-print" onclick="document.getElementById('excelUpload').click()" style="background: #3498db;">📂 Charger Excel</button>
+
                 <select id="printOrientation" style="min-width: 150px;">
                     <option value="portrait">A3 Portrait</option>
                     <option value="landscape">A3 Paysage</option>
@@ -1394,6 +1397,69 @@
             document.body.classList.remove('landscape-print', 'portrait-print');
             document.body.classList.add(this.value + '-print');
         });
+
+        // Fonction pour charger un planning Excel
+        async function loadExcelPlanning(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            planningTable.innerHTML = '<div class="loading">Chargement du fichier Excel...</div>';
+
+            try {
+                const formData = new FormData();
+                formData.append('file', file);
+
+                const response = await fetch('/api/load-planning', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayUploadedPlanning(data);
+                } else {
+                    planningTable.innerHTML = `<div class="loading">❌ ${data.error}</div>`;
+                }
+            } catch (error) {
+                planningTable.innerHTML = `<div class="loading">❌ Erreur: ${error.message}</div>`;
+            }
+
+            // Réinitialiser l'input
+            event.target.value = '';
+        }
+
+        function displayUploadedPlanning(data) {
+            // Afficher les données du planning uploadé
+            let html = `<h3 style="margin: 0 0 20px 0; padding: 10px; background: #3498db; color: white;">${data.title || 'Planning chargé'}</h3>`;
+            html += '<table><thead><tr>';
+            
+            // En-têtes
+            data.headers.forEach(header => {
+                html += `<th>${header}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+
+            // Lignes de données
+            data.rows.forEach(row => {
+                html += '<tr>';
+                row.forEach((cell, idx) => {
+                    const cellValue = cell || '';
+                    let cellStyle = '';
+                    
+                    // Coloration selon contenu (optionnel)
+                    if (idx === 0) {
+                        cellStyle = 'font-weight: bold; background: #f8f9fa;';
+                    }
+                    
+                    html += `<td style="${cellStyle}">${cellValue}</td>`;
+                });
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+            planningTable.innerHTML = html;
+        }
 
         // Charger les agents au démarrage
         loadAgents().then(() => {
