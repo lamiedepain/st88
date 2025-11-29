@@ -666,8 +666,16 @@ def generate_teams():
         TEMPLATE_FILE = 'TEMPLATE PLANNIFICATION.xlsm'
         output_file = f"planning_semaine_{week}.xlsx"
         
+        # Vérifier que le template existe
+        import os
+        if not os.path.exists(TEMPLATE_FILE):
+            return jsonify({'error': f'Le fichier template {TEMPLATE_FILE} n\'existe pas'}), 500
+        
         # Charger le template et défusionner les cellules pour éviter l'erreur MergedCell
-        wb_template = openpyxl.load_workbook(TEMPLATE_FILE)
+        try:
+            wb_template = openpyxl.load_workbook(TEMPLATE_FILE)
+        except Exception as e:
+            return jsonify({'error': f'Erreur lors du chargement du template: {str(e)}'}), 500
         
         # S'assurer qu'on a une feuille active
         if wb_template.active is None:
