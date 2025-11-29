@@ -775,5 +775,21 @@ def load_planning():
         return jsonify({'success': False, 'error': str(e)}), 500
 
 
+@app.route('/api/download-excel', methods=['GET'])
+def download_excel():
+    try:
+        if not os.path.exists(EXCEL_FILE):
+            return jsonify({'success': False, 'error': 'Fichier introuvable'}), 404
+        
+        return send_file(
+            EXCEL_FILE,
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            as_attachment=True,
+            download_name='2026 - PRESENCES_CONGES VOIRIE ESPACES VERTS ST8.xlsx'
+        )
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=False)
