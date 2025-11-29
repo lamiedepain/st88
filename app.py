@@ -762,10 +762,9 @@ def generate_teams():
         sheet.column_dimensions['B'].width = 50
         sheet.column_dimensions['C'].width = 30
         
-        # Configurer l'impression
+        # Configurer l'impression - sans utiliser fitToPage qui cause des problèmes
         sheet.page_setup.orientation = sheet.ORIENTATION_LANDSCAPE
         sheet.page_setup.paperSize = sheet.PAPERSIZE_A4
-        sheet.page_setup.fitToPage = True
         sheet.page_setup.fitToHeight = 0
         sheet.page_setup.fitToWidth = 1
         sheet.print_options.horizontalCentered = True
@@ -856,4 +855,4 @@ def download_excel():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5001, debug=True)
