@@ -304,11 +304,21 @@
 
         @media print {
             @page {
+                size: A3 portrait;
+                margin: 3mm;
+            }
+
+            body.landscape-print @page {
                 size: A3 landscape;
                 margin: 3mm;
             }
 
-            body.portrait-print @page {
+            body.quarterly-print @page {
+                size: A3 portrait;
+                margin: 3mm;
+            }
+
+            body.annual-print @page {
                 size: A3 portrait;
                 margin: 3mm;
             }
@@ -337,6 +347,24 @@
             .view-tabs,
             header>div:first-child {
                 display: none !important;
+            }
+
+            /* Sauts de page pour vue annuelle */
+            body.annual-print table:nth-of-type(3n+1) {
+                page-break-before: always;
+            }
+
+            body.annual-print table:first-of-type {
+                page-break-before: auto;
+            }
+
+            /* Sauts de page pour vue trimestrielle */
+            body.quarterly-print table {
+                page-break-after: avoid;
+            }
+
+            body.quarterly-print h3 {
+                page-break-after: avoid;
             }
 
             header {
@@ -714,6 +742,18 @@
             currentView = view;
             document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
             event.target.classList.add('active');
+
+            // Appliquer la classe d'impression appropriée
+            document.body.classList.remove('landscape-print', 'portrait-print', 'quarterly-print', 'annual-print');
+            if (view === 'annuel') {
+                document.body.classList.add('annual-print');
+            } else if (view === 'trimestriel') {
+                document.body.classList.add('quarterly-print');
+            } else if (view === 'mensuel') {
+                document.body.classList.add('portrait-print');
+            } else if (view === 'bihebdo') {
+                document.body.classList.add('landscape-print');
+            }
 
             updatePeriodSelector();
             planningTable.innerHTML = '<div class="loading">Sélectionnez une période</div>';
