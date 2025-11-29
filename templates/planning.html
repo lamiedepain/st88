@@ -305,22 +305,22 @@
         @media print {
             @page {
                 size: A3 portrait;
-                margin: 3mm;
+                margin: 10mm;
             }
 
             body.landscape-print @page {
                 size: A3 landscape;
-                margin: 3mm;
+                margin: 10mm;
             }
 
             body.quarterly-print @page {
                 size: A3 portrait;
-                margin: 3mm;
+                margin: 10mm;
             }
 
             body.annual-print @page {
                 size: A3 portrait;
-                margin: 3mm;
+                margin: 10mm;
             }
 
             * {
@@ -334,12 +334,19 @@
                 padding: 0;
                 margin: 0;
                 width: 100%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
 
             .container {
                 max-width: 100% !important;
                 padding: 0 !important;
-                margin: 0 !important;
+                margin: 0 auto !important;
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
             }
 
             header nav,
@@ -349,18 +356,17 @@
                 display: none !important;
             }
 
-            /* Sauts de page pour vue annuelle */
-            body.annual-print table:nth-of-type(3n+1) {
+            /* Sauts de page pour vue annuelle - tous les 3 mois */
+            body.annual-print .month-container:nth-of-type(3n+1):not(:first-of-type) {
                 page-break-before: always;
             }
 
-            body.annual-print table:first-of-type {
-                page-break-before: auto;
-            }
-
-            /* Sauts de page pour vue trimestrielle */
-            body.quarterly-print table {
-                page-break-after: avoid;
+            /* Sauts de page pour vue trimestrielle - chaque mois sur une nouvelle ligne */
+            body.quarterly-print .month-container {
+                page-break-inside: avoid;
+                display: block !important;
+                width: 100% !important;
+                margin-bottom: 10mm;
             }
 
             body.quarterly-print h3 {
@@ -369,7 +375,9 @@
 
             header {
                 padding: 5px 0 !important;
-                margin: 0 !important;
+                margin: 0 auto !important;
+                text-align: center;
+                width: 100%;
             }
 
             header h1 {
@@ -383,16 +391,19 @@
                 box-shadow: none;
                 border-radius: 0;
                 padding: 0 !important;
-                margin: 0 !important;
+                margin: 0 auto !important;
                 width: 100%;
+                max-width: 100%;
                 overflow: visible !important;
+                text-align: center;
             }
 
             #planningTable {
                 width: 100% !important;
                 overflow: visible !important;
-                margin: 0 !important;
+                margin: 0 auto !important;
                 padding: 0 !important;
+                text-align: center;
             }
 
             .agent-badges {
@@ -1094,6 +1105,7 @@
             let html = '';
 
             allMonthsData.forEach(monthData => {
+                html += '<div class="month-container">';
                 html += `<h3 style="margin: 20px 0 10px 0; padding: 10px; background: #3498db; color: white;">${monthData.monthName} ${year}</h3>`;
                 html += '<table><thead><tr>';
                 html += '<th style="min-width: 150px;">Agent</th>';
@@ -1190,6 +1202,7 @@
                 });
 
                 html += '</tbody></table>';
+                html += '</div>'; // Fermer month-container
             });
 
             planningTable.innerHTML = html;
@@ -1311,109 +1324,236 @@
                 return indexA - indexB;
             });
 
-            let html = '<table><thead><tr>';
-            html += '<th style="min-width: 150px;">Agent</th>';
-
-            // En-têtes des jours
-            allDaysData.forEach(dayData => {
-                const date = dayData.date || new Date(2026, dayData.month - 1, dayData.day);
-                const dayOfWeek = date.getDay();
-                const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
-                const isFerie = isJourFerie(2026, dayData.month, dayData.day);
-                html += `<th style="${isWeekend || isFerie ? 'background: ' + (isFerie ? '#ff9800' : '#e74c3c') : ''}">${dayData.day}/${dayData.month}</th>`;
-            });
-            html += '</tr></thead><tbody>';
-
-            // Lignes des agents
-            let currentGroup = '';
-            filteredAgents.forEach(agent => {
-                const fullName = `${agent.nom} ${agent.prenom}`;
-                const agentInfo = allAgents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
-                const colors = groupColors[agent.groupe] || groupColors.default;
-
-                if (currentGroup !== agent.groupe) {
-                    currentGroup = agent.groupe;
-                    html += `<tr><td colspan="${allDaysData.length + 1}" style="background: ${colors.bg}; color: white; font-weight: bold; text-align: center; padding: 10px;">${agent.groupe}</td></tr>`;
-                }
-
-                html += '<tr>';
-                html += `<td class="agent-cell" style="background: ${colors.bg}33; border-left: 3px solid ${colors.border};">
-                    <div class="agent-name">${fullName}</div>
-                    ${agentInfo ? getAgentBadges(agentInfo) : ''}
-                </td>`;
-
-                // Afficher le statut pour chaque jour
+            // Pour la vue trimestrielle, grouper par mois
+            if (viewType === 'trimestriel') {
+                const monthsData = {};
                 allDaysData.forEach(dayData => {
-                    const agentDay = dayData.agents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
-                    const dayIndex = dayData.day - 1;
+                    if (!monthsData[dayData.month]) {
+                        monthsData[dayData.month] = [];
+                    }
+                    monthsData[dayData.month].push(dayData);
+                });
 
+                const monthNames = ['', 'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
+                let html = '';
+
+                Object.keys(monthsData).sort((a, b) => parseInt(a) - parseInt(b)).forEach(monthNum => {
+                    const monthDays = monthsData[monthNum];
+                    html += '<div class="month-container">';
+                    html += `<h3 style="margin: 20px 0 10px 0; padding: 10px; background: #3498db; color: white;">${monthNames[monthNum]} 2026</h3>`;
+                    html += '<table><thead><tr>';
+                    html += '<th style="min-width: 150px;">Agent</th>';
+
+                    // En-têtes des jours
+                    monthDays.forEach(dayData => {
+                        const date = dayData.date || new Date(2026, dayData.month - 1, dayData.day);
+                        const dayOfWeek = date.getDay();
+                        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                        const isFerie = isJourFerie(2026, dayData.month, dayData.day);
+                        html += `<th style="${isWeekend || isFerie ? 'background: ' + (isFerie ? '#ff9800' : '#e74c3c') : ''}">${dayData.day}</th>`;
+                    });
+                    html += '</tr></thead><tbody>';
+
+                    // Lignes des agents
+                    let currentGroup = '';
+                    filteredAgents.forEach(agent => {
+                        const fullName = `${agent.nom} ${agent.prenom}`;
+                        const agentInfo = allAgents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
+                        const colors = groupColors[agent.groupe] || groupColors.default;
+
+                        if (currentGroup !== agent.groupe) {
+                            currentGroup = agent.groupe;
+                            html += `<tr><td colspan="${monthDays.length + 1}" style="background: ${colors.bg}; color: white; font-weight: bold; text-align: center; padding: 10px;">${agent.groupe}</td></tr>`;
+                        }
+
+                        html += '<tr>';
+                        html += `<td class="agent-cell" style="background: ${colors.bg}33; border-left: 3px solid ${colors.border};">
+                            <div class="agent-name">${fullName}</div>
+                            ${agentInfo ? getAgentBadges(agentInfo) : ''}
+                        </td>`;
+
+                        // Afficher le statut pour chaque jour
+                        monthDays.forEach(dayData => {
+                            const agentDay = dayData.agents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
+                            const dayIndex = dayData.day - 1;
+
+                            const date = dayData.date || new Date(2026, dayData.month - 1, dayData.day);
+                            const dayOfWeek = date.getDay();
+                            const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                            const isFerie = isJourFerie(2026, dayData.month, dayData.day);
+
+                            let status = agentDay ? agentDay.days[dayIndex] : '';
+                            let cellContent = status;
+
+                            if (!status && !isWeekend && !isFerie) {
+                                status = 'Présent';
+                                cellContent = 'Présent';
+                                if (agentInfo) {
+                                    cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
+                                }
+                            }
+
+                            let cellClass = 'day-cell';
+                            let cellStyle = '';
+                            if (isWeekend || isFerie) {
+                                cellClass += ' weekend';
+                                if (isFerie) {
+                                    cellStyle = 'background: #ff9800; color: white;';
+                                }
+                            } else if (status === 'P') {
+                                cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
+                                if (agentInfo) {
+                                    cellContent = `P<br>${getAgentBadges(agentInfo)}`;
+                                }
+                            } else if (status === 'PC') {
+                                cellStyle = 'background: #ff00ff; color: white; font-weight: bold;';
+                            } else if (status === 'F') {
+                                cellStyle = 'background: #8000ff; color: white; font-weight: bold;';
+                            } else if (status === 'AST') {
+                                cellStyle = 'background: #0000ff; color: white; font-weight: bold;';
+                            } else if (status === 'CA') {
+                                cellStyle = 'background: #ffff00; color: black; font-weight: bold;';
+                            } else if (status === 'RTT') {
+                                cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
+                            } else if (status === 'CEX') {
+                                cellStyle = 'background: #00ffff; color: black; font-weight: bold;';
+                            } else if (status === 'R') {
+                                cellStyle = 'background: #ff0000; color: white; font-weight: bold;';
+                            } else if (status === 'M') {
+                                cellStyle = 'background: #ff8000; color: white; font-weight: bold;';
+                            } else if (status === 'AT') {
+                                cellStyle = 'background: #ff4000; color: white; font-weight: bold;';
+                            } else if (status === 'TAD') {
+                                cellStyle = 'background: #0080ff; color: white; font-weight: bold;';
+                            } else if (status === 'TP') {
+                                cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
+                            } else if (status === 'MA') {
+                                cellStyle = 'background: #1abc9c; color: white; font-weight: bold;';
+                            } else if (status === 'Présent') {
+                                cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
+                                if (agentInfo) {
+                                    cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
+                                }
+                            }
+
+                            html += `<td class="${cellClass}" style="${cellStyle}">${cellContent}</td>`;
+                        });
+                        html += '</tr>';
+                    });
+
+                    html += '</tbody></table>';
+                    html += '</div>'; // Fermer month-container
+                });
+
+                planningTable.innerHTML = html;
+            } else {
+                // Vue bihebdo - tableau unique
+                let html = '<table><thead><tr>';
+                html += '<th style="min-width: 150px;">Agent</th>';
+
+                // En-têtes des jours
+                allDaysData.forEach(dayData => {
                     const date = dayData.date || new Date(2026, dayData.month - 1, dayData.day);
                     const dayOfWeek = date.getDay();
                     const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
                     const isFerie = isJourFerie(2026, dayData.month, dayData.day);
-
-                    let status = agentDay ? agentDay.days[dayIndex] : '';
-                    let cellContent = status;
-
-                    if (!status && !isWeekend && !isFerie) {
-                        status = 'Présent';
-                        cellContent = 'Présent';
-                        // Ajouter les badges si l'agent est présent
-                        if (agentInfo) {
-                            cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
-                        }
-                    }
-
-                    let cellClass = 'day-cell';
-                    let cellStyle = '';
-                    if (isWeekend || isFerie) {
-                        cellClass += ' weekend';
-                        if (isFerie) {
-                            cellStyle = 'background: #ff9800; color: white;';
-                        }
-                    } else if (status === 'P') {
-                        cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
-                        if (agentInfo) {
-                            cellContent = `P<br>${getAgentBadges(agentInfo)}`;
-                        }
-                    } else if (status === 'PC') {
-                        cellStyle = 'background: #ff00ff; color: white; font-weight: bold;';
-                    } else if (status === 'F') {
-                        cellStyle = 'background: #8000ff; color: white; font-weight: bold;';
-                    } else if (status === 'AST') {
-                        cellStyle = 'background: #0000ff; color: white; font-weight: bold;';
-                    } else if (status === 'CA') {
-                        cellStyle = 'background: #ffff00; color: black; font-weight: bold;';
-                    } else if (status === 'RTT') {
-                        cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
-                    } else if (status === 'CEX') {
-                        cellStyle = 'background: #00ffff; color: black; font-weight: bold;';
-                    } else if (status === 'R') {
-                        cellStyle = 'background: #ff0000; color: white; font-weight: bold;';
-                    } else if (status === 'M') {
-                        cellStyle = 'background: #ff8000; color: white; font-weight: bold;';
-                    } else if (status === 'AT') {
-                        cellStyle = 'background: #ff4000; color: white; font-weight: bold;';
-                    } else if (status === 'TAD') {
-                        cellStyle = 'background: #0080ff; color: white; font-weight: bold;';
-                    } else if (status === 'TP') {
-                        cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
-                    } else if (status === 'MA') {
-                        cellStyle = 'background: #1abc9c; color: white; font-weight: bold;';
-                    } else if (status === 'Présent') {
-                        cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
-                        if (agentInfo) {
-                            cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
-                        }
-                    }
-
-                    html += `<td class="${cellClass}" style="${cellStyle}">${cellContent}</td>`;
+                    html += `<th style="${isWeekend || isFerie ? 'background: ' + (isFerie ? '#ff9800' : '#e74c3c') : ''}">${dayData.day}/${dayData.month}</th>`;
                 });
-                html += '</tr>';
-            });
+                html += '</tr></thead><tbody>';
 
-            html += '</tbody></table>';
-            planningTable.innerHTML = html;
+                // Lignes des agents
+                let currentGroup = '';
+                filteredAgents.forEach(agent => {
+                    const fullName = `${agent.nom} ${agent.prenom}`;
+                    const agentInfo = allAgents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
+                    const colors = groupColors[agent.groupe] || groupColors.default;
+
+                    if (currentGroup !== agent.groupe) {
+                        currentGroup = agent.groupe;
+                        html += `<tr><td colspan="${allDaysData.length + 1}" style="background: ${colors.bg}; color: white; font-weight: bold; text-align: center; padding: 10px;">${agent.groupe}</td></tr>`;
+                    }
+
+                    html += '<tr>';
+                    html += `<td class="agent-cell" style="background: ${colors.bg}33; border-left: 3px solid ${colors.border};">
+                        <div class="agent-name">${fullName}</div>
+                        ${agentInfo ? getAgentBadges(agentInfo) : ''}
+                    </td>`;
+
+                    // Afficher le statut pour chaque jour
+                    allDaysData.forEach(dayData => {
+                        const agentDay = dayData.agents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
+                        const dayIndex = dayData.day - 1;
+
+                        const date = dayData.date || new Date(2026, dayData.month - 1, dayData.day);
+                        const dayOfWeek = date.getDay();
+                        const isWeekend = dayOfWeek === 0 || dayOfWeek === 6;
+                        const isFerie = isJourFerie(2026, dayData.month, dayData.day);
+
+                        let status = agentDay ? agentDay.days[dayIndex] : '';
+                        let cellContent = status;
+
+                        let status = agentDay ? agentDay.days[dayIndex] : '';
+                        let cellContent = status;
+
+                        if (!status && !isWeekend && !isFerie) {
+                            status = 'Présent';
+                            cellContent = 'Présent';
+                            if (agentInfo) {
+                                cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
+                            }
+                        }
+
+                        let cellClass = 'day-cell';
+                        let cellStyle = '';
+                        if (isWeekend || isFerie) {
+                            cellClass += ' weekend';
+                            if (isFerie) {
+                                cellStyle = 'background: #ff9800; color: white;';
+                            }
+                        } else if (status === 'P') {
+                            cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
+                            if (agentInfo) {
+                                cellContent = `P<br>${getAgentBadges(agentInfo)}`;
+                            }
+                        } else if (status === 'PC') {
+                            cellStyle = 'background: #ff00ff; color: white; font-weight: bold;';
+                        } else if (status === 'F') {
+                            cellStyle = 'background: #8000ff; color: white; font-weight: bold;';
+                        } else if (status === 'AST') {
+                            cellStyle = 'background: #0000ff; color: white; font-weight: bold;';
+                        } else if (status === 'CA') {
+                            cellStyle = 'background: #ffff00; color: black; font-weight: bold;';
+                        } else if (status === 'RTT') {
+                            cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
+                        } else if (status === 'CEX') {
+                            cellStyle = 'background: #00ffff; color: black; font-weight: bold;';
+                        } else if (status === 'R') {
+                            cellStyle = 'background: #ff0000; color: white; font-weight: bold;';
+                        } else if (status === 'M') {
+                            cellStyle = 'background: #ff8000; color: white; font-weight: bold;';
+                        } else if (status === 'AT') {
+                            cellStyle = 'background: #ff4000; color: white; font-weight: bold;';
+                        } else if (status === 'TAD') {
+                            cellStyle = 'background: #0080ff; color: white; font-weight: bold;';
+                        } else if (status === 'TP') {
+                            cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
+                        } else if (status === 'MA') {
+                            cellStyle = 'background: #1abc9c; color: white; font-weight: bold;';
+                        } else if (status === 'Présent') {
+                            cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
+                            if (agentInfo) {
+                                cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
+                            }
+                        }
+
+                        html += `<td class="${cellClass}" style="${cellStyle}">${cellContent}</td>`;
+                    });
+                    html += '</tr>';
+                });
+
+                html += '</tbody></table>';
+                planningTable.innerHTML = html;
+            }
         }
 
         function getAgentBadges(agent) {
