@@ -720,25 +720,30 @@ def generate_teams():
                     sheet.cell(row=current_row, column=col).fill = day_fill
                 current_row += 1
             else:
-                # Première équipe : afficher la date
-                first_team = teams[0]
-                team_members = ', '.join([a['fullName'] for a in first_team])
-                sheet.cell(row=current_row, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
-                sheet.cell(row=current_row, column=2, value=team_members)
-                sheet.cell(row=current_row, column=3, value='')
-                for col in [1, 2, 3]:
-                    sheet.cell(row=current_row, column=col).fill = day_fill
-                current_row += 1
+                # Compter le nombre total d'agents pour ce jour
+                total_agents = sum(len(team) for team in teams)
                 
-                # Équipes suivantes : cellule date vide, une ligne par équipe
-                for team in teams[1:]:
-                    team_members = ', '.join([a['fullName'] for a in team])
-                    sheet.cell(row=current_row, column=1, value='')
-                    sheet.cell(row=current_row, column=2, value=team_members)
+                # Première ligne : afficher la date et le premier agent
+                first_agent = teams[0][0] if teams and len(teams[0]) > 0 else None
+                if first_agent:
+                    sheet.cell(row=current_row, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
+                    sheet.cell(row=current_row, column=2, value=first_agent['fullName'])
                     sheet.cell(row=current_row, column=3, value='')
                     for col in [1, 2, 3]:
                         sheet.cell(row=current_row, column=col).fill = day_fill
                     current_row += 1
+                    
+                    # Parcourir tous les agents restants (une ligne par agent)
+                    for team_idx, team in enumerate(teams):
+                        # Commencer à l'index 1 pour la première équipe (on a déjà traité l'agent 0)
+                        start_idx = 1 if team_idx == 0 else 0
+                        for agent in team[start_idx:]:
+                            sheet.cell(row=current_row, column=1, value='')
+                            sheet.cell(row=current_row, column=2, value=agent['fullName'])
+                            sheet.cell(row=current_row, column=3, value='')
+                            for col in [1, 2, 3]:
+                                sheet.cell(row=current_row, column=col).fill = day_fill
+                            current_row += 1
         
         # Ajuster les largeurs de colonnes comme le template
         sheet.column_dimensions['A'].width = 17.0
