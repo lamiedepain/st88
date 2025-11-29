@@ -614,51 +614,34 @@ def generate_teams():
             
             daily_available[d.strftime('%Y-%m-%d')] = available
 
-        # Répartir en équipes (2 ou 3 par équipe)
+        # Répartir en équipes selon le team_size choisi
         daily_teams = {}
         for date_key, agents in daily_available.items():
             teams = []
             if len(agents) > 0:
                 num_agents = len(agents)
-                # Stratégie optimisée pour répartition équilibrée
-                if num_agents % 3 == 0:
-                    # Parfait pour équipes de 3
+                
+                if team_size == 3:
+                    # Priorité aux équipes de 3
                     for i in range(0, num_agents, 3):
-                        teams.append(agents[i:i+3])
-                elif num_agents % 2 == 0:
-                    # Parfait pour équipes de 2
-                    for i in range(0, num_agents, 2):
-                        teams.append(agents[i:i+2])
-                elif num_agents == 7:
-                    # 7 agents: 2 équipes de 2 + 1 équipe de 3
-                    teams.append(agents[0:2])
-                    teams.append(agents[2:4])
-                    teams.append(agents[4:7])
-                elif num_agents % 3 == 1:
-                    # Ex: 10 agents -> 3 équipes de 3 + reste 1 -> 2 équipes de 2 + reste équipes de 3
-                    # Stratégie: créer 2 équipes de 2, puis le reste en équipes de 3
-                    if num_agents >= 7:
-                        teams.append(agents[0:2])
-                        teams.append(agents[2:4])
-                        for i in range(4, num_agents, 3):
+                        if i + 3 <= num_agents:
+                            # Équipe complète de 3
                             teams.append(agents[i:i+3])
-                    else:
-                        # Moins de 7: faire des équipes de 2
-                        for i in range(0, num_agents - 1, 2):
+                        elif i + 2 <= num_agents:
+                            # Reste 2 agents -> équipe de 2
                             teams.append(agents[i:i+2])
-                        if num_agents % 2 == 1:
-                            # Agent seul restant
-                            teams.append([agents[-1]])
-                elif num_agents % 3 == 2:
-                    # Ex: 5 agents -> 1 équipe de 3 + 1 équipe de 2
-                    # Ex: 8 agents -> 2 équipes de 3 + 1 équipe de 2
-                    num_teams_of_3 = (num_agents - 2) // 3
-                    idx = 0
-                    for _ in range(num_teams_of_3):
-                        teams.append(agents[idx:idx+3])
-                        idx += 3
-                    # Le reste forme une équipe de 2
-                    teams.append(agents[idx:idx+2])
+                        else:
+                            # Reste 1 agent -> équipe de 1
+                            teams.append(agents[i:i+1])
+                else:  # team_size == 2
+                    # Priorité aux équipes de 2
+                    for i in range(0, num_agents, 2):
+                        if i + 2 <= num_agents:
+                            # Équipe complète de 2
+                            teams.append(agents[i:i+2])
+                        else:
+                            # Reste 1 agent -> équipe de 1
+                            teams.append(agents[i:i+1])
             
             daily_teams[date_key] = teams
 
@@ -793,10 +776,14 @@ def load_planning():
             return jsonify({'success': False, 'error': 'Nom de fichier vide'}), 400
         
         # Charger le fichier Excel
-        wb = openpyxl.load_workbook(file, data_only=True)
+        wb = openpyxl.load_workbook(file.stream, data_only=True)
         
         # Prendre la première feuille
         sheet = wb.active
+        if sheet is None:
+            if len(wb.worksheets) == 0:
+                return jsonify({'success': False, 'error': 'Le fichier ne contient aucune feuille'}), 400
+            sheet = wb.worksheets[0]
         
         # Lire les en-têtes (première ligne non vide)
         headers = []
@@ -808,7 +795,7 @@ def load_planning():
                 first_row = row_idx
                 break
         
-        if not headers:
+        if not headers or first_row is None:
             return jsonify({'success': False, 'error': 'Aucun en-tête trouvé'}), 400
         
         # Lire toutes les lignes de données
