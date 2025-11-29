@@ -462,15 +462,25 @@
             </div>
 
             <div class="controls">
-                <select id="groupFilter" onchange="filterByGroup()">
-                    <option value="all">Tous les groupes</option>
-                    <option value="Encadrant">Encadrant</option>
-                    <option value="Surveillant de travaux">Surveillant de travaux</option>
-                    <option value="Encadrant Propreté">Encadrant Propreté</option>
-                    <option value="Agents Voirie">Agents Voirie</option>
-                    <option value="Agent EV">Agent EV</option>
-                    <option value="COMMUN - Magasinier">COMMUN - Magasinier</option>
-                </select>
+                <div
+                    style="display: flex; flex-direction: column; gap: 5px; padding: 10px; background: white; border-radius: 8px; border: 2px solid #e0e0e0;">
+                    <label style="font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Groupes :</label>
+                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="all" checked
+                            onchange="toggleAllGroups(this)"> Tous</label>
+                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Encadrant"
+                            checked onchange="filterByGroup()"> Encadrant</label>
+                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox"
+                            value="Surveillant de travaux" checked onchange="filterByGroup()"> Surveillant de
+                        travaux</label>
+                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox"
+                            value="Encadrant Propreté" checked onchange="filterByGroup()"> Encadrant Propreté</label>
+                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Agents Voirie"
+                            checked onchange="filterByGroup()"> Agents Voirie</label>
+                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Agent EV"
+                            checked onchange="filterByGroup()"> Agent EV</label>
+                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox"
+                            value="COMMUN - Magasinier" checked onchange="filterByGroup()"> COMMUN - Magasinier</label>
+                </div>
 
                 <select id="periodSelector">
                     <option value="">Sélectionner une période...</option>
@@ -820,7 +830,11 @@
             // Filtrer par groupe si nécessaire
             let filteredAgents = enrichedAgents;
             if (selectedGroup !== 'all') {
-                filteredAgents = enrichedAgents.filter(a => a.groupe === selectedGroup);
+                if (Array.isArray(selectedGroup)) {
+                    filteredAgents = enrichedAgents.filter(a => selectedGroup.includes(a.groupe));
+                } else {
+                    filteredAgents = enrichedAgents.filter(a => a.groupe === selectedGroup);
+                }
             }
 
             // Sauvegarder pour re-filtrage
@@ -1470,8 +1484,25 @@
             return [];
         }
 
+        function toggleAllGroups(checkbox) {
+            const checkboxes = document.querySelectorAll('.groupCheckbox:not([value="all"])');
+            checkboxes.forEach(cb => cb.checked = checkbox.checked);
+            filterByGroup();
+        }
+
         function filterByGroup() {
-            selectedGroup = document.getElementById('groupFilter').value;
+            const checkboxes = document.querySelectorAll('.groupCheckbox:not([value="all"])');
+            const selectedGroups = Array.from(checkboxes)
+                .filter(cb => cb.checked)
+                .map(cb => cb.value);
+
+            // Mettre à jour la checkbox "Tous"
+            const allCheckbox = document.querySelector('.groupCheckbox[value="all"]');
+            if (allCheckbox) {
+                allCheckbox.checked = selectedGroups.length === checkboxes.length;
+            }
+
+            selectedGroup = selectedGroups.length === checkboxes.length ? 'all' : selectedGroups;
 
             // Re-afficher le planning avec le filtre
             if (currentPlanningData) {
@@ -1540,7 +1571,7 @@
         }
 
         // Fermer modal au clic extérieur
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             const modal = document.getElementById('generateModal');
             if (event.target === modal) {
                 closeGenerateModal();
