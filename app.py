@@ -668,12 +668,18 @@ def generate_teams():
         
         # Charger le template et défusionner les cellules pour éviter l'erreur MergedCell
         wb_template = openpyxl.load_workbook(TEMPLATE_FILE)
-        sheet = wb_template.active  # Première feuille du template
+        
+        # S'assurer qu'on a une feuille active
+        if wb_template.active is None:
+            sheet = wb_template.worksheets[0]
+        else:
+            sheet = wb_template.active
         
         # Défusionner toutes les cellules fusionnées
-        merged_cells_list = list(sheet.merged_cells.ranges)
-        for merged_range in merged_cells_list:
-            sheet.unmerge_cells(str(merged_range))
+        if hasattr(sheet, 'merged_cells') and sheet.merged_cells:
+            merged_cells_list = list(sheet.merged_cells.ranges)
+            for merged_range in merged_cells_list:
+                sheet.unmerge_cells(str(merged_range))
         
         # Remplir le tableau : 2 colonnes (DATE | EQUIPE)
         # En-têtes en ligne 1
