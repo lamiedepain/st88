@@ -675,11 +675,22 @@ def generate_teams():
         for merged_range in merged_cells_list:
             sheet.unmerge_cells(str(merged_range))
         
-        # Remplir le tableau : 3 colonnes (DATE | EQUIPE | INTERVENTION)
-        # Les en-têtes existent déjà dans le template, on les garde
+        # Remplir le tableau : 2 colonnes (DATE | EQUIPE)
+        # En-têtes en ligne 1
+        sheet.cell(row=1, column=1, value='DATE')
+        sheet.cell(row=1, column=2, value='EQUIPE')
+        sheet.cell(row=1, column=3, value='INTERVENTION')
         
         # Styles pour en-têtes
         from openpyxl.styles import Font, PatternFill, Alignment
+        header_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
+        header_font = Font(bold=True, color='FFFFFF')
+        
+        for col in [1, 2, 3]:
+            cell = sheet.cell(row=1, column=col)
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = Alignment(horizontal='center', vertical='center')
         
         # Couleurs alternées pour les jours (sobres)
         day_colors = [
