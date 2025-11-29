@@ -679,9 +679,15 @@ def generate_teams():
         
         # S'assurer qu'on a une feuille active
         if wb_template.active is None:
+            if len(wb_template.worksheets) == 0:
+                return jsonify({'error': 'Le template ne contient aucune feuille'}), 500
             sheet = wb_template.worksheets[0]
         else:
             sheet = wb_template.active
+        
+        # Vérifier que sheet n'est pas None
+        if sheet is None:
+            return jsonify({'error': 'Impossible de charger la feuille du template'}), 500
         
         # Défusionner toutes les cellules fusionnées
         if hasattr(sheet, 'merged_cells') and sheet.merged_cells:
