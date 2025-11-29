@@ -737,6 +737,20 @@ def generate_teams():
                         sheet.cell(row=current_row, column=col).fill = day_fill
                     current_row += 1
         
+        # Ajuster les largeurs de colonnes
+        sheet.column_dimensions['A'].width = 25
+        sheet.column_dimensions['B'].width = 50
+        sheet.column_dimensions['C'].width = 30
+        
+        # Configurer l'impression
+        sheet.page_setup.orientation = sheet.ORIENTATION_LANDSCAPE
+        sheet.page_setup.paperSize = sheet.PAPERSIZE_A4
+        sheet.page_setup.fitToPage = True
+        sheet.page_setup.fitToHeight = 0
+        sheet.page_setup.fitToWidth = 1
+        sheet.print_options.horizontalCentered = True
+        sheet.print_options.verticalCentered = False
+        
         # Sauvegarder en mémoire et renvoyer comme fichier téléchargeable
         output = BytesIO()
         wb_template.save(output)
