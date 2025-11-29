@@ -491,7 +491,8 @@
                 <button class="btn-print" onclick="document.getElementById('excelUpload').click()"
                     style="background: #3498db;">📂 Charger Excel</button>
 
-                <button class="btn-print" onclick="refreshPlanning()" style="background: #27ae60;">🔄 Actualiser</button>
+                <button class="btn-print" onclick="refreshPlanning()" style="background: #27ae60;">🔄
+                    Actualiser</button>
 
                 <select id="printOrientation" style="min-width: 150px;">
                     <option value="portrait">A3 Portrait</option>
@@ -1031,8 +1032,18 @@
                 return { ...agent, groupe };
             });
 
+            // Filtrer par groupe si nécessaire
+            let filteredAgents = enrichedAgents;
+            if (selectedGroup !== 'all') {
+                if (Array.isArray(selectedGroup)) {
+                    filteredAgents = enrichedAgents.filter(a => selectedGroup.includes(a.groupe));
+                } else {
+                    filteredAgents = enrichedAgents.filter(a => a.groupe === selectedGroup);
+                }
+            }
+
             const groupOrder = ['Encadrant', 'Surveillant de travaux', 'Encadrant Propreté', 'Agents Voirie', 'Agent EV', 'COMMUN - Magasinier', 'default'];
-            enrichedAgents.sort((a, b) => {
+            filteredAgents.sort((a, b) => {
                 const indexA = groupOrder.indexOf(a.groupe);
                 const indexB = groupOrder.indexOf(b.groupe);
                 return indexA - indexB;
@@ -1061,7 +1072,7 @@
 
                 // Lignes des agents avec leurs statuts pour ce mois
                 let currentGroup = '';
-                enrichedAgents.forEach(agent => {
+                filteredAgents.forEach(agent => {
                     const fullName = `${agent.nom} ${agent.prenom}`;
                     const agentInfo = allAgents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
                     const colors = groupColors[agent.groupe] || groupColors.default;
@@ -1242,8 +1253,18 @@
                 return { ...agent, groupe };
             });
 
+            // Filtrer par groupe si nécessaire
+            let filteredAgents = enrichedAgents;
+            if (selectedGroup !== 'all') {
+                if (Array.isArray(selectedGroup)) {
+                    filteredAgents = enrichedAgents.filter(a => selectedGroup.includes(a.groupe));
+                } else {
+                    filteredAgents = enrichedAgents.filter(a => a.groupe === selectedGroup);
+                }
+            }
+
             const groupOrder = ['Encadrant', 'Surveillant de travaux', 'Encadrant Propreté', 'Agents Voirie', 'Agent EV', 'COMMUN - Magasinier', 'default'];
-            enrichedAgents.sort((a, b) => {
+            filteredAgents.sort((a, b) => {
                 const indexA = groupOrder.indexOf(a.groupe);
                 const indexB = groupOrder.indexOf(b.groupe);
                 return indexA - indexB;
@@ -1264,7 +1285,7 @@
 
             // Lignes des agents
             let currentGroup = '';
-            enrichedAgents.forEach(agent => {
+            filteredAgents.forEach(agent => {
                 const fullName = `${agent.nom} ${agent.prenom}`;
                 const agentInfo = allAgents.find(a => a.nom === agent.nom && a.prenom === agent.prenom);
                 const colors = groupColors[agent.groupe] || groupColors.default;
