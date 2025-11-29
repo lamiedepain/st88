@@ -749,7 +749,7 @@ def generate_teams():
         sheet.page_setup.fitToHeight = 0
         sheet.page_setup.fitToWidth = 1
         sheet.print_options.horizontalCentered = True
-        sheet.print_options.verticalCentered = False
+        sheet.print_options.verticalCentered = True
         
         # Sauvegarder en mémoire et renvoyer comme fichier téléchargeable
         output = BytesIO()
