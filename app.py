@@ -679,18 +679,42 @@ def generate_teams():
         # En-têtes en ligne 1
         sheet.cell(row=1, column=1, value='DATE')
         sheet.cell(row=1, column=2, value='EQUIPE')
+        sheet.cell(row=1, column=3, value='INTERVENANTS')
+        
+        # Styles pour en-têtes
+        from openpyxl.styles import Font, PatternFill, Alignment
+        header_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
+        header_font = Font(bold=True, color='FFFFFF')
+        
+        for col in [1, 2, 3]:
+            cell = sheet.cell(row=1, column=col)
+            cell.fill = header_fill
+            cell.font = header_font
+            cell.alignment = Alignment(horizontal='center', vertical='center')
+        
+        # Couleurs alternées pour les jours (sobres)
+        day_colors = [
+            'E8F4F8',  # Bleu très clair
+            'F0F0F0',  # Gris très clair
+        ]
         
         day_names_fr = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi']
         
         current_row = 2
-        for d, day_name in zip(dates, day_names_fr):
+        for day_idx, (d, day_name) in enumerate(zip(dates, day_names_fr)):
             date_key = d.strftime('%Y-%m-%d')
             teams = daily_teams.get(date_key, [])
+            
+            # Couleur alternée pour ce jour
+            day_fill = PatternFill(start_color=day_colors[day_idx % 2], end_color=day_colors[day_idx % 2], fill_type='solid')
             
             if len(teams) == 0:
                 # Aucune équipe : une ligne vide
                 sheet.cell(row=current_row, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
                 sheet.cell(row=current_row, column=2, value='')
+                sheet.cell(row=current_row, column=3, value='')
+                for col in [1, 2, 3]:
+                    sheet.cell(row=current_row, column=col).fill = day_fill
                 current_row += 1
             else:
                 # Première équipe : afficher la date
@@ -698,6 +722,9 @@ def generate_teams():
                 team_members = ', '.join([a['fullName'] for a in first_team])
                 sheet.cell(row=current_row, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
                 sheet.cell(row=current_row, column=2, value=team_members)
+                sheet.cell(row=current_row, column=3, value='')
+                for col in [1, 2, 3]:
+                    sheet.cell(row=current_row, column=col).fill = day_fill
                 current_row += 1
                 
                 # Équipes suivantes : cellule date vide, une ligne par équipe
@@ -705,6 +732,9 @@ def generate_teams():
                     team_members = ', '.join([a['fullName'] for a in team])
                     sheet.cell(row=current_row, column=1, value='')
                     sheet.cell(row=current_row, column=2, value=team_members)
+                    sheet.cell(row=current_row, column=3, value='')
+                    for col in [1, 2, 3]:
+                        sheet.cell(row=current_row, column=col).fill = day_fill
                     current_row += 1
         
         # Sauvegarder en mémoire et renvoyer comme fichier téléchargeable
