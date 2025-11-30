@@ -927,27 +927,24 @@
                         </div>
                     `;
                 } else if (isDateField) {
-                    // Champ de date simple - garder les dates existantes même si c'était une croix
+                    // Champ de date simple - préserver les dates existantes
+                    let dateValue = '';
                     if (value) {
-                        // Si c'est juste une croix, chercher une date existante ou laisser vide
+                        // Si c'est juste une croix, ne pas remplir le champ
                         if (typeof value === 'string' && (value.toLowerCase() === 'x' || value === '✓')) {
-                            displayValue = ''; // Laisser vide pour permettre la saisie
-                        } else if (value instanceof Date || typeof value === 'object') {
-                            try {
-                                displayValue = new Date(value).toISOString().split('T')[0];
-                            } catch (e) {
-                                displayValue = '';
-                            }
-                        } else if (typeof value === 'string' && value.includes('T')) {
-                            displayValue = value.split('T')[0];
-                        } else if (typeof value === 'string' && !isNaN(Date.parse(value))) {
-                            try {
-                                displayValue = new Date(value).toISOString().split('T')[0];
-                            } catch (e) {
-                                displayValue = value;
-                            }
+                            dateValue = '';
                         } else {
-                            displayValue = value;
+                            // Essayer de convertir en date
+                            try {
+                                const dateObj = new Date(value);
+                                if (!isNaN(dateObj.getTime())) {
+                                    dateValue = dateObj.toISOString().split('T')[0];
+                                } else {
+                                    dateValue = value.toString();
+                                }
+                            } catch (e) {
+                                dateValue = value.toString();
+                            }
                         }
                     }
 
@@ -956,8 +953,9 @@
                             <label>${label}</label>
                             <input type="date" 
                                    id="field_${colIdx}" 
-                                   value="${displayValue}" 
-                                   data-col="${colIdx}">
+                                   value="${dateValue}" 
+                                   data-col="${colIdx}"
+                                   data-original="${value || ''}">
                         </div>
                     `;
                 } else {
@@ -988,24 +986,28 @@
 
             const data = [...editingAgent.data];
 
-            // Récupérer UNIQUEMENT les valeurs des champs modifiés ou remplis
+            // Récupérer UNIQUEMENT les valeurs des champs modifiés
             headers.forEach((header, colIdx) => {
                 if (colIdx < 4) return; // Ignorer les 4 premières colonnes
 
                 const input = document.getElementById(`field_${colIdx}`);
                 if (input) {
-                    // Si c'est une checkbox, stocker 'x' ou vide
                     if (input.type === 'checkbox') {
+                        // Checkbox : stocker 'x' si coché, '' sinon
                         data[colIdx] = input.checked ? 'x' : '';
                     } else if (input.type === 'date') {
-                        // Pour les dates, ne mettre à jour QUE si une valeur est saisie
-                        // Sinon garder l'ancienne valeur
+                        // Date : ne mettre à jour QUE si une valeur est saisie
+                        const originalValue = input.getAttribute('data-original');
                         if (input.value) {
+                            // Nouvelle date saisie
                             data[colIdx] = input.value;
+                        } else if (!input.value && originalValue) {
+                            // Champ vidé mais il y avait une valeur -> garder l'originale
+                            data[colIdx] = originalValue;
                         }
-                        // Si vide, on garde data[colIdx] tel quel (ancienne valeur)
+                        // Si vide et pas d'originale, on garde data[colIdx] tel quel
                     } else {
-                        // Pour les champs texte
+                        // Champ texte : mettre à jour seulement si rempli
                         if (input.value) {
                             data[colIdx] = input.value;
                         }
