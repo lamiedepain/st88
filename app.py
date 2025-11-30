@@ -764,7 +764,18 @@ def generate_teams():
         sheet.column_dimensions['D'].width = 20.140625
         sheet.column_dimensions['E'].width = 20.140625
         
-        # Ne pas configurer l'impression - garder les paramètres du template
+        # Configuration de l'impression : marges étroites et quadrillage
+        sheet.page_setup.orientation = sheet.ORIENTATION_PORTRAIT
+        sheet.print_options.gridLines = True
+        sheet.print_options.gridLinesSet = True
+        
+        # Marges étroites (en inches)
+        sheet.page_margins.left = 0.25
+        sheet.page_margins.right = 0.25
+        sheet.page_margins.top = 0.75
+        sheet.page_margins.bottom = 0.75
+        sheet.page_margins.header = 0.3
+        sheet.page_margins.footer = 0.3
         
         # Sauvegarder en mémoire et renvoyer comme fichier téléchargeable
         output = BytesIO()
