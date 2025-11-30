@@ -727,6 +727,7 @@ def generate_teams():
                     cell = sheet.cell(row=current_row, column=col)
                     cell.fill = day_fill
                     cell.font = default_font
+                    cell.alignment = Alignment(horizontal='center', vertical='center')
                 current_row += 1
             else:
                 # Collecter tous les agents du jour
@@ -751,10 +752,12 @@ def generate_teams():
                     
                     sheet.cell(row=current_row, column=5, value='')
                     
+                    # Appliquer le style et l'alignement centré
                     for col in [1, 2, 3, 4, 5]:
                         cell = sheet.cell(row=current_row, column=col)
                         cell.fill = day_fill
                         cell.font = default_font
+                        cell.alignment = Alignment(horizontal='center', vertical='center')
                     current_row += 1
         
         # Ajuster les largeurs de colonnes selon le template
