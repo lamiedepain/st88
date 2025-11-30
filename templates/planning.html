@@ -749,6 +749,25 @@
             }
         }
 
+        function showProgress(percent, message) {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            
+            progressContainer.classList.add('active');
+            progressFill.style.width = percent + '%';
+            progressFill.textContent = percent + '%';
+            progressText.textContent = message;
+        }
+
+        function hideProgress() {
+            const progressContainer = document.getElementById('progressContainer');
+            setTimeout(() => {
+                progressContainer.classList.remove('active');
+                document.getElementById('progressFill').style.width = '0%';
+            }, 1000);
+        }
+
         function changeView(view) {
             currentView = view;
             document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
@@ -818,6 +837,17 @@
                     periodSelector.appendChild(option);
                 }
             }
+            
+            // Sélectionner automatiquement la première option disponible
+            if (periodSelector.options.length > 1) {
+                periodSelector.selectedIndex = 1;
+                // Déclencher le chargement automatiquement
+                setTimeout(() => {
+                    if (periodSelector.value) {
+                        generatePlanning(periodSelector.value);
+                    }
+                }, 100);
+            }
         }
 
         periodSelector.addEventListener('change', () => {
@@ -838,31 +868,48 @@
 
         async function generatePlanning(period) {
             planningTable.innerHTML = '<div class="loading">Génération du planning...</div>';
+            showProgress(10, 'Récupération des données...');
 
             // Pour toutes les vues, si c'est 2026, récupérer les données Excel mensuelles
             if (currentView === 'mensuel') {
+                showProgress(30, 'Chargement du mois...');
                 const [year, month] = period.split('-');
                 try {
                     const response = await fetch(`/api/planning-data/${year}/${month}`);
+                    showProgress(60, 'Traitement des données...');
                     const data = await response.json();
 
                     if (data.success) {
+                        showProgress(90, 'Affichage du planning...');
                         displayMonthlyPlanning(data.agents, year, month);
+                        showProgress(100, 'Terminé!');
+                        hideProgress();
                     } else {
                         planningTable.innerHTML = `<div class="loading">❌ ${data.error}</div>`;
+                        hideProgress();
                     }
                 } catch (error) {
                     planningTable.innerHTML = `<div class="loading">❌ ${error.message}</div>`;
+                    hideProgress();
                 }
             } else if (currentView === 'annuel') {
                 // Vue annuelle : afficher tous les mois
-                displayAnnualView(period);
+                showProgress(30, 'Chargement de l\'année...');
+                await displayAnnualView(period);
+                showProgress(100, 'Terminé!');
+                hideProgress();
             } else if (currentView === 'trimestriel') {
                 // Vue trimestrielle : afficher 3 mois
-                displayQuarterView(period);
+                showProgress(30, 'Chargement du trimestre...');
+                await displayQuarterView(period);
+                showProgress(100, 'Terminé!');
+                hideProgress();
             } else if (currentView === 'bihebdo') {
                 // Vue bi-hebdo : afficher 14 jours
-                displayBiweeklyView(period);
+                showProgress(30, 'Chargement des 2 semaines...');
+                await displayBiweeklyView(period);
+                showProgress(100, 'Terminé!');
+                hideProgress();
             }
         } function displayMonthlyPlanning(agents, year, month) {
             const daysInMonth = new Date(year, month, 0).getDate();
@@ -1049,6 +1096,7 @@
             const monthNames = ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 
             for (let m = 1; m <= 12; m++) {
+                showProgress(30 + (m * 5), `Chargement mois ${m}/12...`);
                 try {
                     const response = await fetch(`/api/planning-data/${year}/${String(m).padStart(2, '0')}`);
                     const data = await response.json();
@@ -1230,7 +1278,10 @@
 
             // Récupérer données des 3 mois
             const allDaysData = [];
+            let monthIndex = 0;
             for (const m of months) {
+                monthIndex++;
+                showProgress(30 + (monthIndex * 20), `Chargement mois ${monthIndex}/3...`);
                 try {
                     const response = await fetch(`/api/planning-data/2026/${String(m).padStart(2, '0')}`);
                     const data = await response.json();
@@ -1263,6 +1314,7 @@
             const allDaysData = [];
 
             for (let i = 0; i < 14; i++) {
+                showProgress(30 + (i * 4), `Chargement jour ${i+1}/14...`);
                 const currentDate = new Date(startDate);
                 currentDate.setDate(startDate.getDate() + i);
                 const month = currentDate.getMonth() + 1;
@@ -1727,7 +1779,7 @@
             const orientation = this.value;
             document.body.classList.remove('landscape-print', 'portrait-print');
             document.body.classList.add(orientation + '-print');
-            
+
             // Mettre à jour le style @page dynamiquement
             let styleSheet = document.getElementById('dynamic-print-style');
             if (!styleSheet) {
@@ -1735,7 +1787,7 @@
                 styleSheet.id = 'dynamic-print-style';
                 document.head.appendChild(styleSheet);
             }
-            
+
             if (orientation === 'landscape') {
                 styleSheet.textContent = '@media print { @page { size: A3 landscape; } }';
             } else {
