@@ -1392,38 +1392,38 @@
                 });
             }
 
-            // Identifier les mois uniques à charger (peut inclure décembre 2025 et janvier 2026)
-            const monthsToLoad = [...new Set(daysNeeded.map(d => `${d.year}-${d.month}`))];
-            
+            // Identifier les mois de 2026 uniquement (le fichier Excel n'a que 2026)
+            const monthsToLoad = [...new Set(daysNeeded
+                .filter(d => d.year === 2026)
+                .map(d => d.month))];
+
             showProgress(40, `Chargement de ${monthsToLoad.length} mois...`);
 
-            // Charger les données des mois
+            // Charger les données des mois de 2026 uniquement
             const monthsData = {};
-            for (const monthKey of monthsToLoad) {
-                const [yearStr, monthStr] = monthKey.split('-');
-                const y = parseInt(yearStr);
-                const m = parseInt(monthStr);
+            for (const month of monthsToLoad) {
                 try {
-                    const response = await fetch(`/api/planning-data/${y}/${String(m).padStart(2, '0')}`);
+                    const response = await fetch(`/api/planning-data/2026/${String(month).padStart(2, '0')}`);
                     const data = await response.json();
                     if (data.success) {
-                        monthsData[monthKey] = data.agents;
+                        monthsData[month] = data.agents;
                     }
                 } catch (error) {
-                    console.error('Erreur:', error);
+                    console.error('Erreur chargement mois', month, error);
                 }
             }
 
             showProgress(70, 'Traitement des données...');
 
-            // Construire allDaysData avec les données déjà chargées
+            // Construire allDaysData - pour les jours de 2025, on met des données vides
             const allDaysData = daysNeeded.map(dayInfo => ({
                 month: dayInfo.month,
                 day: dayInfo.day,
                 date: dayInfo.date,
-                agents: monthsData[`${dayInfo.year}-${dayInfo.month}`] || []
+                agents: dayInfo.year === 2026 ? (monthsData[dayInfo.month] || []) : []
             }));
 
+            console.log('Données bihebdo:', allDaysData.length, 'jours', allDaysData[0]);
             showProgress(90, 'Affichage...');
             displayMultiMonthPlanning(allDaysData, 'bihebdo');
         }
