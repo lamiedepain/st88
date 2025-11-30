@@ -345,25 +345,30 @@
                 margin: 10mm;
             }
 
-            body.landscape-print @page {
-                size: A3 landscape;
-                margin: 10mm;
+            body.landscape-print {
+                @page {
+                    size: A3 landscape;
+                    margin: 10mm;
+                }
             }
 
-            body.quarterly-print @page {
-                size: A3 portrait;
-                margin: 10mm;
+            body.quarterly-print {
+                @page {
+                    size: A3 portrait;
+                    margin: 10mm;
+                }
             }
 
-            body.annual-print @page {
-                size: A3 portrait;
-                margin: 10mm;
+            body.annual-print {
+                @page {
+                    size: A3 portrait;
+                    margin: 10mm;
+                }
             }
 
             * {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
-                color-adjust: exact !important;
             }
 
             body {
@@ -1362,8 +1367,31 @@
             const year = 2026;
             const weekNum = parseInt(period.split('-W')[1]);
 
-            // Calculer les dates (14 jours)
-            const startDate = new Date(2026, 0, 1 + (weekNum - 1) * 14);
+            // Trouver le premier lundi de l'année 2026
+            const jan1 = new Date(2026, 0, 1);
+            const dayOfWeek = jan1.getDay(); // 0 = dimanche, 1 = lundi, ..., 6 = samedi
+            
+            // Calculer combien de jours jusqu'au premier lundi
+            // Si c'est déjà lundi (1), offset = 0
+            // Si c'est mardi (2), offset = 6 (aller au lundi suivant)
+            // Si c'est dimanche (0), offset = 1
+            let daysToMonday;
+            if (dayOfWeek === 0) {
+                daysToMonday = 1; // Dimanche -> Lundi
+            } else if (dayOfWeek === 1) {
+                daysToMonday = 0; // Déjà lundi
+            } else {
+                daysToMonday = 8 - dayOfWeek; // Aller au lundi suivant
+            }
+            
+            // Premier lundi de l'année
+            const firstMonday = new Date(2026, 0, 1 + daysToMonday);
+            
+            // Calculer la date de début (lundi) pour la période bihebdo demandée
+            // Période 1 = semaines 1-2 (jours 0-13 à partir du premier lundi)
+            const startDate = new Date(firstMonday);
+            startDate.setDate(firstMonday.getDate() + (weekNum - 1) * 14);
+            
             const allDaysData = [];
 
             for (let i = 0; i < 14; i++) {
