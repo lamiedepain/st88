@@ -13,10 +13,13 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: #f5f7fa;
             min-height: 100vh;
             padding: 0;
+            color: #0f172a;
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
@@ -155,42 +158,80 @@
 
         table {
             width: 100%;
-            border-collapse: collapse;
+            border-collapse: separate;
+            border-spacing: 0;
+            background: white;
+            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
         }
 
         th,
         td {
-            padding: 10px;
-            border: 1px solid #e5e7eb;
+            padding: 10px 12px;
+            border-bottom: 1px solid #e6eef8;
             text-align: center;
-            font-size: 12px;
-            min-width: 40px;
+            font-size: 13px;
+            min-width: 48px;
+            vertical-align: middle;
+        }
+
+        /* Contenu des cases jour : inner div centré. Hauteur des cases définie dynamiquement en JS (plus fiable que aspect-ratio). */
+        .cell-inner {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            padding: 4px;
+            overflow: visible;
+            /* allow badges to be visible inside */
+            white-space: normal;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        /* S'assurer que les pastilles (badges) restent visibles */
+        .agent-cell {
+            overflow: visible !important;
+        }
+
+        .agent-badges {
+            position: relative;
+            z-index: 30;
         }
 
         th {
-            background: #f9fafb;
-            color: #111827;
+            background: linear-gradient(180deg, #0f172a, #111827);
+            color: #ffffff;
             font-weight: 600;
             position: sticky;
             top: 0;
-            z-index: 10;
-            border-bottom: 2px solid #d1d5db;
+            z-index: 20;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.02em;
+            padding: 10px 14px;
         }
 
         .agent-cell {
             font-weight: 600;
             text-align: left;
-            background: #f9fafb;
+            background: #ffffff;
             position: sticky;
             left: 0;
-            z-index: 5;
-            min-width: 150px;
-            padding: 8px;
+            z-index: 15;
+            min-width: 220px;
+            max-width: 320px;
+            padding: 12px 14px;
+            border-right: 1px solid #eef4fb;
+            box-shadow: 4px 0 8px rgba(15, 23, 42, 0.03);
         }
 
         .agent-name {
-            font-size: 12px;
-            margin-bottom: 4px;
+            font-size: 13px;
+            margin-bottom: 6px;
+            font-weight: 700;
+            color: #0b1220;
         }
 
         .agent-badges {
@@ -209,6 +250,22 @@
             color: white;
             line-height: 16px;
             text-align: center;
+        }
+
+        /* Smaller badges when displayed inside day cells */
+        .cell-inner .badge-mini {
+            width: 12px;
+            height: 12px;
+            line-height: 12px;
+            font-size: 7px;
+        }
+
+        .cell-inner .agent-badges {
+            display: flex;
+            gap: 3px;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .badge-caces {
@@ -237,8 +294,14 @@
 
         .day-cell {
             cursor: pointer;
-            transition: background 0.2s;
+            transition: background 0.18s ease, color 0.18s ease;
             position: relative;
+            min-height: 40px;
+            padding: 8px 6px;
+            white-space: normal;
+            /* allow badges to wrap */
+            overflow: visible;
+            /* ensure badges are not clipped */
         }
 
         .day-cell:hover {
@@ -340,6 +403,8 @@
         }
 
         @media print {
+
+            /* Page size for print: A3 by default, switch via body classes */
             @page {
                 size: A3 portrait;
                 margin: 10mm;
@@ -366,99 +431,61 @@
                 }
             }
 
+            /* Preserve colors in print */
             * {
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
             }
 
+            /* Layout cleanup for print */
             body {
                 background: white !important;
                 padding: 0;
                 margin: 0;
-                width: 100%;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .container {
-                max-width: 100% !important;
-                padding: 0 !important;
-                margin: 0 auto !important;
-                width: 100%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
+                color: #0f172a;
             }
 
             header nav,
             .controls,
             .view-tabs,
-            header>div:first-child {
+            header>div:first-child,
+            #progressContainer,
+            .modal {
                 display: none !important;
             }
 
-            /* Sauts de page pour vue annuelle - tous les 3 mois */
-            body.annual-print .month-container:nth-of-type(3n+1):not(:first-of-type) {
-                page-break-before: always;
-            }
-
-            /* Sauts de page pour vue trimestrielle - chaque mois sur une nouvelle ligne */
-            body.quarterly-print .month-container {
-                page-break-inside: avoid;
-                display: block !important;
-                width: 100% !important;
-                margin-bottom: 10mm;
-            }
-
-            body.quarterly-print h3 {
-                page-break-after: avoid;
-            }
-
-            header {
-                padding: 5px 0 !important;
-                margin: 0 auto !important;
-                text-align: center;
-                width: 100%;
-            }
-
-            header h1 {
-                font-size: 12px !important;
-                margin: 2px 0 !important;
-                text-align: center;
-                color: black !important;
-            }
-
+            .container,
             .planning-container {
-                box-shadow: none;
-                border-radius: 0;
+                max-width: 100% !important;
+                width: 100% !important;
                 padding: 0 !important;
-                margin: 0 auto !important;
-                width: 100%;
-                max-width: 100%;
-                overflow: visible !important;
-                text-align: center;
+                margin: 0;
             }
 
             #planningTable {
                 width: 100% !important;
                 overflow: visible !important;
-                margin: 0 auto !important;
+                margin: 0 !important;
                 padding: 0 !important;
-                text-align: center;
             }
 
-            .agent-badges {
-                display: flex !important;
+            /* Ensure each month block doesn't split awkwardly */
+            .month-container {
+                page-break-inside: avoid;
+                margin-bottom: 8mm;
             }
 
+            body.annual-print .month-container:nth-of-type(3n+1):not(:first-of-type) {
+                page-break-before: always;
+            }
+
+            /* Table print styling: larger than previous to be readable on A3 */
             table {
-                font-size: 6px !important;
+                font-size: 9px !important;
                 width: 100% !important;
-                table-layout: auto !important;
+                table-layout: fixed !important;
                 border-collapse: collapse !important;
                 page-break-inside: auto;
-                margin: 0 !important;
             }
 
             thead {
@@ -472,29 +499,51 @@
 
             th,
             td {
-                padding: 1px !important;
-                border: 0.3pt solid #333 !important;
-                font-size: 6px !important;
-                line-height: 1.2 !important;
+                padding: 6px 8px !important;
+                border: 0.5pt solid #cddff6 !important;
+                line-height: 1.15 !important;
+                font-size: 9px !important;
             }
 
             th {
-                background: #667eea !important;
-                color: white !important;
-                font-weight: bold !important;
-                padding: 2px 1px !important;
+                background: #0f172a !important;
+                color: #fff !important;
+                font-weight: 700 !important;
+                padding: 8px 10px !important;
+                position: static !important;
             }
 
-            .agent-cell {
+            /* Print: ensure badges and cell content remain visible and compact */
+            .cell-inner {
+                aspect-ratio: auto !important;
+                padding: 2px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                height: auto !important;
+            }
+
+            .cell-inner .badge-mini {
+                width: 8px !important;
+                height: 8px !important;
+                line-height: 8px !important;
                 font-size: 6px !important;
-                max-width: 70px !important;
-                min-width: 70px !important;
-                width: 70px !important;
-                padding: 1px !important;
+            }
+
+            /* Agent column should remain visible but compact */
+            .agent-cell {
+                font-size: 9px !important;
+                min-width: 90px !important;
+                max-width: 220px !important;
+                width: 140px !important;
+                padding: 6px 8px !important;
+                position: static !important;
+                box-shadow: none !important;
+                border-right: 0.5pt solid #cddff6 !important;
             }
 
             .agent-name {
-                font-size: 6px !important;
+                font-size: 9px !important;
                 white-space: nowrap;
                 overflow: hidden;
                 text-overflow: ellipsis;
@@ -504,21 +553,84 @@
             .badge-mini {
                 width: 10px !important;
                 height: 10px !important;
-                font-size: 5px !important;
+                font-size: 6px !important;
                 line-height: 10px !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                display: inline-block !important;
             }
 
             .day-cell {
                 text-align: center !important;
-                font-size: 6px !important;
-                padding: 1px !important;
+                font-size: 9px !important;
+                padding: 4px !important;
+            }
+
+            /* In print, don't force square aspect too aggressively; let rows adapt */
+            .cell-inner {
+                aspect-ratio: auto !important;
+                padding: 2px !important;
+                display: block !important;
+                height: auto !important;
+            }
+
+            /* Hide elements that shouldn't appear in print */
+            .view-tab,
+            button,
+            input,
+            select,
+            .controls,
+            nav,
+            .modal {
+                display: none !important;
             }
 
             br {
                 display: none;
+            }
+
+            /* Corrections supplémentaires pour l'impression */
+            table {
+                table-layout: auto !important;
+                width: 100% !important;
+                font-size: 9px !important;
+            }
+
+            td,
+            th {
+                height: auto !important;
+                min-height: 0 !important;
+                overflow: visible !important;
+                white-space: normal !important;
+                word-break: break-word !important;
+            }
+
+            td.day-cell {
+                padding: 4px !important;
+                height: auto !important;
+            }
+
+            /* Disable any fixed heights set by JS for print */
+            td[style*="height:"] {
+                height: auto !important;
+                max-height: none !important;
+            }
+
+            /* Make agent column compact and static in print */
+            .agent-cell {
+                position: static !important;
+                box-shadow: none !important;
+                width: 140px !important;
+                min-width: 90px !important;
+                max-width: 220px !important;
+                overflow: visible !important;
+            }
+
+            /* Ensure badges print and remain legible */
+            .badge-mini,
+            .cell-inner .badge-mini {
+                display: inline-block !important;
+                width: 8px !important;
+                height: 8px !important;
+                line-height: 8px !important;
+                font-size: 6px !important;
             }
         }
     </style>
@@ -588,55 +700,57 @@
                 <div style="font-weight: 600; color: #2c3e50;">Légende :</div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #00ff00; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">Présence (P)</span>
+                    <span style="font-size: 14px;" title="Présence — code: P">Présence (P)</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #ff00ff; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">Prév Congés (PC)</span>
+                    <span style="font-size: 14px;" title="Prév. Congés — code: PC">Prév Congés (PC)</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #8000ff; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">Formation (F)</span>
+                    <span style="font-size: 14px;" title="Formation — code: F">Formation (F)</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #0000ff; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">Astreinte (AST)</span>
+                    <span style="font-size: 14px;" title="Astreinte — code: AST">Astreinte (AST)</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #ffff00; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">Congés Annuel (CA)</span>
+                    <span style="font-size: 14px;" title="Congés Annuel — code: CA">Congés Annuel (CA)</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #ffff80; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">RTT</span>
+                    <span style="font-size: 14px;" title="RTT — Réduction du temps de travail">RTT</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #00ffff; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">Congés Exc (CEX)</span>
+                    <span style="font-size: 14px;" title="Congés exceptionnels — code: CEX">Congés Exc (CEX)</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #ff0000; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">Réserve (R)</span>
+                    <span style="font-size: 14px;" title="Réserve — code: R">Réserve (R)</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #ff8000; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">Maladie (M)</span>
+                    <span style="font-size: 14px;" title="Maladie — code: M">Maladie (M)</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #ff4000; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">Accident Travail (AT)</span>
+                    <span style="font-size: 14px;" title="Accident du travail — code: AT">Accident Travail (AT)</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #0080ff; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">Travail Distance (TAD)</span>
+                    <span style="font-size: 14px;" title="Travail à distance — code: TAD">Travail Distance (TAD)</span>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #ffff80; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">Temps Partiel (TP)</span>
+                    <span style="font-size: 14px;" title="Temps partiel — code: TP">Temps Partiel (TP)</span>
                 </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #1abc9c; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">MA</span>
+                <!-- 'MA' legend removed per user request -->
+                <div style="display:flex; align-items:center; gap:12px; margin-left:8px;">
+                    <small style="font-size:12px; color:#334155;" title="Remarque importante">ℹ️ Remarque :</small>
+                    <small style="font-size:12px; color:#334155;">Les statuts 'MA' présents dans l'Excel sont
+                        automatiquement interprétés comme 'M' (Maladie) lors du chargement.</small>
                 </div>
                 <div style="display: flex; align-items: center; gap: 5px;">
                     <div style="width: 20px; height: 20px; background: #e74c3c; opacity: 0.3; border-radius: 4px;">
@@ -1097,8 +1211,6 @@
                         cellStyle = 'background: #0080ff; color: white; font-weight: bold;';
                     } else if (status === 'TP') {
                         cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
-                    } else if (status === 'MA') {
-                        cellStyle = 'background: #1abc9c; color: white; font-weight: bold;';
                     } else if (status === 'Présent') {
                         cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
                         if (agentInfo) {
@@ -1106,13 +1218,18 @@
                         }
                     }
 
-                    html += `<td class="${cellClass}" style="${cellStyle}" data-status="${status}">${cellContent}</td>`;
+                    html += `<td class="${cellClass}" style="${cellStyle}" data-status="${status}"><div class="cell-inner">${cellContent}</div></td>`;
                 }
                 html += '</tr>';
             });
 
             html += '</tbody></table>';
             planningTable.innerHTML = html;
+            setTimeout(() => { try { adjustAllTablesToFit(); } catch (e) { console.error(e); } }, 50);
+            // Ajuster dynamiquement les largeurs de colonnes pour éviter la barre horizontale
+            setTimeout(() => {
+                try { adjustMonthlyTableToFit(); } catch (e) { console.error('adjustMonthlyTableToFit error', e); }
+            }, 50);
         }
 
         function displayEmptyPlanning(period) {
@@ -1137,15 +1254,14 @@
                 // Cellules vides pour chaque colonne
                 columns.forEach(col => {
                     const isWeekend = col.isWeekend || false;
-                    html += `<td class="day-cell ${isWeekend ? 'weekend' : ''}" 
-                                    data-agent="${agent.index}" 
-                                    data-date="${col.date || ''}"></td>`;
+                    html += `<td class="day-cell ${isWeekend ? 'weekend' : ''}" data-agent="${agent.index}" data-date="${col.date || ''}"><div class="cell-inner"></div></td>`;
                 });
                 html += '</tr>';
             });
 
             html += '</tbody></table>';
             planningTable.innerHTML = html;
+            setTimeout(() => { try { adjustAllTablesToFit(); } catch (e) { console.error(e); } }, 50);
         }
 
         async function displayAnnualView(year) {
@@ -1294,15 +1410,13 @@
                             cellStyle = 'background: #0080ff; color: white; font-weight: bold;';
                         } else if (status === 'TP') {
                             cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
-                        } else if (status === 'MA') {
-                            cellStyle = 'background: #1abc9c; color: white; font-weight: bold;';
                         } else if (isWeekend) {
                             cellStyle = 'background: #e74c3c44;';
                         } else if (isFerie) {
                             cellStyle = 'background: #e67e2244;';
                         }
 
-                        html += `<td style="${cellStyle}">${cellContent}</td>`;
+                        html += `<td class="day-cell" style="${cellStyle}"><div class="cell-inner">${cellContent}</div></td>`;
                     }
                     html += '</tr>';
                 });
@@ -1312,6 +1426,7 @@
             });
 
             planningTable.innerHTML = html;
+            setTimeout(() => { try { adjustAllTablesToFit(); } catch (e) { console.error(e); } }, 50);
         }
 
         function getMonthSummary(days) {
@@ -1581,7 +1696,7 @@
                                 }
                             }
 
-                            html += `<td class="${cellClass}" style="${cellStyle}">${cellContent}</td>`;
+                            html += `<td class="${cellClass}" style="${cellStyle}"><div class="cell-inner">${cellContent}</div></td>`;
                         });
                         html += '</tr>';
                     });
@@ -1591,6 +1706,7 @@
                 });
 
                 planningTable.innerHTML = html;
+                setTimeout(() => { try { adjustAllTablesToFit(); } catch (e) { console.error(e); } }, 50);
             } else {
                 // Vue bihebdo - tableau unique
                 let html = '<table><thead><tr>';
@@ -1679,8 +1795,6 @@
                             cellStyle = 'background: #0080ff; color: white; font-weight: bold;';
                         } else if (status === 'TP') {
                             cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
-                        } else if (status === 'MA') {
-                            cellStyle = 'background: #1abc9c; color: white; font-weight: bold;';
                         } else if (status === 'Présent') {
                             cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
                             if (agentInfo) {
@@ -1688,13 +1802,14 @@
                             }
                         }
 
-                        html += `<td class="${cellClass}" style="${cellStyle}">${cellContent}</td>`;
+                        html += `<td class="${cellClass}" style="${cellStyle}"><div class="cell-inner">${cellContent}</div></td>`;
                     });
                     html += '</tr>';
                 });
 
                 html += '</tbody></table>';
                 planningTable.innerHTML = html;
+                setTimeout(() => { try { adjustAllTablesToFit(); } catch (e) { console.error(e); } }, 50);
             }
         }
 
@@ -1999,14 +2114,269 @@
                         cellStyle = 'font-weight: bold; background: #f8f9fa;';
                     }
 
-                    html += `<td style="${cellStyle}">${cellValue}</td>`;
+                    html += `<td class="day-cell" style="${cellStyle}"><div class="cell-inner">${cellValue}</div></td>`;
                 });
                 html += '</tr>';
             });
 
             html += '</tbody></table>';
             planningTable.innerHTML = html;
+            setTimeout(() => { try { adjustAllTablesToFit(); } catch (e) { console.error(e); } }, 50);
         }
+
+        // Ajuste la table mensuelle pour qu'elle tienne dans la fenêtre (pas de scrollbar horizontale)
+        function adjustMonthlyTableToFit() {
+            const container = document.querySelector('.planning-container');
+            const table = planningTable.querySelector('table');
+            if (!container || !table) return;
+
+            // Forcer table-layout fixed pour appliquer des largeurs
+            table.style.tableLayout = 'fixed';
+
+            // Calculer largeur disponible (prendre en compte padding)
+            const containerStyle = getComputedStyle(container);
+            const containerPadding = parseFloat(containerStyle.paddingLeft || 0) + parseFloat(containerStyle.paddingRight || 0);
+            const availableWidth = Math.max(300, container.clientWidth - containerPadding);
+
+            // Nombre de colonnes jours = th count - 1 (col agent)
+            const thead = table.querySelector('thead');
+            if (!thead) return;
+            const ths = thead.querySelectorAll('th');
+            if (ths.length < 2) return;
+
+            const dayCols = ths.length - 1;
+
+            // Estimer largeur colonne agent (prendre la largeur actuelle ou min 140)
+            const agentColWidth = Math.min(360, Math.max(140, ths[0].offsetWidth || 220));
+
+            // Espace disponible pour les jours
+            const spaceForDays = Math.max(100, availableWidth - agentColWidth - 20);
+            let dayWidth = Math.floor(spaceForDays / dayCols);
+
+            // Ne pas rendre les colonnes trop petites
+            if (dayWidth < 32) {
+                dayWidth = 32;
+                table.style.fontSize = '12px';
+            } else {
+                table.style.fontSize = '';
+            }
+
+            // Créer/mettre à jour <colgroup>
+            let colgroup = table.querySelector('colgroup');
+            if (!colgroup) {
+                colgroup = document.createElement('colgroup');
+                table.insertBefore(colgroup, table.firstChild);
+            }
+            colgroup.innerHTML = '';
+
+            const colAgent = document.createElement('col');
+            colAgent.style.width = agentColWidth + 'px';
+            colgroup.appendChild(colAgent);
+
+            for (let i = 0; i < dayCols; i++) {
+                const c = document.createElement('col');
+                c.style.width = dayWidth + 'px';
+                colgroup.appendChild(c);
+            }
+
+            // Masquer le scroll horizontal si possible
+            container.style.overflowX = 'hidden';
+
+            // Fixer la hauteur des cellules jour pour obtenir des cases régulières
+            try {
+                const dayCells = table.querySelectorAll('td.day-cell');
+                const targetHeight = dayWidth; // hauteur en px = largeur des jours
+                dayCells.forEach(td => {
+                    td.style.height = targetHeight + 'px';
+                    // assurer que l'intérieur prend toute la hauteur
+                    const inner = td.querySelector('.cell-inner');
+                    if (inner) inner.style.height = '100%';
+                });
+
+                // Ajuster la ligne header height au besoin
+                const thead = table.querySelector('thead');
+                if (thead) {
+                    const ths = thead.querySelectorAll('th');
+                    ths.forEach(th => { th.style.height = 'auto'; });
+                }
+            } catch (e) {
+                console.error('Erreur réglage hauteur cellules:', e);
+            }
+        }
+
+        // Ajuste toutes les tables présentes dans la zone de planning
+        function adjustAllTablesToFit() {
+            const container = document.querySelector('.planning-container');
+            if (!container) return;
+            const tables = planningTable.querySelectorAll('table');
+            tables.forEach(table => {
+                try {
+                    table.style.tableLayout = 'fixed';
+                    const containerStyle = getComputedStyle(container);
+                    const containerPadding = parseFloat(containerStyle.paddingLeft || 0) + parseFloat(containerStyle.paddingRight || 0);
+                    const availableWidth = Math.max(300, container.clientWidth - containerPadding);
+
+                    const thead = table.querySelector('thead');
+                    if (!thead) return;
+                    const ths = thead.querySelectorAll('th');
+                    if (ths.length < 2) return;
+
+                    const dayCols = ths.length - 1;
+                    const agentColWidth = Math.min(360, Math.max(140, ths[0].offsetWidth || 220));
+                    const spaceForDays = Math.max(100, availableWidth - agentColWidth - 20);
+                    let dayWidth = Math.floor(spaceForDays / dayCols);
+                    if (dayWidth < 32) {
+                        dayWidth = 32;
+                        table.style.fontSize = '12px';
+                    } else {
+                        table.style.fontSize = '';
+                    }
+
+                    let colgroup = table.querySelector('colgroup');
+                    if (!colgroup) {
+                        colgroup = document.createElement('colgroup');
+                        table.insertBefore(colgroup, table.firstChild);
+                    }
+                    colgroup.innerHTML = '';
+                    const colAgent = document.createElement('col');
+                    colAgent.style.width = agentColWidth + 'px';
+                    colgroup.appendChild(colAgent);
+                    for (let i = 0; i < dayCols; i++) {
+                        const c = document.createElement('col');
+                        c.style.width = dayWidth + 'px';
+                        colgroup.appendChild(c);
+                    }
+
+                    // set explicit heights to make boxes roughly square
+                    const dayCells = table.querySelectorAll('td.day-cell');
+                    const targetHeight = dayWidth;
+                    dayCells.forEach(td => {
+                        td.style.height = targetHeight + 'px';
+                        const inner = td.querySelector('.cell-inner');
+                        if (inner) inner.style.height = '100%';
+                    });
+
+                } catch (e) {
+                    console.error('adjustAllTablesToFit error', e);
+                }
+            });
+
+            // hide horizontal scroll when possible
+            container.style.overflowX = 'hidden';
+        }
+
+        // Debounce helper
+        function debounce(fn, wait) {
+            let t;
+            return function () {
+                clearTimeout(t);
+                t = setTimeout(() => fn.apply(this, arguments), wait);
+            };
+        }
+
+        // Ajuster au redimensionnement
+        window.addEventListener('resize', debounce(() => {
+            try { adjustMonthlyTableToFit(); } catch (e) { /* ignore */ }
+        }, 120));
+
+        // --- PRINT HELPERS -------------------------------------------------
+        // When printing, browsers may use the inline heights we set via JS.
+        // Remove those fixed heights before printing so the layout can reflow
+        // and avoid random truncation of cells. Restore / recompute after print.
+        function prepareForPrint() {
+            try {
+                document.body.classList.add('printing');
+
+                // Clear inline heights set on day-cell and cell-inner so print engine uses auto height
+                document.querySelectorAll('.planning-container table td.day-cell').forEach(td => {
+                    // save for restore if needed
+                    if (td.style.height) td.dataset._savedHeight = td.style.height;
+                    td.style.height = 'auto';
+                    const inner = td.querySelector('.cell-inner');
+                    if (inner) {
+                        if (inner.style.height) inner.dataset._savedHeight = inner.style.height;
+                        inner.style.height = 'auto';
+                        inner.style.overflow = 'visible';
+                    }
+                });
+
+                // set table-layout to auto to let print engine distribute width best
+                document.querySelectorAll('.planning-container table').forEach(t => {
+                    if (t.style.tableLayout) t.dataset._savedTableLayout = t.style.tableLayout;
+                    t.style.tableLayout = 'auto';
+
+                    // save and clear colgroup widths so print engine can auto-size
+                    const cg = t.querySelector('colgroup');
+                    if (cg) {
+                        if (!cg.dataset._savedInner) cg.dataset._savedInner = cg.innerHTML || '';
+                        cg.innerHTML = '';
+                    }
+
+                    // compute scaling to fit printable area
+                    try {
+                        const scrollW = t.scrollWidth || t.offsetWidth || 0;
+                        const container = document.querySelector('.planning-container');
+                        const containerStyle = getComputedStyle(container);
+                        const containerPadding = parseFloat(containerStyle.paddingLeft || 0) + parseFloat(containerStyle.paddingRight || 0);
+                        const available = Math.max(300, container.clientWidth - containerPadding);
+                        let scale = 1;
+                        if (scrollW > available) {
+                            scale = available / scrollW;
+                        }
+                        // store previous transform
+                        if (t.style.transform) t.dataset._savedTransform = t.style.transform;
+                        if (scale < 0.995) {
+                            t.style.transformOrigin = 'top left';
+                            t.style.transform = `scale(${scale})`;
+                            // ensure there's no overflow clipping in preview
+                            t.style.marginLeft = '0';
+                        }
+                    } catch (e) {
+                        console.debug('print scale compute failed', e);
+                    }
+                });
+            } catch (e) {
+                console.error('prepareForPrint error', e);
+            }
+        }
+
+        function afterPrintCleanup() {
+            try {
+                document.body.classList.remove('printing');
+
+                // restore saved colgroups and transforms (if any) then recompute
+                document.querySelectorAll('.planning-container table').forEach(t => {
+                    // restore colgroup content
+                    const cg = t.querySelector('colgroup');
+                    if (cg && cg.dataset._savedInner !== undefined) {
+                        cg.innerHTML = cg.dataset._savedInner || '';
+                        delete cg.dataset._savedInner;
+                    }
+                    // restore transform
+                    if (t.dataset._savedTransform !== undefined) {
+                        t.style.transform = t.dataset._savedTransform || '';
+                        delete t.dataset._savedTransform;
+                    } else {
+                        t.style.transform = '';
+                    }
+                });
+
+                // Recompute sizes for interactive view after a short delay
+                setTimeout(() => adjustAllTablesToFit(), 200);
+            } catch (e) {
+                console.error('afterPrintCleanup error', e);
+            }
+        }
+
+        if (window.matchMedia) {
+            const mql = window.matchMedia('print');
+            mql.addListener(mq => {
+                if (mq.matches) prepareForPrint(); else afterPrintCleanup();
+            });
+        }
+
+        window.onbeforeprint = prepareForPrint;
+        window.onafterprint = afterPrintCleanup;
 
         // Charger les agents au démarrage
         loadAgents().then(() => {
