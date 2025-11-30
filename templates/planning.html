@@ -1364,22 +1364,23 @@
 
         async function displayBiweeklyView(period) {
             // Format: 2026-W1 = semaine 1 de 2026
-            const year = 2026;
-            const weekNum = parseInt(period.split('-W')[1]);
+            // L'option fournit le premier numéro de semaine de la période (ex: W1, W3, W5...)
+            const weekStartNumber = parseInt(period.split('-W')[1]);
 
-            // La semaine 1 de 2026 commence le 29 décembre 2025 (lundi) et se termine le 4 janvier 2026
-            // Norme ISO 8601 : la semaine 1 est celle qui contient le premier jeudi de l'année
-            const week1Start = new Date(2025, 11, 29); // 29 décembre 2025 (lundi)
+            // La semaine 1 de 2026 commence le 29 décembre 2025 (lundi) selon ISO 8601
+            const week1Start = new Date(2025, 11, 29); // 29/12/2025
 
-            // Calculer la date de début (lundi) pour la période bihebdo demandée
-            // weekNum 1 = période 1-2 (semaines 1-2 : jours 0-13 à partir du 29/12/2025)
-            // weekNum 2 = période 3-4 (semaines 3-4 : jours 14-27 à partir du 29/12/2025)
+            // Calculer l'index de période (1-based) à partir du numéro de semaine
+            // Ex: startWeek=1 -> periodIndex=1, startWeek=3 -> periodIndex=2, startWeek=5 -> periodIndex=3
+            const periodIndex = Math.floor((weekStartNumber - 1) / 2) + 1;
+
+            // Date de début (lundi) de la période bihebdo demandée
             const startDate = new Date(week1Start);
-            startDate.setDate(week1Start.getDate() + (weekNum - 1) * 14);
+            startDate.setDate(week1Start.getDate() + (periodIndex - 1) * 14);
 
             showProgress(20, 'Calcul des dates...');
 
-            // Collecter tous les jours nécessaires
+            // Collecter tous les jours nécessaires (14 jours)
             const daysNeeded = [];
             for (let i = 0; i < 14; i++) {
                 const currentDate = new Date(startDate);
@@ -1392,35 +1393,38 @@
                 });
             }
 
-            // Identifier les mois de 2026 uniquement (le fichier Excel n'a que 2026)
-            const monthsToLoad = [...new Set(daysNeeded
-                .filter(d => d.year === 2026)
-                .map(d => d.month))];
-
+            // Identifier les mois uniques (incluant l'année) à charger : 'YYYY-MM'
+            const monthsToLoad = [...new Set(daysNeeded.map(d => `${d.year}-${String(d.month).padStart(2, '0')}`))];
             showProgress(40, `Chargement de ${monthsToLoad.length} mois...`);
 
-            // Charger les données des mois de 2026 uniquement
+            // Charger les données pour chaque mois unique
             const monthsData = {};
-            for (const month of monthsToLoad) {
+            for (const monthKey of monthsToLoad) {
+                const [yStr, mStr] = monthKey.split('-');
+                const y = parseInt(yStr, 10);
+                const m = mStr;
                 try {
-                    const response = await fetch(`/api/planning-data/2026/${String(month).padStart(2, '0')}`);
+                    const response = await fetch(`/api/planning-data/${y}/${m}`);
                     const data = await response.json();
                     if (data.success) {
-                        monthsData[month] = data.agents;
+                        monthsData[monthKey] = data.agents;
+                    } else {
+                        monthsData[monthKey] = [];
                     }
                 } catch (error) {
-                    console.error('Erreur chargement mois', month, error);
+                    console.error('Erreur chargement mois', monthKey, error);
+                    monthsData[monthKey] = [];
                 }
             }
 
             showProgress(70, 'Traitement des données...');
 
-            // Construire allDaysData - pour les jours de 2025, on met des données vides
+            // Construire allDaysData en attachant le tableau d'agents correspondant au mois/année
             const allDaysData = daysNeeded.map(dayInfo => ({
                 month: dayInfo.month,
                 day: dayInfo.day,
                 date: dayInfo.date,
-                agents: dayInfo.year === 2026 ? (monthsData[dayInfo.month] || []) : []
+                agents: monthsData[`${dayInfo.year}-${String(dayInfo.month).padStart(2, '0')}`] || []
             }));
 
             console.log('Données bihebdo:', allDaysData.length, 'jours', allDaysData[0]);
