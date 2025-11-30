@@ -689,13 +689,16 @@ def generate_teams():
         # Styles pour en-têtes
         from openpyxl.styles import Font, PatternFill, Alignment
         header_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
-        header_font = Font(bold=True, color='FFFFFF')
+        header_font = Font(bold=True, color='FFFFFF', size=10)
         
         for col in [1, 2, 5]:
             cell = sheet.cell(row=1, column=col)
             cell.fill = header_fill
             cell.font = header_font
             cell.alignment = Alignment(horizontal='center', vertical='center')
+        
+        # Police 10 par défaut pour tout le document
+        default_font = Font(size=10)
         
         # Couleurs alternées pour les jours (sobres)
         day_colors = [
@@ -721,7 +724,9 @@ def generate_teams():
                 sheet.cell(row=current_row, column=4, value='')
                 sheet.cell(row=current_row, column=5, value='')
                 for col in [1, 2, 3, 4, 5]:
-                    sheet.cell(row=current_row, column=col).fill = day_fill
+                    cell = sheet.cell(row=current_row, column=col)
+                    cell.fill = day_fill
+                    cell.font = default_font
                 current_row += 1
             else:
                 # Collecter tous les agents du jour
@@ -747,15 +752,17 @@ def generate_teams():
                     sheet.cell(row=current_row, column=5, value='')
                     
                     for col in [1, 2, 3, 4, 5]:
-                        sheet.cell(row=current_row, column=col).fill = day_fill
+                        cell = sheet.cell(row=current_row, column=col)
+                        cell.fill = day_fill
+                        cell.font = default_font
                     current_row += 1
         
-        # Ajuster les largeurs de colonnes
-        sheet.column_dimensions['A'].width = 17.0
-        sheet.column_dimensions['B'].width = 25.0
-        sheet.column_dimensions['C'].width = 25.0
-        sheet.column_dimensions['D'].width = 25.0
-        sheet.column_dimensions['E'].width = 22.5703125
+        # Ajuster les largeurs de colonnes : 3, 30, 4, 4, 4
+        sheet.column_dimensions['A'].width = 3
+        sheet.column_dimensions['B'].width = 30
+        sheet.column_dimensions['C'].width = 4
+        sheet.column_dimensions['D'].width = 4
+        sheet.column_dimensions['E'].width = 4
         
         # Ne pas configurer l'impression - garder les paramètres du template
         
