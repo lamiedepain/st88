@@ -678,11 +678,11 @@ def generate_teams():
             for merged_range in merged_cells_list:
                 sheet.unmerge_cells(str(merged_range))
         
-        # Remplir le tableau : 5 colonnes (DATE | vide | EQUIPE | vide | INTERVENTION)
+        # Remplir le tableau : 5 colonnes (DATE | AGENT 1 | AGENT 2 | AGENT 3 | INTERVENTION)
         # En-têtes en ligne 1
         sheet.cell(row=1, column=1, value='DATE')
-        sheet.cell(row=1, column=2, value='')
-        sheet.cell(row=1, column=3, value='EQUIPE')
+        sheet.cell(row=1, column=2, value='EQUIPE')
+        sheet.cell(row=1, column=3, value='')
         sheet.cell(row=1, column=4, value='')
         sheet.cell(row=1, column=5, value='INTERVENTION')
         
@@ -691,7 +691,7 @@ def generate_teams():
         header_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
         header_font = Font(bold=True, color='FFFFFF')
         
-        for col in [1, 3, 5]:
+        for col in [1, 2, 5]:
             cell = sheet.cell(row=1, column=col)
             cell.fill = header_fill
             cell.font = header_font
@@ -724,40 +724,37 @@ def generate_teams():
                     sheet.cell(row=current_row, column=col).fill = day_fill
                 current_row += 1
             else:
-                # Compter le nombre total d'agents pour ce jour
-                total_agents = sum(len(team) for team in teams)
+                # Collecter tous les agents du jour
+                all_agents = []
+                for team in teams:
+                    all_agents.extend(team)
                 
-                # Première ligne : afficher la date et le premier agent
-                first_agent = teams[0][0] if teams and len(teams[0]) > 0 else None
-                if first_agent:
-                    sheet.cell(row=current_row, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
-                    sheet.cell(row=current_row, column=2, value='')
-                    sheet.cell(row=current_row, column=3, value=first_agent['fullName'])
-                    sheet.cell(row=current_row, column=4, value='')
+                # Remplir par groupes de 3 agents (une ligne = 3 agents dans colonnes 2, 3, 4)
+                for i in range(0, len(all_agents), 3):
+                    # Première ligne du jour : afficher la date
+                    if i == 0:
+                        sheet.cell(row=current_row, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
+                    else:
+                        sheet.cell(row=current_row, column=1, value='')
+                    
+                    # Remplir les 3 colonnes d'agents
+                    for j in range(3):
+                        if i + j < len(all_agents):
+                            sheet.cell(row=current_row, column=2+j, value=all_agents[i+j]['fullName'])
+                        else:
+                            sheet.cell(row=current_row, column=2+j, value='')
+                    
                     sheet.cell(row=current_row, column=5, value='')
+                    
                     for col in [1, 2, 3, 4, 5]:
                         sheet.cell(row=current_row, column=col).fill = day_fill
                     current_row += 1
-                    
-                    # Parcourir tous les agents restants (une ligne par agent)
-                    for team_idx, team in enumerate(teams):
-                        # Commencer à l'index 1 pour la première équipe (on a déjà traité l'agent 0)
-                        start_idx = 1 if team_idx == 0 else 0
-                        for agent in team[start_idx:]:
-                            sheet.cell(row=current_row, column=1, value='')
-                            sheet.cell(row=current_row, column=2, value='')
-                            sheet.cell(row=current_row, column=3, value=agent['fullName'])
-                            sheet.cell(row=current_row, column=4, value='')
-                            sheet.cell(row=current_row, column=5, value='')
-                            for col in [1, 2, 3, 4, 5]:
-                                sheet.cell(row=current_row, column=col).fill = day_fill
-                            current_row += 1
         
-        # Ajuster les largeurs de colonnes comme le template
+        # Ajuster les largeurs de colonnes
         sheet.column_dimensions['A'].width = 17.0
-        sheet.column_dimensions['B'].width = 2.0
-        sheet.column_dimensions['C'].width = 35.5703125
-        sheet.column_dimensions['D'].width = 2.0
+        sheet.column_dimensions['B'].width = 25.0
+        sheet.column_dimensions['C'].width = 25.0
+        sheet.column_dimensions['D'].width = 25.0
         sheet.column_dimensions['E'].width = 22.5703125
         
         # Ne pas configurer l'impression - garder les paramètres du template
