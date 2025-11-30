@@ -608,6 +608,19 @@
             </div>
         </header>
 
+        <!-- Barre de progression -->
+        <div id="progressContainer" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); z-index: 10000; min-width: 400px;">
+            <div style="text-align: center; margin-bottom: 15px; font-size: 18px; font-weight: 600; color: #2c3e50;">
+                Chargement en cours...
+            </div>
+            <div style="width: 100%; height: 30px; background: #ecf0f1; border-radius: 15px; overflow: hidden; position: relative;">
+                <div id="progressFill" style="height: 100%; width: 0%; background: linear-gradient(90deg, #3498db, #2ecc71); transition: width 0.3s ease; border-radius: 15px;"></div>
+            </div>
+            <div id="progressText" style="text-align: center; margin-top: 10px; font-size: 14px; color: #7f8c8d;">
+                0%
+            </div>
+        </div>
+
         <!-- Modal de génération -->
         <div id="generateModal" class="modal">
             <div class="modal-content">
@@ -753,7 +766,7 @@
             const progressContainer = document.getElementById('progressContainer');
             const progressFill = document.getElementById('progressFill');
             const progressText = document.getElementById('progressText');
-            
+
             progressContainer.classList.add('active');
             progressFill.style.width = percent + '%';
             progressFill.textContent = percent + '%';
@@ -837,7 +850,7 @@
                     periodSelector.appendChild(option);
                 }
             }
-            
+
             // Sélectionner automatiquement la première option disponible
             if (periodSelector.options.length > 1) {
                 periodSelector.selectedIndex = 1;
@@ -1314,7 +1327,7 @@
             const allDaysData = [];
 
             for (let i = 0; i < 14; i++) {
-                showProgress(30 + (i * 4), `Chargement jour ${i+1}/14...`);
+                showProgress(30 + (i * 4), `Chargement jour ${i + 1}/14...`);
                 const currentDate = new Date(startDate);
                 currentDate.setDate(startDate.getDate() + i);
                 const month = currentDate.getMonth() + 1;
