@@ -723,7 +723,13 @@ def generate_teams():
                 sheet.cell(row=current_row, column=3, value='')
                 sheet.cell(row=current_row, column=4, value='')
                 sheet.cell(row=current_row, column=5, value='')
-                for col in [1, 2, 3, 4, 5]:
+                # Colonne 1 (DATE) alignée à gauche
+                cell = sheet.cell(row=current_row, column=1)
+                cell.fill = day_fill
+                cell.font = default_font
+                cell.alignment = Alignment(horizontal='left', vertical='center')
+                # Colonnes 2-5 centrées
+                for col in [2, 3, 4, 5]:
                     cell = sheet.cell(row=current_row, column=col)
                     cell.fill = day_fill
                     cell.font = default_font
@@ -752,8 +758,13 @@ def generate_teams():
                     
                     sheet.cell(row=current_row, column=5, value='')
                     
-                    # Appliquer le style et l'alignement centré
-                    for col in [1, 2, 3, 4, 5]:
+                    # Colonne 1 (DATE) alignée à gauche
+                    cell = sheet.cell(row=current_row, column=1)
+                    cell.fill = day_fill
+                    cell.font = default_font
+                    cell.alignment = Alignment(horizontal='left', vertical='center')
+                    # Colonnes 2-5 centrées
+                    for col in [2, 3, 4, 5]:
                         cell = sheet.cell(row=current_row, column=col)
                         cell.fill = day_fill
                         cell.font = default_font
