@@ -21,6 +21,20 @@ app = Flask(__name__)
 EXCEL_FILE = '2026 - PRESENCES_CONGES VOIRIE ESPACES VERTS ST8 (1).xlsx'
 BACKUP_DIR = 'backups'
 
+
+# Normalise les codes de statut venant du fichier Excel
+def normalize_status(value):
+    if value is None:
+        return ''
+    try:
+        s = str(value).strip()
+    except Exception:
+        return ''
+    # Corriger le cas où le fichier contient 'MA' (confusion) -> traiter comme 'M' (Maladie)
+    if s.upper() == 'MA':
+        return 'M'
+    return s
+
 # Créer une sauvegarde au démarrage
 if not os.path.exists(BACKUP_DIR):
     os.makedirs(BACKUP_DIR)
@@ -224,7 +238,7 @@ def get_planning_data(year, month):
             days_status = []
             for col_idx in range(15, 46):  # Colonnes P à AT (31 jours max)
                 cell_value = row[col_idx].value
-                days_status.append(cell_value if cell_value else '')
+                days_status.append(normalize_status(cell_value))
             
             agents_data.append({
                 'matricule': matricule or '',
@@ -282,7 +296,7 @@ def generate_week():
             return any(nom_u == m for m in members)
 
         # statuses considered as absence
-        absent_statuses = set(['CA','RTT','CEX','R','M','AT','F','AST','PC','TP','MA','TAD'])
+        absent_statuses = set(['CA','RTT','CEX','R','M','AT','F','AST','PC','TP','TAD'])
 
         # Build availability per date
         availability = {}
@@ -320,7 +334,7 @@ def generate_week():
                 except Exception:
                     cell_value = None
 
-                status = str(cell_value).strip() if cell_value is not None else ''
+                status = normalize_status(cell_value)
                 if status.upper() in absent_statuses:
                     is_available = False
                 else:
@@ -416,7 +430,7 @@ def apply_week():
         wb.save(backup_file)
 
         # Build availability like generate_week
-        absent_statuses = set(['CA','RTT','CEX','R','M','AT','F','AST','PC','TP','MA','TAD'])
+        absent_statuses = set(['CA','RTT','CEX','R','M','AT','F','AST','PC','TP','TAD'])
         availability = {}
         pool = []
         pool_map = {}
@@ -454,7 +468,7 @@ def apply_week():
                 except Exception:
                     cell_value = None
 
-                status = str(cell_value).strip() if cell_value is not None else ''
+                status = normalize_status(cell_value)
                 if status.upper() in absent_statuses:
                     is_available = False
                 else:
@@ -571,7 +585,7 @@ def generate_teams():
             group_noms = GROUPS.get(group, [])
             return any(gn.upper() in nom_upper or nom_upper in gn.upper() for gn in group_noms)
 
-        absent_statuses = {'CA','RTT','CEX','R','M','AT','F','AST','PC','TP','MA','TAD'}
+        absent_statuses = {'CA','RTT','CEX','R','M','AT','F','AST','PC','TP','TAD'}
 
         # Collecter agents disponibles par jour
         daily_available = {}
@@ -603,8 +617,8 @@ def generate_teams():
                     continue
 
                 cell_value = row[col_idx].value
-                status = str(cell_value).strip() if cell_value else ''
-                
+                status = normalize_status(cell_value)
+
                 if status.upper() not in absent_statuses and (status == '' or status.upper() == 'P'):
                     available.append({
                         'nom': nom,
