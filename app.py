@@ -678,18 +678,20 @@ def generate_teams():
             for merged_range in merged_cells_list:
                 sheet.unmerge_cells(str(merged_range))
         
-        # Remplir le tableau : 2 colonnes (DATE | EQUIPE)
+        # Remplir le tableau : 5 colonnes (DATE | vide | EQUIPE | vide | INTERVENTION)
         # En-têtes en ligne 1
         sheet.cell(row=1, column=1, value='DATE')
-        sheet.cell(row=1, column=2, value='EQUIPE')
-        sheet.cell(row=1, column=3, value='INTERVENTION')
+        sheet.cell(row=1, column=2, value='')
+        sheet.cell(row=1, column=3, value='EQUIPE')
+        sheet.cell(row=1, column=4, value='')
+        sheet.cell(row=1, column=5, value='INTERVENTION')
         
         # Styles pour en-têtes
         from openpyxl.styles import Font, PatternFill, Alignment
         header_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
         header_font = Font(bold=True, color='FFFFFF')
         
-        for col in [1, 2, 3]:
+        for col in [1, 3, 5]:
             cell = sheet.cell(row=1, column=col)
             cell.fill = header_fill
             cell.font = header_font
@@ -716,7 +718,9 @@ def generate_teams():
                 sheet.cell(row=current_row, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
                 sheet.cell(row=current_row, column=2, value='')
                 sheet.cell(row=current_row, column=3, value='')
-                for col in [1, 2, 3]:
+                sheet.cell(row=current_row, column=4, value='')
+                sheet.cell(row=current_row, column=5, value='')
+                for col in [1, 2, 3, 4, 5]:
                     sheet.cell(row=current_row, column=col).fill = day_fill
                 current_row += 1
             else:
@@ -727,9 +731,11 @@ def generate_teams():
                 first_agent = teams[0][0] if teams and len(teams[0]) > 0 else None
                 if first_agent:
                     sheet.cell(row=current_row, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
-                    sheet.cell(row=current_row, column=2, value=first_agent['fullName'])
-                    sheet.cell(row=current_row, column=3, value='')
-                    for col in [1, 2, 3]:
+                    sheet.cell(row=current_row, column=2, value='')
+                    sheet.cell(row=current_row, column=3, value=first_agent['fullName'])
+                    sheet.cell(row=current_row, column=4, value='')
+                    sheet.cell(row=current_row, column=5, value='')
+                    for col in [1, 2, 3, 4, 5]:
                         sheet.cell(row=current_row, column=col).fill = day_fill
                     current_row += 1
                     
@@ -739,16 +745,20 @@ def generate_teams():
                         start_idx = 1 if team_idx == 0 else 0
                         for agent in team[start_idx:]:
                             sheet.cell(row=current_row, column=1, value='')
-                            sheet.cell(row=current_row, column=2, value=agent['fullName'])
-                            sheet.cell(row=current_row, column=3, value='')
-                            for col in [1, 2, 3]:
+                            sheet.cell(row=current_row, column=2, value='')
+                            sheet.cell(row=current_row, column=3, value=agent['fullName'])
+                            sheet.cell(row=current_row, column=4, value='')
+                            sheet.cell(row=current_row, column=5, value='')
+                            for col in [1, 2, 3, 4, 5]:
                                 sheet.cell(row=current_row, column=col).fill = day_fill
                             current_row += 1
         
         # Ajuster les largeurs de colonnes comme le template
         sheet.column_dimensions['A'].width = 17.0
-        sheet.column_dimensions['B'].width = 35.5703125
-        sheet.column_dimensions['C'].width = 22.5703125
+        sheet.column_dimensions['B'].width = 2.0
+        sheet.column_dimensions['C'].width = 35.5703125
+        sheet.column_dimensions['D'].width = 2.0
+        sheet.column_dimensions['E'].width = 22.5703125
         
         # Ne pas configurer l'impression - garder les paramètres du template
         
