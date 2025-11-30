@@ -1367,15 +1367,15 @@
             const year = 2026;
             const weekNum = parseInt(period.split('-W')[1]);
 
-            // Calculer la date de début : le 1er janvier 2026 est un jeudi
-            // Donc le premier lundi est le 5 janvier 2026
-            const firstMonday = new Date(2026, 0, 5); // 5 janvier 2026 (lundi)
+            // La semaine 1 de 2026 commence le 29 décembre 2025 (lundi) et se termine le 4 janvier 2026
+            // Norme ISO 8601 : la semaine 1 est celle qui contient le premier jeudi de l'année
+            const week1Start = new Date(2025, 11, 29); // 29 décembre 2025 (lundi)
 
             // Calculer la date de début (lundi) pour la période bihebdo demandée
-            // weekNum 1 = période 1-2 (jours 0-13 à partir du premier lundi)
-            // weekNum 2 = période 3-4 (jours 14-27 à partir du premier lundi)
-            const startDate = new Date(firstMonday);
-            startDate.setDate(firstMonday.getDate() + (weekNum - 1) * 14);
+            // weekNum 1 = période 1-2 (semaines 1-2 : jours 0-13 à partir du 29/12/2025)
+            // weekNum 2 = période 3-4 (semaines 3-4 : jours 14-27 à partir du 29/12/2025)
+            const startDate = new Date(week1Start);
+            startDate.setDate(week1Start.getDate() + (weekNum - 1) * 14);
 
             showProgress(20, 'Calcul des dates...');
 
@@ -1387,23 +1387,27 @@
                 daysNeeded.push({
                     date: currentDate,
                     month: currentDate.getMonth() + 1,
-                    day: currentDate.getDate()
+                    day: currentDate.getDate(),
+                    year: currentDate.getFullYear()
                 });
             }
 
-            // Identifier les mois uniques à charger
-            const monthsToLoad = [...new Set(daysNeeded.map(d => d.month))];
+            // Identifier les mois uniques à charger (peut inclure décembre 2025 et janvier 2026)
+            const monthsToLoad = [...new Set(daysNeeded.map(d => `${d.year}-${d.month}`))];
             
             showProgress(40, `Chargement de ${monthsToLoad.length} mois...`);
 
-            // Charger les données des mois (1 ou 2 appels API max)
+            // Charger les données des mois
             const monthsData = {};
-            for (const month of monthsToLoad) {
+            for (const monthKey of monthsToLoad) {
+                const [yearStr, monthStr] = monthKey.split('-');
+                const y = parseInt(yearStr);
+                const m = parseInt(monthStr);
                 try {
-                    const response = await fetch(`/api/planning-data/${year}/${String(month).padStart(2, '0')}`);
+                    const response = await fetch(`/api/planning-data/${y}/${String(m).padStart(2, '0')}`);
                     const data = await response.json();
                     if (data.success) {
-                        monthsData[month] = data.agents;
+                        monthsData[monthKey] = data.agents;
                     }
                 } catch (error) {
                     console.error('Erreur:', error);
@@ -1417,7 +1421,7 @@
                 month: dayInfo.month,
                 day: dayInfo.day,
                 date: dayInfo.date,
-                agents: monthsData[dayInfo.month] || []
+                agents: monthsData[`${dayInfo.year}-${dayInfo.month}`] || []
             }));
 
             showProgress(90, 'Affichage...');
