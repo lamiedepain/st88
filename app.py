@@ -689,7 +689,7 @@ def generate_teams():
         # Styles pour en-têtes
         from openpyxl.styles import Font, PatternFill, Alignment
         header_fill = PatternFill(start_color='4472C4', end_color='4472C4', fill_type='solid')
-        header_font = Font(bold=True, color='FFFFFF', size=10)
+        header_font = Font(bold=True, color='FFFFFF', size=11)
         
         for col in [1, 2, 5]:
             cell = sheet.cell(row=1, column=col)
@@ -757,12 +757,12 @@ def generate_teams():
                         cell.font = default_font
                     current_row += 1
         
-        # Ajuster les largeurs de colonnes : 3, 30, 4, 4, 4
-        sheet.column_dimensions['A'].width = 3
-        sheet.column_dimensions['B'].width = 30
-        sheet.column_dimensions['C'].width = 4
-        sheet.column_dimensions['D'].width = 4
-        sheet.column_dimensions['E'].width = 4
+        # Ajuster les largeurs de colonnes selon le template
+        sheet.column_dimensions['A'].width = 17.0
+        sheet.column_dimensions['B'].width = 20.140625
+        sheet.column_dimensions['C'].width = 20.140625
+        sheet.column_dimensions['D'].width = 20.140625
+        sheet.column_dimensions['E'].width = 20.140625
         
         # Ne pas configurer l'impression - garder les paramètres du template
         
