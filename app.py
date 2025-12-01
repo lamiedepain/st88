@@ -578,6 +578,26 @@ def generate_teams():
         # Lire les agents disponibles depuis le fichier principal
         wb_source = openpyxl.load_workbook(EXCEL_FILE, data_only=True)
         
+        # Charger les compétences depuis la feuille 'config' (colonnes AE-AH = indices 30-33)
+        config_sheet = wb_source['config']
+        competences_map = {}  # {nom: {chauffeur_pl, macon, aide_macon, enrobé, enginiste}}
+        
+        for row_idx in range(3, 76):
+            row = [cell.value for cell in config_sheet[row_idx]]
+            nom = row[5].strip() if row[5] and isinstance(row[5], str) else row[5]
+            if not nom:
+                continue
+            
+            # Colonnes AE-AH (indices 30-33)
+            competences = {
+                'chauffeur_pl': row[30] if len(row) > 30 and row[30] else False,
+                'macon': row[31] if len(row) > 31 and row[31] else False,
+                'aide_macon': row[32] if len(row) > 32 and row[32] else False,
+                'enrobé': row[33] if len(row) > 33 and row[33] else False,
+                'enginiste': row[34] if len(row) > 34 and row[34] else False,
+            }
+            competences_map[nom] = competences
+        
         def in_group(nom, group):
             if group == 'all':
                 return True
@@ -620,43 +640,113 @@ def generate_teams():
                 status = normalize_status(cell_value)
 
                 if status.upper() not in absent_statuses and (status == '' or status.upper() == 'P'):
+                    competences = competences_map.get(nom, {})
                     available.append({
                         'nom': nom,
                         'prenom': prenom,
-                        'fullName': f"{nom} {prenom}".strip()
+                        'fullName': f"{nom} {prenom}".strip(),
+                        'competences': competences
                     })
             
             daily_available[d.strftime('%Y-%m-%d')] = available
 
-        # Répartir en équipes selon le team_size choisi
+        # Répartir en équipes selon les compétences et le team_size choisi
+        def form_smart_teams(agents, team_size):
+            """
+            Forme des équipes intelligentes basées sur les compétences:
+            - Équipe 1: Chauffeur PL + Maçon (VRD/paveur) + Aide maçon
+            - Équipe 2: Chauffeur PL + Maçon + Enrobé
+            - Équipe 3: Enginiste + Maçon + Aide maçon
+            """
+            if not agents:
+                return []
+            
+            teams = []
+            remaining = list(agents)
+            
+            # Trier pour priorité des compétences critiques
+            chauffeurs = [a for a in remaining if a['competences'].get('chauffeur_pl')]
+            macons = [a for a in remaining if a['competences'].get('macon')]
+            aides = [a for a in remaining if a['competences'].get('aide_macon')]
+            enrobés = [a for a in remaining if a['competences'].get('enrobé')]
+            enginistes = [a for a in remaining if a['competences'].get('enginiste')]
+            generalists = [a for a in remaining if not any(a['competences'].values())]
+            
+            used = set()
+            
+            # Essayer de former des équipes de 3 intelligentes d'abord
+            if team_size >= 3:
+                # Équipe type 1: Chauffeur PL + Maçon + Aide maçon
+                for ch in chauffeurs:
+                    if id(ch) in used:
+                        continue
+                    for mac in macons:
+                        if id(mac) in used:
+                            continue
+                        for aide in aides:
+                            if id(aide) in used:
+                                continue
+                            teams.append([ch, mac, aide])
+                            used.add(id(ch))
+                            used.add(id(mac))
+                            used.add(id(aide))
+                            break
+                
+                # Équipe type 2: Chauffeur PL + Maçon + Enrobé
+                for ch in chauffeurs:
+                    if id(ch) in used:
+                        continue
+                    for mac in macons:
+                        if id(mac) in used:
+                            continue
+                        for enr in enrobés:
+                            if id(enr) in used:
+                                continue
+                            teams.append([ch, mac, enr])
+                            used.add(id(ch))
+                            used.add(id(mac))
+                            used.add(id(enr))
+                            break
+                
+                # Équipe type 3: Enginiste + Maçon + Aide maçon
+                for eng in enginistes:
+                    if id(eng) in used:
+                        continue
+                    for mac in macons:
+                        if id(mac) in used:
+                            continue
+                        for aide in aides:
+                            if id(aide) in used:
+                                continue
+                            teams.append([eng, mac, aide])
+                            used.add(id(eng))
+                            used.add(id(mac))
+                            used.add(id(aide))
+                            break
+            
+            # Remplir le reste simplement
+            remaining_agents = [a for a in agents if id(a) not in used]
+            
+            if team_size == 3:
+                for i in range(0, len(remaining_agents), 3):
+                    if i + 3 <= len(remaining_agents):
+                        teams.append(remaining_agents[i:i+3])
+                    elif i + 2 <= len(remaining_agents):
+                        teams.append(remaining_agents[i:i+2])
+                    else:
+                        teams.append(remaining_agents[i:i+1])
+            else:  # team_size == 2
+                for i in range(0, len(remaining_agents), 2):
+                    if i + 2 <= len(remaining_agents):
+                        teams.append(remaining_agents[i:i+2])
+                    else:
+                        teams.append(remaining_agents[i:i+1])
+            
+            return teams
+        
         daily_teams = {}
         for date_key, agents in daily_available.items():
-            teams = []
-            if len(agents) > 0:
-                num_agents = len(agents)
-                
-                if team_size == 3:
-                    # Priorité aux équipes de 3
-                    for i in range(0, num_agents, 3):
-                        if i + 3 <= num_agents:
-                            # Équipe complète de 3
-                            teams.append(agents[i:i+3])
-                        elif i + 2 <= num_agents:
-                            # Reste 2 agents -> équipe de 2
-                            teams.append(agents[i:i+2])
-                        else:
-                            # Reste 1 agent -> équipe de 1
-                            teams.append(agents[i:i+1])
-                else:  # team_size == 2
-                    # Priorité aux équipes de 2
-                    for i in range(0, num_agents, 2):
-                        if i + 2 <= num_agents:
-                            # Équipe complète de 2
-                            teams.append(agents[i:i+2])
-                        else:
-                            # Reste 1 agent -> équipe de 1
-                            teams.append(agents[i:i+1])
-            
+            teams = form_smart_teams(agents, team_size)
             daily_teams[date_key] = teams
 
         # Copier le template et remplir
