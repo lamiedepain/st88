@@ -578,9 +578,9 @@ def generate_teams():
         # Lire les agents disponibles depuis le fichier principal
         wb_source = openpyxl.load_workbook(EXCEL_FILE, data_only=True)
         
-        # Charger les compétences depuis la feuille 'config' (colonnes AE-AH = indices 30-33)
+        # Charger les compétences depuis la feuille 'config' (colonnes AE-AH et plus = indices 30+)
         config_sheet = wb_source['config']
-        competences_map = {}  # {nom: {chauffeur_pl, macon, aide_macon, enrobé, enginiste}}
+        competences_map = {}  # {nom: {chauffeur_pl, macon, aide_macon, enrobé, enginiste, blowpatcher}}
         
         for row_idx in range(3, 76):
             row = [cell.value for cell in config_sheet[row_idx]]
@@ -588,13 +588,14 @@ def generate_teams():
             if not nom:
                 continue
             
-            # Colonnes AE-AH (indices 30-33)
+            # Colonnes AE-AH (indices 30-33) et plus pour blowpatcher
             competences = {
                 'chauffeur_pl': row[30] if len(row) > 30 and row[30] else False,
                 'macon': row[31] if len(row) > 31 and row[31] else False,
                 'aide_macon': row[32] if len(row) > 32 and row[32] else False,
                 'enrobé': row[33] if len(row) > 33 and row[33] else False,
                 'enginiste': row[34] if len(row) > 34 and row[34] else False,
+                'blowpatcher': row[35] if len(row) > 35 and row[35] else False,
             }
             competences_map[nom] = competences
         
@@ -654,29 +655,30 @@ def generate_teams():
         def form_smart_teams(agents, team_size):
             """
             Forme des équipes intelligentes basées sur les compétences:
-            - Équipe 1: Chauffeur PL + Maçon (VRD/paveur) + Aide maçon
-            - Équipe 2: Chauffeur PL + Maçon + Enrobé
-            - Équipe 3: Enginiste + Maçon + Aide maçon
+            - Chauffeur PL + Maçon + Aide maçon
+            - Chauffeur PL + Enrobé + Enrobé
+            - Enginiste + Maçon + Aide maçon
+            - 2 Blowpatcher
+            - Maçon + Aide maçon
+            Aucune priorité : toutes les combinaisons possibles se forment
             """
             if not agents:
                 return []
             
             teams = []
             remaining = list(agents)
+            used = set()
             
-            # Trier pour priorité des compétences critiques
+            # Récupérer les compétences disponibles
             chauffeurs = [a for a in remaining if a['competences'].get('chauffeur_pl')]
             macons = [a for a in remaining if a['competences'].get('macon')]
             aides = [a for a in remaining if a['competences'].get('aide_macon')]
             enrobés = [a for a in remaining if a['competences'].get('enrobé')]
             enginistes = [a for a in remaining if a['competences'].get('enginiste')]
-            generalists = [a for a in remaining if not any(a['competences'].values())]
+            blowpatchers = [a for a in remaining if a['competences'].get('blowpatcher')]
             
-            used = set()
-            
-            # Essayer de former des équipes de 3 intelligentes d'abord
             if team_size >= 3:
-                # Équipe type 1: Chauffeur PL + Maçon + Aide maçon
+                # Équipe: Chauffeur PL + Maçon + Aide maçon
                 for ch in chauffeurs:
                     if id(ch) in used:
                         continue
@@ -692,23 +694,29 @@ def generate_teams():
                             used.add(id(aide))
                             break
                 
-                # Équipe type 2: Chauffeur PL + Maçon + Enrobé
-                for ch in chauffeurs:
+                # Équipe: Chauffeur PL + Enrobé + Enrobé (2 enrobés)
+                ch_idx = 0
+                while ch_idx < len(chauffeurs):
+                    ch = chauffeurs[ch_idx]
                     if id(ch) in used:
+                        ch_idx += 1
                         continue
-                    for mac in macons:
-                        if id(mac) in used:
-                            continue
-                        for enr in enrobés:
-                            if id(enr) in used:
-                                continue
-                            teams.append([ch, mac, enr])
-                            used.add(id(ch))
-                            used.add(id(mac))
-                            used.add(id(enr))
-                            break
+                    enr_count = 0
+                    enr_list = []
+                    for enr in enrobés:
+                        if id(enr) not in used and enr_count < 2:
+                            enr_list.append(enr)
+                            enr_count += 1
+                    if enr_count == 2:
+                        teams.append([ch, enr_list[0], enr_list[1]])
+                        used.add(id(ch))
+                        used.add(id(enr_list[0]))
+                        used.add(id(enr_list[1]))
+                        ch_idx += 1
+                    else:
+                        break
                 
-                # Équipe type 3: Enginiste + Maçon + Aide maçon
+                # Équipe: Enginiste + Maçon + Aide maçon
                 for eng in enginistes:
                     if id(eng) in used:
                         continue
@@ -723,6 +731,34 @@ def generate_teams():
                             used.add(id(mac))
                             used.add(id(aide))
                             break
+                
+                # Équipe: Maçon + Aide maçon (sans chauffeur ni enginiste)
+                for mac in macons:
+                    if id(mac) in used:
+                        continue
+                    for aide in aides:
+                        if id(aide) in used:
+                            continue
+                        teams.append([mac, aide])
+                        used.add(id(mac))
+                        used.add(id(aide))
+                        break
+            
+            # Équipe: 2 Blowpatcher (priorité : les paires)
+            blop_idx = 0
+            while blop_idx < len(blowpatchers) - 1:
+                bp1 = blowpatchers[blop_idx]
+                if id(bp1) in used:
+                    blop_idx += 1
+                    continue
+                bp2 = blowpatchers[blop_idx + 1]
+                if id(bp2) in used:
+                    blop_idx += 1
+                    continue
+                teams.append([bp1, bp2])
+                used.add(id(bp1))
+                used.add(id(bp2))
+                blop_idx += 2
             
             # Remplir le reste simplement
             remaining_agents = [a for a in agents if id(a) not in used]
@@ -735,7 +771,7 @@ def generate_teams():
                         teams.append(remaining_agents[i:i+2])
                     else:
                         teams.append(remaining_agents[i:i+1])
-            else:  # team_size == 2
+            elif team_size == 2:
                 for i in range(0, len(remaining_agents), 2):
                     if i + 2 <= len(remaining_agents):
                         teams.append(remaining_agents[i:i+2])
