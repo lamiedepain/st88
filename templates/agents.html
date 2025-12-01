@@ -13,11 +13,11 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f8f9fb;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 0;
-            color: #2c3e50;
+            padding: 20px 0;
+            color: #1a1a2e;
         }
 
         .container {
@@ -26,95 +26,99 @@
         }
 
         header {
-            background: #ffffff;
-            padding: 20px 32px;
-            border-bottom: 1px solid #e8ebf0;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 28px 40px;
+            border-radius: 12px;
+            margin: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         h1 {
-            color: #1a202c;
-            margin-bottom: 12px;
-            font-size: 24px;
-            font-weight: 600;
-            letter-spacing: -0.01em;
+            color: #667eea;
+            margin-bottom: 16px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         nav {
             display: flex;
-            gap: 2px;
+            gap: 4px;
             margin-bottom: 0;
         }
 
         nav a {
-            padding: 6px 12px;
+            padding: 8px 16px;
             background: transparent;
-            color: #718096;
+            color: #888;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-weight: 500;
             font-size: 13px;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
 
         nav a:hover {
-            background: #edf2f7;
-            color: #2d3748;
+            background: #f0f0f5;
+            color: #333;
         }
 
         nav a.active {
-            background: #edf2f7;
-            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             font-weight: 600;
         }
 
         .controls {
             display: flex;
             gap: 12px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
             flex-wrap: wrap;
             align-items: center;
-            padding: 0 16px;
+            padding: 0 20px;
         }
 
         input[type="text"] {
-            padding: 8px 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
-            font-size: 13px;
-            width: 280px;
-            transition: all 0.2s;
+            padding: 12px 14px;
+            border: 2px solid #e0e0e8;
+            border-radius: 8px;
+            font-size: 14px;
+            width: 300px;
+            transition: all 0.3s;
             background: white;
+            color: #333;
         }
 
         input[type="text"]:focus {
             outline: none;
-            border-color: #4a5568;
-            box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
         }
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 12px;
-            margin: 16px 16px 20px;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin: 20px;
+            margin-bottom: 24px;
         }
 
         .stat-card {
-            background: white;
-            padding: 14px;
-            border-radius: 6px;
-            border-left: 3px solid #4a5568;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e8ebf0;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(10px);
         }
 
         .stat-card:nth-child(2) {
-            border-left-color: #4a90e2;
+            border-left-color: #764ba2;
         }
 
         .stat-card:nth-child(3) {
@@ -126,56 +130,60 @@
         }
 
         .stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            color: #1a202c;
-            margin-bottom: 2px;
+            font-size: 32px;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 4px;
         }
 
         .stat-label {
-            font-size: 12px;
-            color: #718096;
-            font-weight: 500;
+            font-size: 13px;
+            color: #888;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .agents-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 14px;
-            padding: 0 16px 24px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 18px;
+            padding: 0 20px 24px;
         }
 
         .agent-card {
-            background: white;
-            border-radius: 6px;
-            padding: 14px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            transition: all 0.2s;
-            border: 1px solid #e8ebf0;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 12px;
+            padding: 18px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border: 2px solid transparent;
         }
 
         .agent-card:hover {
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-            border-color: #cbd5e0;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.25);
+            border-color: #667eea;
         }
 
         .agent-header {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 12px;
+            gap: 12px;
+            margin-bottom: 14px;
         }
 
         .agent-avatar {
-            width: 40px;
-            height: 40px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: 600;
-            font-size: 15px;
+            font-weight: 700;
+            font-size: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
         .agent-info {
@@ -183,71 +191,74 @@
         }
 
         .agent-name {
-            font-weight: 600;
-            font-size: 14px;
-            color: #1a202c;
+            font-weight: 700;
+            font-size: 15px;
+            color: #333;
             margin-bottom: 2px;
         }
 
         .agent-matricule {
-            color: #a0aec0;
+            color: #999;
             font-size: 12px;
+            font-weight: 500;
         }
 
         .badges {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 10px;
+            gap: 6px;
+            margin-bottom: 12px;
         }
 
         .badge {
-            padding: 3px 8px;
-            border-radius: 12px;
+            padding: 4px 10px;
+            border-radius: 16px;
             font-size: 11px;
-            font-weight: 600;
-            background: #edf2f7;
-            color: #2d3748;
+            font-weight: 700;
+            background: #f0f0f5;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .badge.r482 {
-            background: #ffeaa7;
-            color: #2d3748;
+            background: #fff7e6;
+            color: #d48806;
         }
 
         .badge.caces {
-            background: #ffeaa7;
-            color: #2d3748;
+            background: #fff7e6;
+            color: #d48806;
         }
 
         .badge.permis {
-            background: #fab1a0;
-            color: #2d3748;
+            background: #ffe7e7;
+            color: #d9534f;
         }
 
         .badge.aipr {
-            background: #a8d8ff;
-            color: #2d3748;
+            background: #e6f4ff;
+            color: #1890ff;
         }
 
         .badge.fimo {
-            background: #dda0dd;
-            color: #2d3748;
+            background: #f6e6ff;
+            color: #a855f7;
         }
 
         .badge.tronco {
-            background: #d0d0d0;
-            color: #2d3748;
+            background: #f0f0f5;
+            color: #666;
         }
 
         .badge.secours {
-            background: #ffb3a3;
-            color: #2d3748;
+            background: #ffe7d6;
+            color: #ff7a45;
         }
 
         .badge.groupe {
-            background: #b3e5d8;
-            color: #2d3748;
+            background: #e6fef0;
+            color: #13c2c2;
         }
 
         .agent-actions {
@@ -257,31 +268,34 @@
 
         .action-btn {
             flex: 1;
-            padding: 8px;
+            padding: 9px;
             border: none;
-            border-radius: 4px;
+            border-radius: 6px;
             cursor: pointer;
             font-size: 12px;
-            font-weight: 600;
-            transition: all 0.2s;
+            font-weight: 700;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .action-btn.edit {
-            background: #4a90e2;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
 
         .action-btn.edit:hover {
-            background: #357abd;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
 
         .action-btn.delete {
-            background: #f5a4a4;
-            color: #2d3748;
+            background: #ffe7e7;
+            color: #d9534f;
         }
 
         .action-btn.delete:hover {
-            background: #e88888;
+            background: #ffd4d4;
         }
 
         .modal {
@@ -291,7 +305,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -303,101 +317,115 @@
 
         .modal-content {
             background: white;
-            border-radius: 8px;
-            padding: 24px;
+            border-radius: 12px;
+            padding: 28px;
             max-width: 550px;
             width: 90%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .modal-header h2 {
-            color: #1a202c;
-            font-size: 18px;
+            color: #667eea;
+            font-size: 20px;
+            font-weight: 700;
         }
 
         .close-btn {
             background: #f5a4a4;
-            color: #2d3748;
+            color: white;
             border: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 4px;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
+            font-size: 18px;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: #e88888;
+            transform: rotate(90deg);
         }
 
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 4px;
-            color: #1a202c;
-            font-weight: 600;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: 700;
             font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
-            font-size: 13px;
+            padding: 11px 12px;
+            border: 2px solid #e0e0e8;
+            border-radius: 8px;
+            font-size: 14px;
             background: white;
+            transition: all 0.3s;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #4a5568;
-            box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
         }
 
         .modal-actions {
             display: flex;
-            gap: 8px;
-            margin-top: 16px;
+            gap: 10px;
+            margin-top: 20px;
         }
 
         .modal-actions button {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .modal-actions button:first-child {
-            background: #4a90e2;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .modal-actions button:first-child:hover {
-            background: #357abd;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
         .modal-actions button:last-child {
-            background: #edf2f7;
-            color: #2d3748;
+            background: #f5f5f5;
+            color: #666;
         }
 
         .modal-actions button:last-child:hover {
-            background: #cbd5e0;
+            background: #e8e8e8;
         }
 
         .agent-details {

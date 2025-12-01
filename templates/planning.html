@@ -13,11 +13,11 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f8f9fb;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 0;
-            color: #2c3e50;
+            padding: 20px 0;
+            color: #1a1a2e;
             line-height: 1.4;
             -webkit-font-smoothing: antialiased;
         }
@@ -28,137 +28,148 @@
         }
 
         header {
-            background: #ffffff;
-            padding: 20px 32px;
-            border-bottom: 1px solid #e8ebf0;
-            margin-bottom: 0;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 28px 40px;
+            border-radius: 12px;
+            margin: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         h1 {
-            color: #1a202c;
-            margin-bottom: 12px;
-            font-size: 24px;
-            font-weight: 600;
-            letter-spacing: -0.01em;
+            color: #667eea;
+            margin-bottom: 16px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         nav {
             display: flex;
-            gap: 2px;
+            gap: 4px;
             margin-bottom: 0;
         }
 
         nav a {
-            padding: 6px 12px;
+            padding: 8px 16px;
             background: transparent;
-            color: #718096;
+            color: #888;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-weight: 500;
             font-size: 13px;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
 
         nav a:hover {
-            background: #edf2f7;
-            color: #2d3748;
+            background: #f0f0f5;
+            color: #333;
         }
 
         nav a.active {
-            background: #edf2f7;
-            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             font-weight: 600;
         }
 
         .controls {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             align-items: center;
             flex-wrap: wrap;
+            padding: 0 20px;
+            margin-bottom: 16px;
         }
 
         .view-tabs {
             display: flex;
-            gap: 2px;
+            gap: 4px;
             margin-bottom: 16px;
-            background: #edf2f7;
-            padding: 3px;
-            border-radius: 6px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px;
+            border-radius: 8px;
             display: inline-flex;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
 
         .view-tab {
-            padding: 6px 12px;
+            padding: 8px 16px;
             border: none;
             background: transparent;
-            color: #718096;
-            border-radius: 4px;
+            color: #888;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 13px;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .view-tab:hover {
-            color: #2d3748;
+            color: #333;
         }
 
         .view-tab.active {
-            background: #ffffff;
-            color: #2d3748;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
-            font-weight: 600;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
 
         select {
-            padding: 8px 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
+            padding: 10px 12px;
+            border: 2px solid #e0e0e8;
+            border-radius: 8px;
             font-size: 13px;
             cursor: pointer;
             background: white;
-            color: #2d3748;
-            transition: border-color 0.2s;
+            color: #333;
+            transition: all 0.3s;
+            font-weight: 500;
         }
 
         select:hover {
-            border-color: #a0aec0;
+            border-color: #667eea;
         }
 
         select:focus {
             outline: none;
-            border-color: #4a5568;
-            box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
         }
 
         button {
-            padding: 8px 14px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 700;
             font-size: 13px;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .btn-print {
-            background: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-print:hover {
-            background: #1a202c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
         .planning-container {
-            background: white;
-            padding: 16px;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 20px;
             overflow-x: auto;
-            margin: 0;
-            border: 1px solid #e8ebf0;
-            border-radius: 6px;
-            margin: 16px;
+            margin: 20px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         table {
@@ -171,11 +182,11 @@
 
         th,
         td {
-            padding: 8px 10px;
-            border-bottom: 1px solid #edf2f7;
+            padding: 10px 12px;
+            border-bottom: 1px solid #e8ebf0;
             text-align: center;
             font-size: 12px;
-            min-width: 44px;
+            min-width: 48px;
             vertical-align: middle;
         }
 
@@ -202,38 +213,38 @@
         }
 
         th {
-            background: #2d3748;
+            background: linear-gradient(135deg, #2d3e50 0%, #1a202c 100%);
             color: #ffffff;
-            font-weight: 600;
+            font-weight: 700;
             position: sticky;
             top: 0;
             z-index: 20;
-            border-bottom: 1px solid #1a202c;
+            border-bottom: 2px solid #667eea;
             text-transform: uppercase;
             font-size: 11px;
-            letter-spacing: 0.02em;
-            padding: 8px 10px;
+            letter-spacing: 0.5px;
+            padding: 12px 10px;
         }
 
         .agent-cell {
-            font-weight: 600;
+            font-weight: 700;
             text-align: left;
-            background: #ffffff;
+            background: rgba(102, 126, 234, 0.02);
             position: sticky;
             left: 0;
             z-index: 15;
-            min-width: 200px;
-            max-width: 280px;
-            padding: 10px 12px;
-            border-right: 1px solid #edf2f7;
+            min-width: 220px;
+            max-width: 300px;
+            padding: 12px 14px;
+            border-right: 2px solid #e8ebf0;
             box-shadow: 2px 0 4px rgba(0, 0, 0, 0.02);
         }
 
         .agent-name {
-            font-size: 12px;
+            font-size: 13px;
             margin-bottom: 4px;
             font-weight: 700;
-            color: #1a202c;
+            color: #333;
         }
 
         .agent-badges {
@@ -243,22 +254,22 @@
         }
 
         .badge-mini {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             display: inline-block;
-            font-size: 7px;
-            font-weight: bold;
+            font-size: 8px;
+            font-weight: 700;
             color: white;
-            line-height: 14px;
+            line-height: 16px;
             text-align: center;
         }
 
         .cell-inner .badge-mini {
-            width: 10px;
-            height: 10px;
-            line-height: 10px;
-            font-size: 6px;
+            width: 12px;
+            height: 12px;
+            line-height: 12px;
+            font-size: 7px;
         }
 
         .cell-inner .agent-badges {
@@ -274,37 +285,38 @@
         }
 
         .badge-permis {
-            background: #f5a4a4;
+            background: #ff7a45;
         }
 
         .badge-aipr {
-            background: #a8d8ff;
+            background: #1890ff;
         }
 
         .badge-fimo {
-            background: #dda0dd;
+            background: #a855f7;
         }
 
         .badge-tronco {
-            background: #cbd5e0;
+            background: #d0d0d0;
         }
 
         .badge-secours {
-            background: #ffb3a3;
+            background: #ff7a45;
         }
 
         .day-cell {
             cursor: pointer;
-            transition: background 0.15s ease;
+            transition: all 0.2s;
             position: relative;
-            min-height: 36px;
+            min-height: 40px;
             padding: 6px 4px;
             white-space: normal;
             overflow: visible;
+            background: white;
         }
 
         .day-cell:hover {
-            background: #e6f2ff;
+            background: linear-gradient(135deg, rgba(102,126,234,0.1) 0%, rgba(118,75,162,0.05) 100%);
         }
 
         .day-cell.weekend {
@@ -324,14 +336,14 @@
         }
 
         tr:nth-child(even) .agent-cell {
-            background: #f8f9fb;
+            background: rgba(102, 126, 234, 0.04);
         }
 
         .loading {
             text-align: center;
-            padding: 32px;
+            padding: 40px;
             font-size: 14px;
-            color: #718096;
+            color: #999;
         }
 
         .modal {
@@ -342,78 +354,90 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4);
+            background: rgba(0, 0, 0, 0.5);
         }
 
         .modal-content {
             background: white;
             margin: 15% auto;
-            padding: 24px;
-            border-radius: 8px;
+            padding: 28px;
+            border-radius: 12px;
             width: 90%;
-            max-width: 480px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
         }
 
         .modal-content h2 {
             margin-top: 0;
-            color: #1a202c;
-            font-size: 18px;
+            color: #667eea;
+            font-size: 20px;
+            font-weight: 700;
         }
 
         .modal-content label {
             display: block;
-            margin: 12px 0 4px;
-            font-weight: 600;
-            color: #1a202c;
+            margin: 14px 0 6px;
+            font-weight: 700;
+            color: #333;
             font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .modal-content input,
         .modal-content select {
             width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
-            font-size: 13px;
+            padding: 11px 12px;
+            border: 2px solid #e0e0e8;
+            border-radius: 8px;
+            font-size: 14px;
             background: white;
+            transition: all 0.3s;
         }
 
         .modal-content input:focus,
         .modal-content select:focus {
             outline: none;
-            border-color: #4a5568;
-            box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
         }
 
         .modal-buttons {
             display: flex;
-            gap: 8px;
-            margin-top: 16px;
+            gap: 10px;
+            margin-top: 20px;
         }
 
         .modal-buttons button {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border: none;
-            border-radius: 4px;
-            font-weight: 600;
+            border-radius: 8px;
+            font-weight: 700;
             cursor: pointer;
             font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .btn-cancel {
-            background: #cbd5e0;
-            color: #1a202c;
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-cancel:hover {
+            background: #e8e8e8;
         }
 
         .btn-generate {
-            background: #4a90e2;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
         .btn-generate:hover {
-            background: #357abd;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
         }
 
         @media print {

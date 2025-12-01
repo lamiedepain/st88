@@ -13,140 +13,165 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f8f9fb;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 0;
-            color: #2c3e50;
+            padding: 20px 0;
+            color: #1a1a2e;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 850px;
             margin: 0 auto;
         }
 
         header {
-            background: #ffffff;
-            padding: 20px 32px;
-            border-bottom: 1px solid #e8ebf0;
-            margin-bottom: 24px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 28px 40px;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
         }
 
         h1 {
-            color: #1a202c;
-            margin-bottom: 12px;
-            font-size: 24px;
-            font-weight: 600;
-            letter-spacing: -0.01em;
+            color: #667eea;
+            margin-bottom: 16px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         nav {
             display: flex;
-            gap: 2px;
+            gap: 4px;
             margin-bottom: 0;
         }
 
         nav a {
-            padding: 6px 12px;
+            padding: 8px 16px;
             background: transparent;
-            color: #718096;
+            color: #888;
             text-decoration: none;
-            border-radius: 4px;
+            border-radius: 6px;
             font-weight: 500;
             font-size: 13px;
-            transition: all 0.2s;
+            transition: all 0.3s;
         }
 
         nav a:hover {
-            background: #edf2f7;
-            color: #2d3748;
+            background: #f0f0f5;
+            color: #333;
         }
 
         nav a.active {
-            background: #edf2f7;
-            color: #2d3748;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             font-weight: 600;
         }
 
         .generator-box {
-            background: white;
-            border-radius: 6px;
-            padding: 24px;
-            margin: 0 16px 24px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e8ebf0;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 0 0 12px 12px;
+            padding: 32px 40px;
+            margin: 0;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+        }
+
+        .generator-box h2 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 24px;
+            font-weight: 700;
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 6px;
-            color: #1a202c;
-            font-weight: 500;
-            font-size: 13px;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .form-group select,
         .form-group input {
             width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #cbd5e0;
-            border-radius: 4px;
-            font-size: 13px;
-            transition: all 0.2s;
+            padding: 12px 14px;
+            border: 2px solid #e0e0e8;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
             background: white;
+            color: #333;
         }
 
         .form-group select:focus,
         .form-group input:focus {
             outline: none;
-            border-color: #4a5568;
-            box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.1);
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+            background: #f9f9ff;
         }
 
         button {
             width: 100%;
-            padding: 10px;
+            padding: 13px 20px;
             border: none;
-            border-radius: 4px;
-            background: #2d3748;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            font-size: 13px;
-            font-weight: 500;
+            font-size: 14px;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         button:hover {
-            background: #1a202c;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        button:active {
+            transform: translateY(0);
         }
 
         .info-box {
-            background: #f0f4f8;
-            border-left: 3px solid #4a90e2;
-            padding: 12px 14px;
-            border-radius: 4px;
-            margin-top: 16px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border-left: 4px solid #667eea;
+            padding: 16px 18px;
+            border-radius: 8px;
+            margin-top: 24px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
         }
 
         .info-box p {
-            color: #2d3748;
-            line-height: 1.5;
+            color: #444;
+            line-height: 1.6;
             font-size: 13px;
+        }
+
+        .info-box strong {
+            color: #667eea;
         }
 
         .progress-container {
             display: none;
-            margin-top: 16px;
+            margin-top: 24px;
             background: white;
-            border-radius: 6px;
-            padding: 16px;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            border: 1px solid #e8ebf0;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e0e0e8;
         }
 
         .progress-container.active {
@@ -155,31 +180,31 @@
 
         .progress-bar {
             width: 100%;
-            height: 6px;
-            background: #edf2f7;
-            border-radius: 3px;
+            height: 8px;
+            background: #e0e0e8;
+            border-radius: 4px;
             overflow: hidden;
             position: relative;
         }
 
         .progress-fill {
             height: 100%;
-            background: #4a90e2;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
             transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: 500;
-            font-size: 11px;
+            font-weight: 700;
+            font-size: 12px;
         }
 
         .progress-text {
-            margin-top: 8px;
+            margin-top: 12px;
             text-align: center;
-            color: #4a5568;
-            font-weight: 500;
-            font-size: 12px;
+            color: #667eea;
+            font-weight: 600;
+            font-size: 13px;
         }
     </style>
 </head>
@@ -197,13 +222,15 @@
         </header>
 
         <div class="generator-box">
-            <h2 style="margin-bottom: 16px; color: #1a202c; font-size: 16px;">Configuration</h2>
+            <h2>Configuration</h2>
 
-            <div style="margin-bottom:16px;">
+            <div style="margin-bottom:18px;">
                 <button
-                    style="padding:8px 12px; background:#edf2f7; color:#2d3748; border-radius:4px; border:1px solid #cbd5e0; cursor:pointer; margin-bottom:6px; font-size:13px; width:auto; font-weight:500;"
-                    onclick="reloadExcel()">🔄 Recharger</button>
-                <span id="reloadStatus" style="margin-left:10px;color:#718096;font-size:12px;"></span>
+                    style="padding:10px 16px; background:rgba(102,126,234,0.1); color:#667eea; border-radius:8px; border:2px solid #667eea; cursor:pointer; margin-bottom:8px; font-size:13px; width:auto; font-weight:600; transition:all 0.3s;"
+                    onmouseover="this.style.background='linear-gradient(135deg,rgba(102,126,234,0.2),rgba(118,75,162,0.1))'"
+                    onmouseout="this.style.background='rgba(102,126,234,0.1)'" onclick="reloadExcel()">🔄 Recharger
+                    Excel</button>
+                <span id="reloadStatus" style="margin-left:12px;color:#667eea;font-size:13px;font-weight:500;"></span>
             </div>
 
             <div class="form-group">
@@ -242,13 +269,13 @@
             </div>
 
             <div class="info-box">
-                <p><strong style="color: #2d3748;">ℹ️ Guide</strong></p>
-                <p style="margin-top: 6px;">Générez automatiquement des équipes avec :</p>
-                <ul style="margin-top: 8px; margin-left: 20px; color: #4a5568; font-size: 12px;">
-                    <li>Répartition équitable</li>
+                <p><strong>ℹ️ Comment ça marche</strong></p>
+                <p style="margin-top: 8px;">Générez automatiquement des équipes intelligentes :</p>
+                <ul style="margin-top: 10px; margin-left: 20px; color: #555; font-size: 13px;">
+                    <li>Répartition équitable des agents</li>
                     <li>Équipes de 2 ou 3 agents</li>
-                    <li>Gestion des disponibilités</li>
-                    <li>Export Excel direct</li>
+                    <li>Gestion des compétences</li>
+                    <li>Export Excel instantané</li>
                 </ul>
             </div>
         </div>
