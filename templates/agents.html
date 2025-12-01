@@ -147,7 +147,7 @@
             padding: 20px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             transition: all 0.2s;
-            border: 1px solid #e5e7eb;
+            border: 2px solid #e5e7eb;
         }
 
         .agent-card:hover {
@@ -164,14 +164,14 @@
 
         .agent-avatar {
             width: 48px;
-            height: 60px;
+            height: 48px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
-            font-size: 20px;
+            font-size: 18px;
         }
 
         .agent-info {
@@ -669,7 +669,7 @@
             card.className = 'agent-card';
 
             const colors = groupColors[agent.groupe] || groupColors.default;
-            card.style.borderLeftColor = colors.border;
+            card.style.borderColor = colors.border;
 
             const initials = (agent.nom.charAt(0) + agent.prenom.charAt(0)).toUpperCase();
 
