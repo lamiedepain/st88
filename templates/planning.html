@@ -13,147 +13,152 @@
         }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f5f7fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8f9fb;
             min-height: 100vh;
             padding: 0;
-            color: #0f172a;
+            color: #2c3e50;
             line-height: 1.4;
             -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 1800px;
+            max-width: 1600px;
             margin: 0 auto;
         }
 
         header {
             background: #ffffff;
-            padding: 24px 40px;
-            border-bottom: 1px solid #e5e7eb;
+            padding: 20px 32px;
+            border-bottom: 1px solid #e8ebf0;
             margin-bottom: 0;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
         }
 
         h1 {
-            color: #111827;
-            margin-bottom: 20px;
-            font-size: 28px;
+            color: #1a202c;
+            margin-bottom: 12px;
+            font-size: 24px;
             font-weight: 600;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.01em;
         }
 
         nav {
             display: flex;
-            gap: 4px;
-            margin-bottom: 24px;
+            gap: 2px;
+            margin-bottom: 0;
         }
 
         nav a {
-            padding: 8px 16px;
+            padding: 6px 12px;
             background: transparent;
-            color: #6b7280;
+            color: #718096;
             text-decoration: none;
-            border-radius: 6px;
+            border-radius: 4px;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 13px;
             transition: all 0.2s;
         }
 
         nav a:hover {
-            background: #f3f4f6;
-            color: #111827;
+            background: #edf2f7;
+            color: #2d3748;
         }
 
         nav a.active {
-            background: #111827;
-            color: white;
+            background: #edf2f7;
+            color: #2d3748;
+            font-weight: 600;
         }
 
         .controls {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
             flex-wrap: wrap;
         }
 
         .view-tabs {
             display: flex;
-            gap: 4px;
-            margin-bottom: 20px;
-            background: #f3f4f6;
-            padding: 4px;
-            border-radius: 8px;
+            gap: 2px;
+            margin-bottom: 16px;
+            background: #edf2f7;
+            padding: 3px;
+            border-radius: 6px;
             display: inline-flex;
         }
 
         .view-tab {
-            padding: 8px 16px;
+            padding: 6px 12px;
             border: none;
             background: transparent;
-            color: #6b7280;
-            border-radius: 6px;
+            color: #718096;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 13px;
             transition: all 0.2s;
         }
 
         .view-tab:hover {
-            color: #111827;
+            color: #2d3748;
         }
 
         .view-tab.active {
             background: #ffffff;
-            color: #111827;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            color: #2d3748;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+            font-weight: 600;
         }
 
         select {
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 13px;
             cursor: pointer;
             background: white;
-            color: #374151;
+            color: #2d3748;
             transition: border-color 0.2s;
         }
 
         select:hover {
-            border-color: #9ca3af;
+            border-color: #a0aec0;
         }
 
         select:focus {
             outline: none;
-            border-color: #111827;
-            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+            border-color: #4a5568;
+            box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.1);
         }
 
         button {
-            padding: 8px 16px;
+            padding: 8px 14px;
             border: none;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 13px;
             transition: all 0.2s;
         }
 
         .btn-print {
-            background: #111827;
+            background: #2d3748;
             color: white;
         }
 
         .btn-print:hover {
-            background: #000000;
+            background: #1a202c;
         }
 
         .planning-container {
             background: white;
-            padding: 24px;
+            padding: 16px;
             overflow-x: auto;
             margin: 0;
+            border: 1px solid #e8ebf0;
+            border-radius: 6px;
+            margin: 16px;
         }
 
         table {
@@ -161,35 +166,32 @@
             border-collapse: separate;
             border-spacing: 0;
             background: white;
-            box-shadow: 0 1px 2px rgba(16, 24, 40, 0.04);
+            box-shadow: none;
         }
 
         th,
         td {
-            padding: 10px 12px;
-            border-bottom: 1px solid #e6eef8;
+            padding: 8px 10px;
+            border-bottom: 1px solid #edf2f7;
             text-align: center;
-            font-size: 13px;
-            min-width: 48px;
+            font-size: 12px;
+            min-width: 44px;
             vertical-align: middle;
         }
 
-        /* Contenu des cases jour : inner div centré. Hauteur des cases définie dynamiquement en JS (plus fiable que aspect-ratio). */
         .cell-inner {
             width: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
-            padding: 4px;
+            padding: 3px;
             overflow: visible;
-            /* allow badges to be visible inside */
             white-space: normal;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 3px;
         }
 
-        /* S'assurer que les pastilles (badges) restent visibles */
         .agent-cell {
             overflow: visible !important;
         }
@@ -200,17 +202,17 @@
         }
 
         th {
-            background: linear-gradient(180deg, #0f172a, #111827);
+            background: #2d3748;
             color: #ffffff;
             font-weight: 600;
             position: sticky;
             top: 0;
             z-index: 20;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid #1a202c;
             text-transform: uppercase;
-            font-size: 12px;
+            font-size: 11px;
             letter-spacing: 0.02em;
-            padding: 10px 14px;
+            padding: 8px 10px;
         }
 
         .agent-cell {
@@ -220,119 +222,116 @@
             position: sticky;
             left: 0;
             z-index: 15;
-            min-width: 220px;
-            max-width: 320px;
-            padding: 12px 14px;
-            border-right: 1px solid #eef4fb;
-            box-shadow: 4px 0 8px rgba(15, 23, 42, 0.03);
+            min-width: 200px;
+            max-width: 280px;
+            padding: 10px 12px;
+            border-right: 1px solid #edf2f7;
+            box-shadow: 2px 0 4px rgba(0, 0, 0, 0.02);
         }
 
         .agent-name {
-            font-size: 13px;
-            margin-bottom: 6px;
+            font-size: 12px;
+            margin-bottom: 4px;
             font-weight: 700;
-            color: #0b1220;
+            color: #1a202c;
         }
 
         .agent-badges {
             display: flex;
-            gap: 3px;
+            gap: 2px;
             flex-wrap: wrap;
         }
 
         .badge-mini {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             display: inline-block;
-            font-size: 8px;
+            font-size: 7px;
             font-weight: bold;
             color: white;
-            line-height: 16px;
+            line-height: 14px;
             text-align: center;
         }
 
-        /* Smaller badges when displayed inside day cells */
         .cell-inner .badge-mini {
-            width: 12px;
-            height: 12px;
-            line-height: 12px;
-            font-size: 7px;
+            width: 10px;
+            height: 10px;
+            line-height: 10px;
+            font-size: 6px;
         }
 
         .cell-inner .agent-badges {
             display: flex;
-            gap: 3px;
+            gap: 2px;
             align-items: center;
             justify-content: center;
             flex-wrap: wrap;
         }
 
         .badge-caces {
-            background: #f39c12;
+            background: #faad14;
         }
 
         .badge-permis {
-            background: #e74c3c;
+            background: #f5a4a4;
         }
 
         .badge-aipr {
-            background: #3498db;
+            background: #a8d8ff;
         }
 
         .badge-fimo {
-            background: #9b59b6;
+            background: #dda0dd;
         }
 
         .badge-tronco {
-            background: #95a5a6;
+            background: #cbd5e0;
         }
 
         .badge-secours {
-            background: #e67e22;
+            background: #ffb3a3;
         }
 
         .day-cell {
             cursor: pointer;
-            transition: background 0.18s ease, color 0.18s ease;
+            transition: background 0.15s ease;
             position: relative;
-            min-height: 40px;
-            padding: 8px 6px;
+            min-height: 36px;
+            padding: 6px 4px;
             white-space: normal;
-            /* allow badges to wrap */
             overflow: visible;
-            /* ensure badges are not clipped */
         }
 
         .day-cell:hover {
-            background: #e3f2fd;
+            background: #e6f2ff;
         }
 
         .day-cell.weekend {
-            background: #ffe0e0;
+            background: #fae8e8;
         }
 
         .day-cell.present {
-            background: #d4edda;
+            background: #e6f7ee;
         }
 
         .day-cell.absent {
-            background: #f8d7da;
+            background: #fde8e8;
         }
 
         .day-cell.conge {
-            background: #fff3cd;
+            background: #fffbe6;
         }
 
         tr:nth-child(even) .agent-cell {
-            background: #e9ecef;
+            background: #f8f9fb;
         }
 
         .loading {
             text-align: center;
-            padding: 40px;
-            font-size: 18px;
-            color: #7f8c8d;
+            padding: 32px;
+            font-size: 14px;
+            color: #718096;
         }
 
         .modal {
@@ -343,63 +342,78 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.4);
         }
 
         .modal-content {
             background: white;
-            margin: 10% auto;
-            padding: 30px;
-            border-radius: 12px;
+            margin: 15% auto;
+            padding: 24px;
+            border-radius: 8px;
             width: 90%;
-            max-width: 500px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            max-width: 480px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
 
         .modal-content h2 {
             margin-top: 0;
-            color: #2c3e50;
+            color: #1a202c;
+            font-size: 18px;
         }
 
         .modal-content label {
             display: block;
-            margin: 15px 0 5px;
+            margin: 12px 0 4px;
             font-weight: 600;
-            color: #2c3e50;
+            color: #1a202c;
+            font-size: 13px;
         }
 
         .modal-content input,
         .modal-content select {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 13px;
+            background: white;
+        }
+
+        .modal-content input:focus,
+        .modal-content select:focus {
+            outline: none;
+            border-color: #4a5568;
+            box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.1);
         }
 
         .modal-buttons {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px;
+            margin-top: 16px;
         }
 
         .modal-buttons button {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
             font-weight: 600;
             cursor: pointer;
+            font-size: 13px;
         }
 
         .btn-cancel {
-            background: #95a5a6;
-            color: white;
+            background: #cbd5e0;
+            color: #1a202c;
         }
 
         .btn-generate {
-            background: #9b59b6;
+            background: #4a90e2;
             color: white;
+        }
+
+        .btn-generate:hover {
+            background: #357abd;
         }
 
         @media print {

@@ -14,164 +14,168 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: #f5f7fa;
+            background: #f8f9fb;
             min-height: 100vh;
             padding: 0;
+            color: #2c3e50;
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         header {
             background: #ffffff;
-            padding: 24px 40px;
-            border-bottom: 1px solid #e5e7eb;
-            margin-bottom: 32px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            padding: 20px 32px;
+            border-bottom: 1px solid #e8ebf0;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
         }
 
         h1 {
-            color: #111827;
-            margin-bottom: 20px;
-            font-size: 28px;
+            color: #1a202c;
+            margin-bottom: 12px;
+            font-size: 24px;
             font-weight: 600;
-            letter-spacing: -0.02em;
+            letter-spacing: -0.01em;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
         }
 
         nav {
             display: flex;
-            gap: 4px;
-            margin-bottom: 24px;
+            gap: 2px;
+            margin-bottom: 0;
         }
 
         nav a {
-            padding: 8px 16px;
+            padding: 6px 12px;
             background: transparent;
-            color: #6b7280;
+            color: #718096;
             text-decoration: none;
-            border-radius: 6px;
+            border-radius: 4px;
             font-weight: 500;
-            font-size: 14px;
+            font-size: 13px;
             transition: all 0.2s;
         }
 
         nav a:hover {
-            background: #f3f4f6;
-            color: #111827;
+            background: #edf2f7;
+            color: #2d3748;
         }
 
         nav a.active {
-            background: #111827;
-            color: white;
+            background: #edf2f7;
+            color: #2d3748;
+            font-weight: 600;
         }
 
         .controls {
             display: flex;
             gap: 12px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
             flex-wrap: wrap;
             align-items: center;
-            padding: 0 40px;
+            padding: 0 16px;
         }
 
         input[type="text"] {
-            padding: 8px 12px;
-            border: 1px solid #d1d5db;
-            border-radius: 6px;
-            font-size: 14px;
-            width: 300px;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 13px;
+            width: 280px;
             transition: all 0.2s;
+            background: white;
         }
 
         input[type="text"]:focus {
             outline: none;
-            border-color: #111827;
-            box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.1);
+            border-color: #4a5568;
+            box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.1);
         }
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-            margin: 24px 40px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin: 16px 16px 20px;
         }
 
         .stat-card {
             background: white;
-            padding: 20px;
-            border-radius: 8px;
-            border-left: 4px solid #111827;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 14px;
+            border-radius: 6px;
+            border-left: 3px solid #4a5568;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e8ebf0;
         }
 
         .stat-card:nth-child(2) {
-            border-left-color: #3b82f6;
+            border-left-color: #4a90e2;
         }
 
         .stat-card:nth-child(3) {
-            border-left-color: #10b981;
+            border-left-color: #52c41a;
         }
 
         .stat-card:nth-child(4) {
-            border-left-color: #f59e0b;
+            border-left-color: #faad14;
         }
 
         .stat-value {
-            font-size: 32px;
+            font-size: 24px;
             font-weight: 700;
-            color: #111827;
-            margin-bottom: 4px;
+            color: #1a202c;
+            margin-bottom: 2px;
         }
 
         .stat-label {
-            font-size: 13px;
-            color: #6b7280;
+            font-size: 12px;
+            color: #718096;
             font-weight: 500;
         }
 
         .agents-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-            padding: 0 40px 40px;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 14px;
+            padding: 0 16px 24px;
         }
 
         .agent-card {
             background: white;
-            border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            padding: 14px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             transition: all 0.2s;
-            border: 2px solid #e5e7eb;
+            border: 1px solid #e8ebf0;
         }
 
         .agent-card:hover {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+            border-color: #cbd5e0;
         }
 
         .agent-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 16px;
+            gap: 10px;
+            margin-bottom: 12px;
         }
 
         .agent-avatar {
-            width: 48px;
-            height: 48px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: bold;
-            font-size: 18px;
+            font-weight: 600;
+            font-size: 15px;
         }
 
         .agent-info {
@@ -180,104 +184,104 @@
 
         .agent-name {
             font-weight: 600;
-            font-size: 18px;
-            color: #2c3e50;
-            margin-bottom: 5px;
+            font-size: 14px;
+            color: #1a202c;
+            margin-bottom: 2px;
         }
 
         .agent-matricule {
-            color: #7f8c8d;
-            font-size: 14px;
+            color: #a0aec0;
+            font-size: 12px;
         }
 
         .badges {
             display: flex;
             flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 15px;
+            gap: 5px;
+            margin-bottom: 10px;
         }
 
         .badge {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 11px;
             font-weight: 600;
-            background: #ecf0f1;
-            color: #2c3e50;
+            background: #edf2f7;
+            color: #2d3748;
         }
 
         .badge.r482 {
-            background: #f39c12;
-            color: white;
+            background: #ffeaa7;
+            color: #2d3748;
         }
 
         .badge.caces {
-            background: #f39c12;
-            color: white;
+            background: #ffeaa7;
+            color: #2d3748;
         }
 
         .badge.permis {
-            background: #e74c3c;
-            color: white;
+            background: #fab1a0;
+            color: #2d3748;
         }
 
         .badge.aipr {
-            background: #3498db;
-            color: white;
+            background: #a8d8ff;
+            color: #2d3748;
         }
 
         .badge.fimo {
-            background: #9b59b6;
-            color: white;
+            background: #dda0dd;
+            color: #2d3748;
         }
 
         .badge.tronco {
-            background: #95a5a6;
-            color: white;
+            background: #d0d0d0;
+            color: #2d3748;
         }
 
         .badge.secours {
-            background: #e67e22;
-            color: white;
+            background: #ffb3a3;
+            color: #2d3748;
         }
 
         .badge.groupe {
-            background: #1abc9c;
-            color: white;
+            background: #b3e5d8;
+            color: #2d3748;
         }
 
         .agent-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
         }
 
         .action-btn {
             flex: 1;
-            padding: 10px;
+            padding: 8px;
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
 
         .action-btn.edit {
-            background: #3498db;
+            background: #4a90e2;
             color: white;
         }
 
         .action-btn.edit:hover {
-            background: #2980b9;
+            background: #357abd;
         }
 
         .action-btn.delete {
-            background: #e74c3c;
-            color: white;
+            background: #f5a4a4;
+            color: #2d3748;
         }
 
         .action-btn.delete:hover {
-            background: #c0392b;
+            background: #e88888;
         }
 
         .modal {
@@ -287,7 +291,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.4);
             z-index: 1000;
             align-items: center;
             justify-content: center;
@@ -299,94 +303,124 @@
 
         .modal-content {
             background: white;
-            border-radius: 12px;
-            padding: 30px;
-            max-width: 600px;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 550px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .modal-header h2 {
-            color: #2c3e50;
-        }
-
-        .close-btn {
-            background: #e74c3c;
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
+            color: #1a202c;
             font-size: 18px;
         }
 
+        .close-btn {
+            background: #f5a4a4;
+            color: #2d3748;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
 
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            color: #2c3e50;
+            margin-bottom: 4px;
+            color: #1a202c;
             font-weight: 600;
+            font-size: 13px;
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            font-size: 14px;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 4px;
+            font-size: 13px;
+            background: white;
         }
 
         .form-group input:focus,
         .form-group select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #4a5568;
+            box-shadow: 0 0 0 2px rgba(74, 85, 104, 0.1);
         }
 
         .modal-actions {
             display: flex;
-            gap: 10px;
-            margin-top: 20px;
+            gap: 8px;
+            margin-top: 16px;
         }
 
         .modal-actions button {
             flex: 1;
-            padding: 12px;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-actions button:first-child {
+            background: #4a90e2;
+            color: white;
+        }
+
+        .modal-actions button:first-child:hover {
+            background: #357abd;
+        }
+
+        .modal-actions button:last-child {
+            background: #edf2f7;
+            color: #2d3748;
+        }
+
+        .modal-actions button:last-child:hover {
+            background: #cbd5e0;
         }
 
         .agent-details {
-            margin-bottom: 12px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 8px;
+            margin-bottom: 10px;
+            padding: 8px;
+            background: #f8f9fb;
+            border-radius: 4px;
+            font-size: 13px;
         }
 
         .detail-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 6px;
         }
 
         .detail-label {
-            color: #7f8c8d;
+            color: #718096;
         }
 
         .detail-value {
             font-weight: 600;
-            color: #2c3e50;
+            color: #1a202c;
         }
 
         .loading {
