@@ -884,25 +884,24 @@ def generate_teams():
                     cell.alignment = Alignment(horizontal='center', vertical='center')
                 current_row += 1
             else:
-                # Collecter tous les agents du jour
-                all_agents = []
-                for team in teams:
-                    all_agents.extend(team)
-                
-                # Remplir par groupes de 3 agents (une ligne = 3 agents dans colonnes 2, 3, 4)
-                for i in range(0, len(all_agents), 3):
+                # Une ligne par équipe
+                for team_idx, team in enumerate(teams):
                     # Première ligne du jour : afficher la date
-                    if i == 0:
+                    if team_idx == 0:
                         sheet.cell(row=current_row, column=1, value=f"{day_name} {d.strftime('%d/%m/%Y')}")
                     else:
                         sheet.cell(row=current_row, column=1, value='')
                     
-                    # Remplir les 3 colonnes d'agents
-                    for j in range(3):
-                        if i + j < len(all_agents):
-                            sheet.cell(row=current_row, column=2+j, value=all_agents[i+j]['fullName'])
+                    # Remplir les agents de cette équipe (respecter team_size)
+                    for agent_idx, agent in enumerate(team):
+                        if agent_idx < 3:  # Max 3 colonnes d'agents (colonnes 2, 3, 4)
+                            sheet.cell(row=current_row, column=2+agent_idx, value=agent['fullName'])
                         else:
-                            sheet.cell(row=current_row, column=2+j, value='')
+                            break  # Ignorer si > 3 agents
+                    
+                    # Laisser vides les colonnes non utilisées (si team_size < 3)
+                    for unused_col in range(len(team), 3):
+                        sheet.cell(row=current_row, column=2+unused_col, value='')
                     
                     sheet.cell(row=current_row, column=5, value='')
                     
