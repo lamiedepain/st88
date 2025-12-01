@@ -654,107 +654,139 @@ def generate_teams():
         # Répartir en équipes selon les compétences et le team_size choisi
         def form_smart_teams(agents, team_size):
             """
-            Forme des équipes intelligentes basées sur les compétences:
-            - Chauffeur PL + Maçon + Aide maçon
-            - Chauffeur PL + Enrobé + Enrobé
-            - Enginiste + Maçon + Aide maçon
-            - 2 Blowpatcher
-            - Maçon + Aide maçon
-            Aucune priorité : toutes les combinaisons possibles se forment
+            Forme des équipes intelligentes basées sur les compétences
+            team_size = 2 ou 3 agents par équipe
             """
             if not agents:
                 return []
             
             teams = []
-            remaining = list(agents)
             used = set()
             
-            # Récupérer les compétences disponibles
-            chauffeurs = [a for a in remaining if a['competences'].get('chauffeur_pl')]
-            macons = [a for a in remaining if a['competences'].get('macon')]
-            aides = [a for a in remaining if a['competences'].get('aide_macon')]
-            enrobés = [a for a in remaining if a['competences'].get('enrobé')]
-            enginistes = [a for a in remaining if a['competences'].get('enginiste')]
-            blowpatchers = [a for a in remaining if a['competences'].get('blowpatcher')]
+            # Récupérer les compétences disponibles (tracking par fullName)
+            chauffeurs = [a for a in agents if a['competences'].get('chauffeur_pl')]
+            macons = [a for a in agents if a['competences'].get('macon')]
+            aides = [a for a in agents if a['competences'].get('aide_macon')]
+            enrobés = [a for a in agents if a['competences'].get('enrobé')]
+            enginistes = [a for a in agents if a['competences'].get('enginiste')]
+            blowpatchers = [a for a in agents if a['competences'].get('blowpatcher')]
             
-            if team_size >= 3:
-                # Équipe: Chauffeur PL + Maçon + Aide maçon
+            if team_size == 3:
+                # === ÉQUIPES DE 3 ===
+                # Priorité 1: Chauffeur PL + Maçon + Aide maçon
                 for ch in chauffeurs:
-                    if id(ch) in used:
+                    if ch['fullName'] in used:
                         continue
                     for mac in macons:
-                        if id(mac) in used:
+                        if mac['fullName'] in used or mac['fullName'] == ch['fullName']:
                             continue
                         for aide in aides:
-                            if id(aide) in used:
+                            if aide['fullName'] in used or aide['fullName'] == ch['fullName'] or aide['fullName'] == mac['fullName']:
                                 continue
                             teams.append([ch, mac, aide])
-                            used.add(id(ch))
-                            used.add(id(mac))
-                            used.add(id(aide))
+                            used.add(ch['fullName'])
+                            used.add(mac['fullName'])
+                            used.add(aide['fullName'])
                             break
                 
-                # Équipe: Chauffeur PL + Enrobé + Enrobé (2 enrobés)
-                ch_idx = 0
-                while ch_idx < len(chauffeurs):
-                    ch = chauffeurs[ch_idx]
-                    if id(ch) in used:
-                        ch_idx += 1
+                # Priorité 2: Chauffeur PL + Enrobé + Enrobé
+                for ch in chauffeurs:
+                    if ch['fullName'] in used:
                         continue
-                    enr_count = 0
                     enr_list = []
                     for enr in enrobés:
-                        if id(enr) not in used and enr_count < 2:
+                        if enr['fullName'] not in used and enr['fullName'] != ch['fullName']:
                             enr_list.append(enr)
-                            enr_count += 1
-                    if enr_count == 2:
+                            if len(enr_list) == 2:
+                                break
+                    if len(enr_list) == 2:
                         teams.append([ch, enr_list[0], enr_list[1]])
-                        used.add(id(ch))
-                        used.add(id(enr_list[0]))
-                        used.add(id(enr_list[1]))
-                        ch_idx += 1
-                    else:
-                        break
+                        used.add(ch['fullName'])
+                        used.add(enr_list[0]['fullName'])
+                        used.add(enr_list[1]['fullName'])
                 
-                # Équipe: Enginiste + Maçon + Aide maçon
+                # Priorité 3: Enginiste + Maçon + Aide maçon
                 for eng in enginistes:
-                    if id(eng) in used:
+                    if eng['fullName'] in used:
                         continue
                     for mac in macons:
-                        if id(mac) in used:
+                        if mac['fullName'] in used or mac['fullName'] == eng['fullName']:
                             continue
                         for aide in aides:
-                            if id(aide) in used:
+                            if aide['fullName'] in used or aide['fullName'] == eng['fullName'] or aide['fullName'] == mac['fullName']:
                                 continue
                             teams.append([eng, mac, aide])
-                            used.add(id(eng))
-                            used.add(id(mac))
-                            used.add(id(aide))
+                            used.add(eng['fullName'])
+                            used.add(mac['fullName'])
+                            used.add(aide['fullName'])
                             break
                 
-                # Équipe: Maçon + Aide maçon (sans chauffeur ni enginiste)
+                # Priorité 4: Maçon + Aide maçon
                 for mac in macons:
-                    if id(mac) in used:
+                    if mac['fullName'] in used:
                         continue
                     for aide in aides:
-                        if id(aide) in used:
+                        if aide['fullName'] in used or aide['fullName'] == mac['fullName']:
                             continue
                         teams.append([mac, aide])
-                        used.add(id(mac))
-                        used.add(id(aide))
+                        used.add(mac['fullName'])
+                        used.add(aide['fullName'])
                         break
             
-            # Équipe: 2 Blowpatcher (priorité : les paires)
-            blop_idx = 0
-            while blop_idx < len(blowpatchers) - 1:
-                bp1 = blowpatchers[blop_idx]
-                if id(bp1) in used:
-                    blop_idx += 1
-                    continue
-                bp2 = blowpatchers[blop_idx + 1]
-                if id(bp2) in used:
-                    blop_idx += 1
-                    continue
+            elif team_size == 2:
+                # === ÉQUIPES DE 2 ===
+                # Priorité 1: 2 Blowpatcher
+                blop_idx = 0
+                while blop_idx < len(blowpatchers) - 1:
+                    bp1 = blowpatchers[blop_idx]
+                    if bp1['fullName'] in used:
+                        blop_idx += 1
+                        continue
+                    bp2 = blowpatchers[blop_idx + 1]
+                    if bp2['fullName'] in used or bp2['fullName'] == bp1['fullName']:
+                        blop_idx += 1
+                        continue
+                    teams.append([bp1, bp2])
+                    used.add(bp1['fullName'])
+                    used.add(bp2['fullName'])
+                    blop_idx += 2
+                
+                # Priorité 2: Chauffeur PL + Maçon
+                for ch in chauffeurs:
+                    if ch['fullName'] in used:
+                        continue
+                    for mac in macons:
+                        if mac['fullName'] in used or mac['fullName'] == ch['fullName']:
+                            continue
+                        teams.append([ch, mac])
+                        used.add(ch['fullName'])
+                        used.add(mac['fullName'])
+                        break
+                
+                # Priorité 3: Chauffeur PL + Aide maçon
+                for ch in chauffeurs:
+                    if ch['fullName'] in used:
+                        continue
+                    for aide in aides:
+                        if aide['fullName'] in used or aide['fullName'] == ch['fullName']:
+                            continue
+                        teams.append([ch, aide])
+                        used.add(ch['fullName'])
+                        used.add(aide['fullName'])
+                        break
+            
+            # Remplir le reste avec les agents non utilisés
+            remaining_agents = [a for a in agents if a['fullName'] not in used]
+            
+            if remaining_agents:
+                if team_size == 3:
+                    for i in range(0, len(remaining_agents), 3):
+                        teams.append(remaining_agents[i:i+3])
+                elif team_size == 2:
+                    for i in range(0, len(remaining_agents), 2):
+                        teams.append(remaining_agents[i:i+2])
+            
+            return teams
                 teams.append([bp1, bp2])
                 used.add(id(bp1))
                 used.add(id(bp2))
