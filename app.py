@@ -787,30 +787,6 @@ def generate_teams():
                         teams.append(remaining_agents[i:i+2])
             
             return teams
-                teams.append([bp1, bp2])
-                used.add(id(bp1))
-                used.add(id(bp2))
-                blop_idx += 2
-            
-            # Remplir le reste simplement
-            remaining_agents = [a for a in agents if id(a) not in used]
-            
-            if team_size == 3:
-                for i in range(0, len(remaining_agents), 3):
-                    if i + 3 <= len(remaining_agents):
-                        teams.append(remaining_agents[i:i+3])
-                    elif i + 2 <= len(remaining_agents):
-                        teams.append(remaining_agents[i:i+2])
-                    else:
-                        teams.append(remaining_agents[i:i+1])
-            elif team_size == 2:
-                for i in range(0, len(remaining_agents), 2):
-                    if i + 2 <= len(remaining_agents):
-                        teams.append(remaining_agents[i:i+2])
-                    else:
-                        teams.append(remaining_agents[i:i+1])
-            
-            return teams
         
         daily_teams = {}
         for date_key, agents in daily_available.items():
