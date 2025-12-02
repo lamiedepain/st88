@@ -216,38 +216,46 @@
 
         .agents-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
             padding: 0 20px 24px;
         }
 
-        .agent-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.94) 0%, rgba(245, 240, 255, 0.9) 100%);
-            border-radius: 16px;
-            padding: 28px;
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            border: 2px solid rgba(238, 119, 82, 0.1);
-            backdrop-filter: blur(20px);
-            animation: slideUp 0.6s ease-out;
+        @media (max-width: 1400px) {
+            .agents-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
+        @media (max-width: 900px) {
+            .agents-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
+        }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
+        @media (max-width: 600px) {
+            .agents-grid {
+                grid-template-columns: 1fr;
             }
+        }
+
+        .agent-card {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            border: 1px solid #e8e8e8;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
         }
 
         .agent-card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 70px rgba(231, 60, 126, 0.2);
-            border-color: rgba(231, 60, 126, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border-color: #4a90e2;
         }
 
         .agent-header {
@@ -258,18 +266,17 @@
         }
 
         .agent-avatar {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: 900;
-            font-size: 18px;
-            background: linear-gradient(135deg, #ee7752 0%, #e73c7e 100%);
-            box-shadow: 0 8px 25px rgba(231, 60, 126, 0.3);
-            border: 3px solid rgba(255, 255, 255, 0.8);
+            font-weight: 700;
+            font-size: 16px;
+            background: #4a90e2;
+            border: none;
         }
 
         .agent-info {
@@ -277,22 +284,16 @@
         }
 
         .agent-name {
-            font-weight: 900;
-            font-size: 15px;
-            background: linear-gradient(135deg, #ee7752 0%, #e73c7e 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            font-weight: 700;
+            font-size: 13px;
+            color: #333;
             margin-bottom: 2px;
-            text-transform: uppercase;
         }
 
         .agent-matricule {
             color: #999;
             font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
+            font-weight: 500;
         }
 
         .badges {
@@ -303,22 +304,20 @@
         }
 
         .badge {
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 900;
-            background: linear-gradient(135deg, rgba(238, 119, 82, 0.12) 0%, rgba(35, 165, 213, 0.08) 100%);
-            color: #ee7752;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 9px;
+            font-weight: 600;
+            background: #f0f0f5;
+            color: #4a90e2;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
-            border: 1.5px solid rgba(238, 119, 82, 0.2);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            letter-spacing: 0.3px;
+            border: none;
+            display: inline-block;
         }
 
         .badge:hover {
-            transform: scale(1.08) translateY(-2px);
-            border-color: rgba(238, 119, 82, 0.4);
-            background: linear-gradient(135deg, rgba(238, 119, 82, 0.18) 0%, rgba(35, 165, 213, 0.12) 100%);
+            background: #e8e8f0;
         }
 
         .badge.r482 {
@@ -376,39 +375,33 @@
 
         .action-btn {
             flex: 1;
-            padding: 12px 14px;
+            padding: 8px 12px;
             border: none;
-            border-radius: 10px;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 11px;
-            font-weight: 900;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-weight: 600;
+            transition: all 0.2s ease;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
-            position: relative;
-            overflow: hidden;
+            letter-spacing: 0.3px;
         }
 
         .action-btn.edit {
-            background: linear-gradient(135deg, #ee7752 0%, #e73c7e 100%);
+            background: #4a90e2;
             color: white;
-            box-shadow: 0 8px 25px rgba(231, 60, 126, 0.3);
         }
 
         .action-btn.edit:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 15px 40px rgba(231, 60, 126, 0.5);
+            background: #357abd;
         }
 
         .action-btn.delete {
-            background: linear-gradient(135deg, rgba(231, 76, 60, 0.9) 0%, rgba(192, 57, 43, 0.9) 100%);
-            color: white;
-            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+            background: #f5f5f5;
+            color: #d32f2f;
         }
 
         .action-btn.delete:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 15px 40px rgba(231, 76, 60, 0.5);
+            background: #e8e8e8;
         }
 
         .modal {

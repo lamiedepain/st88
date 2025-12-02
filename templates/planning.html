@@ -149,88 +149,82 @@
         }
 
         .view-tab {
-            padding: 10px 20px;
+            padding: 8px 16px;
             border: none;
             background: transparent;
             color: #888;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 600;
             font-size: 12px;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.2s ease;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
+            letter-spacing: 0.3px;
         }
 
         .view-tab:hover {
-            color: #ee7752;
-            background: rgba(239, 119, 82, 0.08);
+            color: #333;
+            background: #f0f0f5;
         }
 
         .view-tab.active {
-            background: linear-gradient(135deg, #ee7752 0%, #e73c7e 100%);
+            background: #4a90e2;
             color: white;
-            box-shadow: 0 8px 25px rgba(231, 60, 126, 0.3);
-            font-weight: 900;
-        }
-
-        select {
-            padding: 12px 16px;
-            border: 2px solid rgba(238, 119, 82, 0.2);
-            border-radius: 10px;
-            font-size: 13px;
-            cursor: pointer;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(245, 240, 255, 0.8) 100%);
-            color: #333;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 2px 8px rgba(74, 144, 226, 0.3);
             font-weight: 700;
         }
 
+        select {
+            padding: 10px 12px;
+            border: 1px solid #e0e0e8;
+            border-radius: 6px;
+            font-size: 13px;
+            cursor: pointer;
+            background: white;
+            color: #333;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
         select:hover {
-            border-color: #e73c7e;
+            border-color: #4a90e2;
         }
 
         select:focus {
             outline: none;
-            border-color: #e73c7e;
-            box-shadow: 0 0 0 5px rgba(231, 60, 126, 0.2);
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
         }
 
         button {
-            padding: 12px 20px;
+            padding: 10px 16px;
             border: none;
-            border-radius: 10px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: 900;
+            font-weight: 700;
             font-size: 12px;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transition: all 0.2s ease;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
-            position: relative;
-            overflow: hidden;
+            letter-spacing: 0.3px;
         }
 
         .btn-print {
-            background: linear-gradient(135deg, #ee7752 0%, #e73c7e 50%, #23a6d5 100%);
+            background: #4a90e2;
             color: white;
-            box-shadow: 0 15px 50px rgba(231, 60, 126, 0.4);
         }
 
         .btn-print:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 25px 70px rgba(231, 60, 126, 0.6);
+            background: #357abd;
         }
 
         .planning-container {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.93) 0%, rgba(245, 240, 255, 0.88) 100%);
-            padding: 28px;
+            background: white;
+            padding: 20px;
             overflow-x: auto;
             margin: 20px;
-            border-radius: 14px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(25px);
-            border: 2px solid rgba(238, 119, 82, 0.1);
-            animation: slideUp 0.8s ease-out 0.2s both;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e8e8e8;
         }
 
         table {
@@ -243,8 +237,8 @@
 
         th,
         td {
-            padding: 14px 14px;
-            border-bottom: 1px solid rgba(238, 119, 82, 0.1);
+            padding: 10px 12px;
+            border-bottom: 1px solid #e8ebf0;
             text-align: center;
             font-size: 12px;
             min-width: 48px;
@@ -252,18 +246,17 @@
         }
 
         th {
-            background: linear-gradient(135deg, #ee7752 0%, #e73c7e 50%, #23a6d5 100%);
+            background: #2d3e50;
             color: #ffffff;
-            font-weight: 900;
+            font-weight: 700;
             position: sticky;
             top: 0;
             z-index: 20;
-            border-bottom: 3px solid rgba(231, 60, 126, 0.3);
+            border-bottom: 2px solid #4a90e2;
             text-transform: uppercase;
             font-size: 11px;
-            letter-spacing: 0.8px;
-            padding: 16px 14px;
-            box-shadow: 0 8px 25px rgba(231, 60, 126, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            letter-spacing: 0.5px;
+            padding: 12px 10px;
         }
 
         .agent-cell {

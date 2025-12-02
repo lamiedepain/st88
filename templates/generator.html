@@ -156,114 +156,74 @@
             display: block;
             margin-bottom: 10px;
             color: #333;
-            font-weight: 800;
+            font-weight: 700;
             font-size: 12px;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
-            background: linear-gradient(135deg, #ee7752 0%, #e73c7e 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            letter-spacing: 0.5px;
         }
 
         .form-group select,
         .form-group input {
             width: 100%;
-            padding: 16px 18px;
-            border: 2px solid #f0f0f5;
-            border-radius: 14px;
+            padding: 12px 14px;
+            border: 1px solid #e0e0e8;
+            border-radius: 6px;
             font-size: 14px;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background: linear-gradient(135deg, #fafafe 0%, #f5f0ff 100%);
+            transition: all 0.2s ease;
+            background: white;
             color: #333;
-            font-weight: 600;
+            font-weight: 500;
         }
 
         .form-group select:focus,
         .form-group input:focus {
             outline: none;
-            border-color: #e73c7e;
-            box-shadow: 0 0 0 5px rgba(231, 60, 126, 0.2), 0 15px 40px rgba(231, 60, 126, 0.2);
-            background: white;
-            transform: translateY(-2px);
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
         }
 
         button {
             width: 100%;
-            padding: 18px 28px;
+            padding: 14px 20px;
             border: none;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #ee7752 0%, #e73c7e 50%, #23a6d5 100%);
+            border-radius: 6px;
+            background: #4a90e2;
             color: white;
             font-size: 14px;
-            font-weight: 900;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 15px 50px rgba(231, 60, 126, 0.4);
+            transition: all 0.2s ease;
             text-transform: uppercase;
-            letter-spacing: 1.2px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.4);
-            transform: translate(-50%, -50%);
-            transition: width 0.7s, height 0.7s;
+            letter-spacing: 0.5px;
         }
 
         button:hover {
-            transform: translateY(-6px) scale(1.02);
-            box-shadow: 0 25px 70px rgba(231, 60, 126, 0.6);
-        }
-
-        button:hover::before {
-            width: 400px;
-            height: 400px;
+            background: #357abd;
         }
 
         button:active {
-            transform: translateY(-3px) scale(0.98);
+            background: #2a5a8f;
         }
 
         .info-box {
-            background: linear-gradient(135deg, rgba(238, 119, 82, 0.08) 0%, rgba(35, 165, 213, 0.06) 100%);
-            border: 2px solid rgba(238, 119, 82, 0.2);
-            border-left: 5px solid #ee7752;
-            padding: 22px 24px;
-            border-radius: 14px;
-            margin-top: 32px;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 10px 40px rgba(231, 60, 126, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.3);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .info-box:hover {
-            border-left-color: #e73c7e;
-            box-shadow: 0 15px 50px rgba(231, 60, 126, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.5);
-            transform: translateX(4px);
+            background: #f8f9fb;
+            border: 1px solid #e0e0e8;
+            border-left: 4px solid #4a90e2;
+            padding: 16px 18px;
+            border-radius: 6px;
+            margin-top: 24px;
         }
 
         .info-box p {
-            color: #333;
-            line-height: 1.7;
+            color: #555;
+            line-height: 1.6;
             font-size: 13px;
-            font-weight: 600;
+            font-weight: 500;
         }
 
         .info-box strong {
-            background: linear-gradient(135deg, #ee7752 0%, #e73c7e 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 900;
+            color: #4a90e2;
+            font-weight: 700;
         }
 
         .progress-container {
