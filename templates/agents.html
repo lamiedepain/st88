@@ -124,65 +124,61 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.93) 0%, rgba(245, 240, 255, 0.88) 100%);
-            padding: 28px 32px;
-            border-radius: 14px;
-            border: 2px solid rgba(238, 119, 82, 0.1);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(25px);
-            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: white;
+            padding: 24px 28px;
+            border-radius: 0;
+            border: 2px solid #2d3e50;
+            border-left: 5px solid #4a90e2;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            transition: all 0.3s ease;
         }
 
         .stat-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 25px 70px rgba(231, 60, 126, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.6);
-            border-color: rgba(231, 60, 126, 0.2);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
         }
 
         .stat-card:nth-child(1) {
-            border-left: 5px solid #ee7752;
+            border-left: 5px solid #ff8c00;
         }
 
         .stat-card:nth-child(2) {
-            border-left: 5px solid #e73c7e;
+            border-left: 5px solid #d84315;
         }
 
         .stat-card:nth-child(3) {
-            border-left: 5px solid #23a6d5;
+            border-left: 5px solid #c62828;
         }
 
         .stat-card:nth-child(4) {
-            border-left: 5px solid #23d5ab;
+            border-left: 5px solid #01579b;
         }
 
         .stat-value {
-            font-size: 36px;
+            font-size: 42px;
             font-weight: 900;
-            background: linear-gradient(135deg, #ee7752 0%, #e73c7e 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin-bottom: 6px;
+            color: #2d3e50;
+            margin-bottom: 8px;
         }
 
         .stat-label {
-            font-size: 12px;
+            font-size: 13px;
             color: #666;
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.8px;
         }
 
         .agents-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
             padding: 0 20px 24px;
         }
 
         @media (max-width: 1400px) {
             .agents-grid {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
@@ -200,167 +196,204 @@
 
         .agent-card {
             background: white;
-            border-radius: 8px;
-            padding: 16px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            transition: all 0.2s ease;
-            border: 1px solid #e8e8e8;
-            aspect-ratio: 1 / 1;
+            border-radius: 0;
+            padding: 18px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+            border: 3px solid #2d3e50;
+            border-left: 5px solid #4a90e2;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             overflow: hidden;
+            height: 280px;
+            position: relative;
         }
 
         .agent-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            border-color: #4a90e2;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+            border-left-color: #ff6b6b;
+            transform: translateY(-4px);
+        }
+
+        .agent-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4a90e2, #ff6b6b, #ffd93d);
         }
 
         .agent-header {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 14px;
+            gap: 14px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #f0f0f5;
         }
 
         .agent-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            border-radius: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-weight: 700;
-            font-size: 16px;
+            font-weight: 800;
+            font-size: 18px;
             background: #4a90e2;
-            border: none;
+            border: 2px solid #2d3e50;
+            flex-shrink: 0;
         }
 
         .agent-info {
             flex: 1;
+            min-width: 0;
         }
 
         .agent-name {
-            font-weight: 700;
-            font-size: 13px;
-            color: #333;
-            margin-bottom: 2px;
+            font-weight: 800;
+            font-size: 14px;
+            color: #1a1a1a;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
         }
 
         .agent-matricule {
-            color: #999;
-            font-size: 11px;
-            font-weight: 500;
+            color: #777;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
 
         .badges {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
+            row-gap: 6px;
         }
 
         .badge {
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 9px;
-            font-weight: 600;
-            background: #f0f0f5;
-            color: #4a90e2;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            background: #f5f5f5;
+            color: #2d3e50;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
-            border: none;
+            letter-spacing: 0.4px;
+            border: 1px solid #e0e0e0;
             display: inline-block;
         }
 
         .badge:hover {
-            background: #e8e8f0;
+            background: #e8e8e8;
+            border-color: #d0d0d0;
         }
 
         .badge.r482 {
-            background: linear-gradient(135deg, rgba(255, 193, 7, 0.12) 0%, rgba(255, 152, 0, 0.08) 100%);
-            color: #ffa500;
-            border-color: rgba(255, 152, 0, 0.2);
+            background: #fff3cd;
+            color: #ff8c00;
+            border: 1px solid #ffc107;
+            font-weight: 800;
         }
 
         .badge.caces {
-            background: linear-gradient(135deg, rgba(255, 152, 0, 0.12) 0%, rgba(255, 87, 34, 0.08) 100%);
-            color: #ff6f00;
-            border-color: rgba(255, 87, 34, 0.2);
+            background: #ffe5cc;
+            color: #d84315;
+            border: 1px solid #ff9800;
+            font-weight: 800;
         }
 
         .badge.permis {
-            background: linear-gradient(135deg, rgba(231, 76, 60, 0.12) 0%, rgba(192, 57, 43, 0.08) 100%);
-            color: #e74c3c;
-            border-color: rgba(231, 76, 60, 0.2);
+            background: #ffcdd2;
+            color: #c62828;
+            border: 1px solid #f44336;
+            font-weight: 800;
         }
 
         .badge.aipr {
-            background: linear-gradient(135deg, rgba(52, 152, 219, 0.12) 0%, rgba(41, 128, 185, 0.08) 100%);
-            color: #3498db;
-            border-color: rgba(52, 152, 219, 0.2);
+            background: #c5e1ff;
+            color: #01579b;
+            border: 1px solid #2196f3;
+            font-weight: 800;
         }
 
         .badge.fimo {
-            background: linear-gradient(135deg, rgba(155, 89, 182, 0.12) 0%, rgba(142, 68, 173, 0.08) 100%);
-            color: #9b59b6;
-            border-color: rgba(155, 89, 182, 0.2);
+            background: #e1bee7;
+            color: #4a148c;
+            border: 1px solid #9c27b0;
+            font-weight: 800;
         }
 
         .badge.tronco {
-            background: linear-gradient(135deg, rgba(35, 213, 171, 0.12) 0%, rgba(35, 166, 213, 0.08) 100%);
-            color: #23d5ab;
-            border-color: rgba(35, 213, 171, 0.2);
+            background: #c8e6c9;
+            color: #1b5e20;
+            border: 1px solid #4caf50;
+            font-weight: 800;
         }
 
         .badge.secours {
-            background: linear-gradient(135deg, rgba(239, 119, 82, 0.12) 0%, rgba(231, 60, 126, 0.08) 100%);
-            color: #ee7752;
-            border-color: rgba(239, 119, 82, 0.2);
+            background: #ffccbc;
+            color: #bf360c;
+            border: 1px solid #ff5722;
+            font-weight: 800;
         }
 
         .badge.groupe {
-            background: linear-gradient(135deg, rgba(35, 213, 171, 0.12) 0%, rgba(35, 166, 213, 0.08) 100%);
-            color: #23d5ab;
-            border-color: rgba(35, 213, 171, 0.2);
+            background: #b2dfdb;
+            color: #00695c;
+            border: 1px solid #009688;
+            font-weight: 800;
         }
 
         .agent-actions {
             display: flex;
-            gap: 10px;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 2px solid #f0f0f5;
         }
 
         .action-btn {
             flex: 1;
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
+            padding: 10px 12px;
+            border: 2px solid #2d3e50;
+            border-radius: 0;
             cursor: pointer;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.2s ease;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.4px;
         }
 
         .action-btn.edit {
             background: #4a90e2;
             color: white;
+            border-color: #357abd;
         }
 
         .action-btn.edit:hover {
             background: #357abd;
+            box-shadow: 0 4px 8px rgba(74, 144, 226, 0.4);
         }
 
         .action-btn.delete {
-            background: #f5f5f5;
+            background: white;
             color: #d32f2f;
+            border-color: #d32f2f;
         }
 
         .action-btn.delete:hover {
-            background: #e8e8e8;
+            background: #ff5252;
+            color: white;
         }
 
         .modal {
@@ -551,6 +584,148 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.2);
         }
 
+        /* LÉGENDE PROFESSIONNELLE */
+        .legend-section {
+            background: linear-gradient(135deg, #f8f9fb 0%, #e8f0f7 100%);
+            padding: 20px 24px;
+            margin: 0 20px 24px;
+            border: 2px solid #2d3e50;
+            border-radius: 0;
+        }
+
+        .legend-title {
+            font-size: 14px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #2d3e50;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            background: white;
+            border-left: 4px solid #2d3e50;
+            border-radius: 0;
+        }
+
+        .legend-item.r482 {
+            border-left-color: #ff8c00;
+            background: #fffaf0;
+        }
+
+        .legend-item.caces {
+            border-left-color: #d84315;
+            background: #fff3e0;
+        }
+
+        .legend-item.permis {
+            border-left-color: #c62828;
+            background: #ffebee;
+        }
+
+        .legend-item.aipr {
+            border-left-color: #01579b;
+            background: #e3f2fd;
+        }
+
+        .legend-item.fimo {
+            border-left-color: #4a148c;
+            background: #f3e5f5;
+        }
+
+        .legend-item.tronco {
+            border-left-color: #1b5e20;
+            background: #e8f5e9;
+        }
+
+        .legend-item.secours {
+            border-left-color: #bf360c;
+            background: #ffe0b2;
+        }
+
+        .legend-item.groupe {
+            border-left-color: #00695c;
+            background: #e0f2f1;
+        }
+
+        .legend-item-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 13px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .legend-item.r482 .legend-item-icon {
+            background: #ff8c00;
+        }
+
+        .legend-item.caces .legend-item-icon {
+            background: #d84315;
+        }
+
+        .legend-item.permis .legend-item-icon {
+            background: #c62828;
+        }
+
+        .legend-item.aipr .legend-item-icon {
+            background: #01579b;
+        }
+
+        .legend-item.fimo .legend-item-icon {
+            background: #4a148c;
+        }
+
+        .legend-item.tronco .legend-item-icon {
+            background: #1b5e20;
+        }
+
+        .legend-item.secours .legend-item-icon {
+            background: #bf360c;
+        }
+
+        .legend-item.groupe .legend-item-icon {
+            background: #00695c;
+        }
+
+        .legend-item-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .legend-item-name {
+            font-weight: 800;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #1a1a1a;
+        }
+
+        .legend-item-desc {
+            font-size: 11px;
+            color: #666;
+            font-weight: 500;
+        }
+
         /* Mini badges (cohérence avec planning) */
         .agent-badges {
             display: flex;
@@ -655,6 +830,69 @@
                 </div>
             </div>
         </header>
+
+        <!-- LÉGENDE PROFESSIONNELLE -->
+        <div class="legend-section">
+            <div class="legend-title">🏆 Aptitudes et Certifications</div>
+            <div class="legend-grid">
+                <div class="legend-item r482">
+                    <div class="legend-item-icon">R</div>
+                    <div class="legend-item-text">
+                        <div class="legend-item-name">R.482</div>
+                        <div class="legend-item-desc">Engins de chantier</div>
+                    </div>
+                </div>
+                <div class="legend-item caces">
+                    <div class="legend-item-icon">C</div>
+                    <div class="legend-item-text">
+                        <div class="legend-item-name">CACES</div>
+                        <div class="legend-item-desc">Certification conduite</div>
+                    </div>
+                </div>
+                <div class="legend-item permis">
+                    <div class="legend-item-icon">P</div>
+                    <div class="legend-item-text">
+                        <div class="legend-item-name">PERMIS</div>
+                        <div class="legend-item-desc">Permis de conduire</div>
+                    </div>
+                </div>
+                <div class="legend-item aipr">
+                    <div class="legend-item-icon">A</div>
+                    <div class="legend-item-text">
+                        <div class="legend-item-name">AIPR</div>
+                        <div class="legend-item-desc">Travaux publics</div>
+                    </div>
+                </div>
+                <div class="legend-item fimo">
+                    <div class="legend-item-icon">F</div>
+                    <div class="legend-item-text">
+                        <div class="legend-item-name">FIMO</div>
+                        <div class="legend-item-desc">Formation transport</div>
+                    </div>
+                </div>
+                <div class="legend-item tronco">
+                    <div class="legend-item-icon">T</div>
+                    <div class="legend-item-text">
+                        <div class="legend-item-name">TRONÇO</div>
+                        <div class="legend-item-desc">Tronçonneuse</div>
+                    </div>
+                </div>
+                <div class="legend-item secours">
+                    <div class="legend-item-icon">S</div>
+                    <div class="legend-item-text">
+                        <div class="legend-item-name">SECOURS</div>
+                        <div class="legend-item-desc">Premiers secours</div>
+                    </div>
+                </div>
+                <div class="legend-item groupe">
+                    <div class="legend-item-icon">G</div>
+                    <div class="legend-item-text">
+                        <div class="legend-item-name">GROUPE</div>
+                        <div class="legend-item-desc">Catégorie d'agent</div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div id="agentsContainer" class="agents-grid"></div>
     </div>
