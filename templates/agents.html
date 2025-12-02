@@ -16,7 +16,7 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: #f5f5f5;
             min-height: 100vh;
-            padding: 20px 0;
+            padding: 0;
             color: #1a1a2e;
         }
 
@@ -26,64 +26,196 @@
         }
 
         header {
-            background: #2d2d2d;
-            padding: 16px 24px;
-            border-bottom: 1px solid #1a1a1a;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 0;
+            border-bottom: 4px solid #4a90e2;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
             margin: 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
         }
 
         header::before {
-            display: none;
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -100px;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(74, 144, 226, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -50px;
+            left: -100px;
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, rgba(255, 107, 107, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 40px;
+            position: relative;
+            z-index: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-logo-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #4a90e2, #357abd);
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+            border: 3px solid #fff;
         }
 
         h1 {
             color: #fff;
             margin: 0;
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 0px;
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 1px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 0;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h1::before {
+            content: '👥';
+            margin-right: 12px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .header-actions select {
+            padding: 10px 14px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 0;
+            font-size: 13px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            transition: all 0.2s ease;
+        }
+
+        .header-actions select:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .header-actions select:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.25);
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
+        }
+
+        .header-actions select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        .header-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 40px;
+            position: relative;
+            z-index: 1;
         }
 
         nav {
             display: flex;
-            gap: 0;
+            gap: 4px;
             margin: 0;
             background: transparent;
         }
 
         nav a {
-            padding: 12px 16px;
+            padding: 10px 20px;
             background: transparent;
-            color: #ccc;
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             border-radius: 0;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 12px;
             transition: all 0.2s ease;
             border: none;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
+            letter-spacing: 0.5px;
+            position: relative;
             border-bottom: 3px solid transparent;
         }
 
         nav a:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(74, 144, 226, 0.15);
             color: #fff;
         }
 
         nav a.active {
-            background: transparent;
+            background: rgba(74, 144, 226, 0.3);
             color: #fff;
-            font-weight: 700;
-            border-bottom: 3px solid #fff;
-            box-shadow: none;
+            font-weight: 900;
+            border-bottom: 3px solid #4a90e2;
+            box-shadow: 0 0 12px rgba(74, 144, 226, 0.4);
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .header-stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .header-stat-number {
+            font-size: 20px;
+            font-weight: 900;
+            color: #4a90e2;
+        }
+
+        .header-stat-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.3px;
         }
 
         .controls {
@@ -92,27 +224,51 @@
             margin-bottom: 32px;
             flex-wrap: wrap;
             align-items: center;
-            padding: 0 20px;
+            padding: 20px 40px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(74, 144, 226, 0.02) 100%);
+            border-bottom: 1px solid rgba(74, 144, 226, 0.2);
         }
 
-        input[type="text"] {
-            padding: 14px 18px;
-            border: 2px solid rgba(238, 119, 82, 0.2);
-            border-radius: 10px;
+        .controls input[type="text"] {
+            padding: 12px 16px;
+            border: 2px solid #2d3e50;
+            border-radius: 0;
             font-size: 14px;
-            width: 320px;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(245, 240, 255, 0.8) 100%);
+            width: 100%;
+            max-width: 360px;
+            transition: all 0.2s ease;
+            background: white;
             color: #333;
             font-weight: 600;
         }
 
-        input[type="text"]:focus {
+        .controls input[type="text"]:focus {
             outline: none;
-            border-color: #e73c7e;
-            box-shadow: 0 0 0 5px rgba(231, 60, 126, 0.2), 0 15px 40px rgba(231, 60, 126, 0.2);
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+            background: #fff;
+        }
+
+        .controls select {
+            padding: 12px 14px;
+            border: 2px solid #2d3e50;
+            border-radius: 0;
+            font-size: 13px;
+            cursor: pointer;
             background: white;
-            transform: translateY(-2px);
+            color: #333;
+            transition: all 0.2s ease;
+            font-weight: 600;
+        }
+
+        .controls select:hover {
+            border-color: #4a90e2;
+        }
+
+        .controls select:focus {
+            outline: none;
+            border-color: #4a90e2;
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
         }
 
         .stats {
@@ -795,19 +951,28 @@
 <body>
     <div class="container">
         <header>
-            <h1>👥 Gestion des Agents</h1>
+            <!-- HEADER TOP: Logo + Nav + Search -->
+            <div class="header-top">
+                <div class="header-logo">
+                    <div class="header-logo-icon">👥</div>
+                    <h1>Gestion des Agents</h1>
+                </div>
 
-            <nav>
-                <a href="/" class="active">Agents</a>
-                <a href="/planning">Planning</a>
-                <a href="/generator">Générateur</a>
-            </nav>
+                <nav>
+                    <a href="/" class="active">Agents</a>
+                    <a href="/planning">Planning</a>
+                    <a href="/generator">Générateur</a>
+                </nav>
 
-            <div class="controls">
-                <input type="text" id="searchBox" placeholder="🔍 Rechercher un agent...">
-                <select id="groupFilter"
-                    style="padding: 12px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 14px;">
-                    <option value="all">Tous les groupes</option>
+                <div class="header-actions">
+                    <input type="text" id="searchBox" placeholder="🔍 Rechercher..." style="max-width: 200px; padding: 10px 12px; font-size: 12px;">
+                </div>
+            </div>
+
+            <!-- HEADER BOTTOM: Groupe + Stats -->
+            <div class="header-bottom">
+                <select id="groupFilter">
+                    <option value="all">👥 Tous les groupes</option>
                     <option value="Encadrant">Encadrant</option>
                     <option value="Surveillant de travaux">Surveillant de travaux</option>
                     <option value="Encadrant Propreté">Encadrant Propreté</option>
@@ -815,18 +980,16 @@
                     <option value="Agent EV">Agent EV</option>
                     <option value="COMMUN - Magasinier">COMMUN - Magasinier</option>
                 </select>
-            </div>
 
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-value" id="echeances3mois">0</div>
-                    <div class="stat-label">⚠️ Échéances 3 mois</div>
-                    <div class="echeances-list" id="liste3mois"></div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="echeances1an">0</div>
-                    <div class="stat-label">📅 Échéances 1 an</div>
-                    <div class="echeances-list" id="liste1an"></div>
+                <div class="header-stats">
+                    <div class="header-stat">
+                        <div class="header-stat-number" id="echeances3mois">0</div>
+                        <div class="header-stat-label">⚠️ Échéances 3M</div>
+                    </div>
+                    <div class="header-stat">
+                        <div class="header-stat-number" id="echeances1an">0</div>
+                        <div class="header-stat-label">📅 Échéances 1A</div>
+                    </div>
                 </div>
             </div>
         </header>
