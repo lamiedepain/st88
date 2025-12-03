@@ -18,6 +18,8 @@
             min-height: 100vh;
             padding: 0;
             color: #1a1a2e;
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
@@ -26,15 +28,15 @@
         }
 
         header {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background: linear-gradient(135deg, #8B1538 0%, #6B0F2A 50%, #4A0A1C 100%);
             padding: 0;
-            border-bottom: 4px solid #4a90e2;
+            border-bottom: 4px solid #FFB81C;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
             align-items: stretch;
-            margin: 0;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin: 0 0 20px;
+            box-shadow: 0 8px 32px rgba(139, 21, 56, 0.4);
             position: relative;
             overflow: hidden;
         }
@@ -42,22 +44,22 @@
         header::before {
             content: '';
             position: absolute;
-            top: 0;
-            right: -100px;
-            width: 300px;
-            height: 300px;
-            background: radial-gradient(circle, rgba(74, 144, 226, 0.15) 0%, transparent 70%);
+            top: -50px;
+            right: -80px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(0, 168, 89, 0.15) 0%, transparent 70%);
             border-radius: 50%;
         }
 
         header::after {
             content: '';
             position: absolute;
-            bottom: -50px;
-            left: -100px;
-            width: 250px;
-            height: 250px;
-            background: radial-gradient(circle, rgba(255, 107, 107, 0.1) 0%, transparent 70%);
+            bottom: -60px;
+            left: -90px;
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(255, 184, 28, 0.12) 0%, transparent 70%);
             border-radius: 50%;
         }
 
@@ -80,15 +82,24 @@
         .header-logo-icon {
             width: 56px;
             height: 56px;
-            background: linear-gradient(135deg, #4a90e2, #357abd);
-            border-radius: 0;
+            background: linear-gradient(135deg, #8B1538, #00A859);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 28px;
             font-weight: 900;
             color: white;
-            border: 3px solid #fff;
+            border: 3px solid #FFB81C;
+            box-shadow: 0 4px 12px rgba(139, 21, 56, 0.3);
+        }
+
+        .header-kicker {
+            font-size: 11px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.65);
+            margin: 0;
         }
 
         h1 {
@@ -105,8 +116,8 @@
         }
 
         h1::before {
-            content: '👥';
-            margin-right: 12px;
+            content: '';
+            margin-right: 0;
         }
 
         .header-actions {
@@ -115,43 +126,53 @@
             align-items: center;
         }
 
-        .header-actions select {
-            padding: 10px 14px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 0;
+        .header-search {
+            width: min(260px, 40vw);
+        }
+
+        .header-search input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
             font-size: 13px;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
             font-weight: 600;
-            text-transform: uppercase;
             letter-spacing: 0.3px;
-            transition: all 0.2s ease;
         }
 
-        .header-actions select:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-color: rgba(255, 255, 255, 0.5);
+        .header-search input::placeholder {
+            color: rgba(255, 255, 255, 0.65);
         }
 
-        .header-actions select:focus {
-            outline: none;
-            background: rgba(255, 255, 255, 0.25);
-            border-color: #4a90e2;
-            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.3);
+        .header-cta {
+            border: none;
+            border-radius: 999px;
+            padding: 12px 22px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: linear-gradient(135deg, #FFB81C 0%, #FFA500 100%);
+            color: #8B1538;
+            box-shadow: 0 8px 20px rgba(255, 184, 28, 0.5);
+            transition: all 0.3s ease;
         }
 
-        .header-actions select option {
-            background: #1a1a2e;
-            color: white;
+        .header-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(255, 184, 28, 0.6);
         }
 
         .header-bottom {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 40px;
-            position: relative;
+            padding: 18px 40px;
+            flex-wrap: wrap;
+            gap: 14px;
             z-index: 1;
         }
 
@@ -160,6 +181,9 @@
             gap: 4px;
             margin: 0;
             background: transparent;
+            padding: 0 40px 20px;
+            position: relative;
+            z-index: 1;
         }
 
         nav a {
@@ -167,7 +191,7 @@
             background: transparent;
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            border-radius: 0;
+            border-radius: 24px;
             font-weight: 700;
             font-size: 12px;
             transition: all 0.2s ease;
@@ -175,154 +199,86 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             position: relative;
-            border-bottom: 3px solid transparent;
         }
 
         nav a:hover {
-            background: rgba(74, 144, 226, 0.15);
+            background: rgba(0, 168, 89, 0.25);
             color: #fff;
         }
 
         nav a.active {
-            background: rgba(74, 144, 226, 0.3);
             color: #fff;
-            font-weight: 900;
-            border-bottom: 3px solid #4a90e2;
-            box-shadow: 0 0 12px rgba(74, 144, 226, 0.4);
+            background: rgba(255, 184, 28, 0.2);
+            box-shadow: 0 0 16px rgba(255, 184, 28, 0.6);
         }
 
-        .header-stats {
-            display: flex;
-            gap: 20px;
-            align-items: center;
-        }
-
-        .header-stat {
+        .header-bottom .group-filter {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 4px;
+            gap: 6px;
+            min-width: 220px;
         }
 
-        .header-stat-number {
-            font-size: 20px;
-            font-weight: 900;
-            color: #4a90e2;
-        }
-
-        .header-stat-label {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.6);
+        .header-bottom label {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 10px;
             text-transform: uppercase;
-            font-weight: 600;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.6px;
         }
 
-        .controls {
+        .header-bottom select {
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.09);
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+        }
+
+        .header-bottom .header-bottom-actions {
+            margin-left: auto;
             display: flex;
             gap: 16px;
-            margin-bottom: 32px;
-            flex-wrap: wrap;
             align-items: center;
-            padding: 20px 40px;
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(74, 144, 226, 0.02) 100%);
-            border-bottom: 1px solid rgba(74, 144, 226, 0.2);
+            flex-wrap: wrap;
         }
 
-        .controls input[type="text"] {
-            padding: 12px 16px;
-            border: 2px solid #2d3e50;
-            border-radius: 0;
-            font-size: 14px;
-            width: 100%;
-            max-width: 360px;
-            transition: all 0.2s ease;
-            background: white;
-            color: #333;
-            font-weight: 600;
-        }
-
-        .controls input[type="text"]:focus {
-            outline: none;
-            border-color: #4a90e2;
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
-            background: #fff;
-        }
-
-        .controls select {
-            padding: 12px 14px;
-            border: 2px solid #2d3e50;
-            border-radius: 0;
-            font-size: 13px;
+        .echeances-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
             cursor: pointer;
-            background: white;
-            color: #333;
-            transition: all 0.2s ease;
-            font-weight: 600;
-        }
-
-        .controls select:hover {
-            border-color: #4a90e2;
-        }
-
-        .controls select:focus {
-            outline: none;
-            border-color: #4a90e2;
-            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: 20px;
-            margin: 20px;
-            margin-bottom: 32px;
-        }
-
-        .stat-card {
-            background: white;
-            padding: 24px 28px;
-            border-radius: 0;
-            border: 2px solid #2d3e50;
-            border-left: 5px solid #4a90e2;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
             transition: all 0.3s ease;
         }
 
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+        .echeances-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
-        .stat-card:nth-child(1) {
-            border-left: 5px solid #ff8c00;
-        }
-
-        .stat-card:nth-child(2) {
-            border-left: 5px solid #d84315;
-        }
-
-        .stat-card:nth-child(3) {
-            border-left: 5px solid #c62828;
-        }
-
-        .stat-card:nth-child(4) {
-            border-left: 5px solid #01579b;
-        }
-
-        .stat-value {
-            font-size: 42px;
-            font-weight: 900;
-            color: #2d3e50;
-            margin-bottom: 8px;
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: #666;
+        .echeances-counter {
+            padding: 2px 9px;
+            border-radius: 12px;
+            background: #FFB81C;
+            color: #8B1538;
+            font-size: 11px;
             font-weight: 800;
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
+        }
+
+        .stats-meta {
+            font-size: 11px;
+            letter-spacing: 0.4px;
+            color: rgba(255, 255, 255, 0.75);
         }
 
         .agents-grid {
@@ -945,53 +901,128 @@
             float: right;
             opacity: 0.8;
         }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        .echeances-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(10, 14, 30, 0.85);
+            padding: 24px 16px;
+            z-index: 1100;
+        }
+
+        .echeances-modal.visible {
+            display: flex;
+        }
+
+        .echeances-panel {
+            width: min(960px, 100%);
+            background: #0f1b38;
+            border-radius: 24px;
+            padding: 28px 32px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .echeances-panel h2 {
+            margin-bottom: 6px;
+            color: #f8fafc;
+            font-size: 24px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .modal-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 24px;
+        }
+
+        .echeances-columns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .echeances-column {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 18px;
+            border-radius: 16px;
+            min-height: 220px;
+        }
+
+        .echeances-column h3 {
+            font-size: 14px;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+            color: #9cb4d6;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .echeances-list {
+            max-height: 220px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #f0f4ff;
+        }
+
+        .empty-state {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(255, 255, 255, 0.12);
+            border: none;
+            color: #fff;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <header>
-            <!-- HEADER TOP: Logo + Nav + Search -->
             <div class="header-top">
                 <div class="header-logo">
-                    <div class="header-logo-icon">👥</div>
-                    <h1>Gestion des Agents</h1>
-                </div>
-
-                <nav>
-                    <a href="/" class="active">Agents</a>
-                    <a href="/planning">Planning</a>
-                    <a href="/generator">Générateur</a>
-                </nav>
-
-                <div class="header-actions">
-                    <input type="text" id="searchBox" placeholder="🔍 Rechercher..." style="max-width: 200px; padding: 10px 12px; font-size: 12px;">
-                </div>
-            </div>
-
-            <!-- HEADER BOTTOM: Groupe + Stats -->
-            <div class="header-bottom">
-                <select id="groupFilter">
-                    <option value="all">👥 Tous les groupes</option>
-                    <option value="Encadrant">Encadrant</option>
-                    <option value="Surveillant de travaux">Surveillant de travaux</option>
-                    <option value="Encadrant Propreté">Encadrant Propreté</option>
-                    <option value="Agents Voirie">Agents Voirie</option>
-                    <option value="Agent EV">Agent EV</option>
-                    <option value="COMMUN - Magasinier">COMMUN - Magasinier</option>
-                </select>
-
-                <div class="header-stats">
-                    <div class="header-stat">
-                        <div class="header-stat-number" id="echeances3mois">0</div>
-                        <div class="header-stat-label">⚠️ Échéances 3M</div>
-                    </div>
-                    <div class="header-stat">
-                        <div class="header-stat-number" id="echeances1an">0</div>
-                        <div class="header-stat-label">📅 Échéances 1A</div>
+                    <div class="header-logo-icon"></div>
+                    <div>
+                        <p class="header-kicker">BM-ST8 • Opérations Terrain</p>
+                        <h1>Gestion des Agents</h1>
                     </div>
                 </div>
             </div>
+            <nav>
+                <a href="/" class="active">Agents</a>
+                <a href="/planning">Planning</a>
+                <a href="/generator">Générateur</a>
+            </nav>
         </header>
 
         <!-- LÉGENDE PROFESSIONNELLE -->
@@ -1057,6 +1088,24 @@
             </div>
         </div>
 
+        <div id="echeancesModal" class="echeances-modal" aria-hidden="true">
+            <div class="echeances-panel" role="dialog" aria-modal="true" aria-label="Échéanciers">
+                <button class="modal-close" type="button" aria-label="Fermer" onclick="closeEcheancesModal()">×</button>
+                <h2>Échéances prioritaires</h2>
+                <p class="modal-subtitle">Données recalculées en temps réel depuis le fichier central.</p>
+                <div class="echeances-columns">
+                    <div class="echeances-column">
+                        <h3>3 prochains mois <span id="modalCount3m">0</span></h3>
+                        <div id="modalList3m" class="echeances-list"></div>
+                    </div>
+                    <div class="echeances-column">
+                        <h3>12 prochains mois <span id="modalCount1an">0</span></h3>
+                        <div id="modalList1an" class="echeances-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div id="agentsContainer" class="agents-grid"></div>
     </div>
 
@@ -1079,7 +1128,6 @@
         let headers = [];
         let editingAgent = null;
         const agentsContainer = document.getElementById('agentsContainer');
-        const searchBox = document.getElementById('searchBox');
         const editModal = document.getElementById('editModal');
 
         const groupes = {
@@ -1100,9 +1148,6 @@
             'COMMUN - Magasinier': { gradient: 'linear-gradient(135deg, #fa709a 0%, #fee140 100%)', border: '#fa709a' },
             'default': { gradient: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', border: '#667eea' }
         };
-
-        searchBox.addEventListener('input', filterAgents);
-        document.getElementById('groupFilter').addEventListener('change', filterAgents);
 
         async function loadAgents() {
             try {
@@ -1366,28 +1411,50 @@
             expiring1Year.sort((a, b) => a.dateObj - b.dateObj);
 
             // Afficher les compteurs
-            document.getElementById('echeances3mois').textContent = expiring3Months.length;
-            document.getElementById('echeances1an').textContent = expiring1Year.length;
+            const totalEcheances = expiring3Months.length + expiring1Year.length;
+            const echeancesBadge = document.getElementById('echeancesBadge');
+            if (echeancesBadge) {
+                echeancesBadge.textContent = totalEcheances;
+            }
 
-            // Afficher les listes
-            const liste3mois = document.getElementById('liste3mois');
-            const liste1an = document.getElementById('liste1an');
+            const statsStamp = document.getElementById('statsUpdatedAt');
+            if (statsStamp) {
+                statsStamp.textContent = today.toLocaleString('fr-FR', {
+                    day: '2-digit',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
 
-            liste3mois.innerHTML = expiring3Months.map(exp => `
-                <div class="echeance-item">
-                    <span class="echeance-agent">${exp.agent}</span>: 
-                    <span class="echeance-aptitude">${exp.aptitude}</span>
-                    <span class="echeance-date">${exp.date}</span>
-                </div>
-            `).join('');
+            const renderList = (target, list, fallback) => {
+                if (!target) return;
+                if (!list.length) {
+                    target.innerHTML = `<div class="empty-state">${fallback}</div>`;
+                    return;
+                }
 
-            liste1an.innerHTML = expiring1Year.map(exp => `
-                <div class="echeance-item">
-                    <span class="echeance-agent">${exp.agent}</span>: 
-                    <span class="echeance-aptitude">${exp.aptitude}</span>
-                    <span class="echeance-date">${exp.date}</span>
-                </div>
-            `).join('');
+                target.innerHTML = list.map(exp => `
+                    <div class="echeance-item">
+                        <div>
+                            <span class="echeance-agent">${exp.agent}</span>
+                            <span class="echeance-aptitude">${exp.aptitude}</span>
+                        </div>
+                        <span class="echeance-date">${exp.date}</span>
+                    </div>
+                `).join('');
+            };
+
+            const modalCount3m = document.getElementById('modalCount3m');
+            const modalCount1an = document.getElementById('modalCount1an');
+            const modalList3m = document.getElementById('modalList3m');
+            const modalList1an = document.getElementById('modalList1an');
+
+            if (modalCount3m) modalCount3m.textContent = expiring3Months.length;
+            if (modalCount1an) modalCount1an.textContent = expiring1Year.length;
+
+            renderList(modalList3m, expiring3Months, 'Aucune échéance dans les 3 mois.');
+            renderList(modalList1an, expiring1Year, 'Aucune échéance répertoriée d’ici 12 mois.');
 
             // Log pour debug
             if (expiring3Months.length > 0) {
@@ -1398,9 +1465,38 @@
             }
         }
 
+        function openEcheancesModal() {
+            const modal = document.getElementById('echeancesModal');
+            if (!modal) return;
+            modal.classList.add('visible');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeEcheancesModal() {
+            const modal = document.getElementById('echeancesModal');
+            if (!modal) return;
+            modal.classList.remove('visible');
+            document.body.classList.remove('modal-open');
+        }
+
+        const echeancesModal = document.getElementById('echeancesModal');
+        if (echeancesModal) {
+            echeancesModal.addEventListener('click', (ev) => {
+                if (ev.target === echeancesModal) {
+                    closeEcheancesModal();
+                }
+            });
+        }
+
+        document.addEventListener('keyup', (ev) => {
+            if (ev.key === 'Escape') {
+                closeEcheancesModal();
+            }
+        });
+
         function filterAgents() {
-            const term = searchBox.value.toLowerCase();
-            const selectedGroup = document.getElementById('groupFilter').value;
+            const term = '';
+            const selectedGroup = 'all';
 
             document.querySelectorAll('.agent-card').forEach((card, idx) => {
                 const agent = allAgents[idx];

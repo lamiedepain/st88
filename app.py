@@ -793,38 +793,18 @@ def generate_teams():
             teams = form_smart_teams(agents, team_size)
             daily_teams[date_key] = teams
 
-        # Copier le template et remplir
-        TEMPLATE_FILE = 'TEMPLATE PLANNIFICATION.xlsm'
+        # Créer un nouveau workbook pour le planning
         output_file = f"planning_semaine_{week}.xlsx"
-        
-        # Vérifier que le template existe
-        import os
-        if not os.path.exists(TEMPLATE_FILE):
-            return jsonify({'error': f'Le fichier template {TEMPLATE_FILE} n\'existe pas'}), 500
-        
-        # Charger le template et défusionner les cellules pour éviter l'erreur MergedCell
-        try:
-            wb_template = openpyxl.load_workbook(TEMPLATE_FILE)
-        except Exception as e:
-            return jsonify({'error': f'Erreur lors du chargement du template: {str(e)}'}), 500
+        wb_template = openpyxl.Workbook()
         
         # S'assurer qu'on a une feuille active
-        if wb_template.active is None:
-            if len(wb_template.worksheets) == 0:
-                return jsonify({'error': 'Le template ne contient aucune feuille'}), 500
-            sheet = wb_template.worksheets[0]
-        else:
-            sheet = wb_template.active
+        sheet = wb_template.active
+        if sheet is None:
+            sheet = wb_template.create_sheet()
         
         # Vérifier que sheet n'est pas None
         if sheet is None:
-            return jsonify({'error': 'Impossible de charger la feuille du template'}), 500
-        
-        # Défusionner toutes les cellules fusionnées
-        if hasattr(sheet, 'merged_cells') and sheet.merged_cells:
-            merged_cells_list = list(sheet.merged_cells.ranges)
-            for merged_range in merged_cells_list:
-                sheet.unmerge_cells(str(merged_range))
+            return jsonify({'error': 'Impossible de créer la feuille'}), 500
         
         # Remplir le tableau : 5 colonnes (DATE | AGENT 1 | AGENT 2 | AGENT 3 | INTERVENTION)
         # En-têtes en ligne 1

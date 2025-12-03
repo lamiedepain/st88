@@ -17,71 +17,268 @@
             background: #f5f5f5;
             min-height: 100vh;
             padding: 0;
-            color: #333;
+            color: #1a1a2e;
             line-height: 1.4;
             -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 1600px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         header {
-            background: #2d2d2d;
-            padding: 16px 24px;
-            border-bottom: 1px solid #1a1a1a;
+            background: linear-gradient(135deg, #8B1538 0%, #6B0F2A 50%, #4A0A1C 100%);
+            padding: 0;
+            border-bottom: 4px solid #FFB81C;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+            margin: 0 0 20px;
+            box-shadow: 0 8px 32px rgba(139, 21, 56, 0.4);
+            position: relative;
+            overflow: hidden;
         }
 
         header::before {
-            display: none;
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -80px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(0, 168, 89, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
         }
 
-        @keyframes slideUp {
-            display: none;
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: -90px;
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(255, 184, 28, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 40px;
+            position: relative;
+            z-index: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-logo-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #8B1538, #00A859);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+            border: 3px solid #FFB81C;
+            box-shadow: 0 4px 12px rgba(139, 21, 56, 0.3);
+        }
+
+        .header-kicker {
+            font-size: 11px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.65);
+            margin: 0;
         }
 
         h1 {
             color: #fff;
             margin: 0;
-            font-size: 18px;
-            font-weight: 700;
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h1::before {
+            content: '';
+            margin-right: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .header-search {
+            width: min(260px, 40vw);
+        }
+
+        .header-search input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .header-search input::placeholder {
+            color: rgba(255, 255, 255, 0.65);
+        }
+
+        .header-cta {
+            border: none;
+            border-radius: 999px;
+            padding: 12px 22px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: linear-gradient(135deg, #FFB81C 0%, #FFA500 100%);
+            color: #8B1538;
+            box-shadow: 0 8px 20px rgba(255, 184, 28, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .header-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(255, 184, 28, 0.6);
+        }
+
+        .header-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            flex-wrap: wrap;
+            gap: 14px;
+            z-index: 1;
         }
 
         nav {
             display: flex;
-            gap: 0;
-            align-items: center;
+            gap: 4px;
             margin: 0;
+            background: transparent;
+            padding: 0 40px 20px;
+            position: relative;
+            z-index: 1;
         }
 
         nav a {
-            padding: 12px 16px;
+            padding: 10px 20px;
             background: transparent;
-            color: #ccc;
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            border-bottom: 3px solid transparent;
-            font-weight: 600;
+            border-radius: 24px;
+            font-weight: 700;
             font-size: 12px;
             transition: all 0.2s ease;
+            border: none;
             text-transform: uppercase;
-            letter-spacing: 0;
+            letter-spacing: 0.5px;
+            position: relative;
         }
 
         nav a:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(0, 168, 89, 0.25);
             color: #fff;
         }
 
         nav a.active {
-            background: transparent;
             color: #fff;
-            border-bottom: 3px solid #fff;
-            box-shadow: none;
+            background: rgba(255, 184, 28, 0.2);
+            box-shadow: 0 0 16px rgba(255, 184, 28, 0.6);
+        }
+
+        .header-bottom .group-filter {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            min-width: 220px;
+        }
+
+        .header-bottom label {
+            color: rgba(255, 255, 255, 0.75);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+        }
+
+        .header-bottom select {
+            padding: 10px 14px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.09);
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.4px;
+        }
+
+        .header-bottom .header-bottom-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .echeances-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            color: #fff;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .echeances-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .echeances-counter {
+            padding: 2px 9px;
+            border-radius: 12px;
+            background: #FFB81C;
+            color: #8B1538;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .stats-meta {
+            font-size: 11px;
+            letter-spacing: 0.4px;
+            color: rgba(255, 255, 255, 0.75);
         }
 
         .controls {
@@ -170,6 +367,133 @@
 
         .btn-print:hover {
             background: #357abd;
+        }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        .echeances-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(10, 14, 30, 0.85);
+            padding: 24px 16px;
+            z-index: 1100;
+        }
+
+        .echeances-modal.visible {
+            display: flex;
+        }
+
+        .echeances-panel {
+            width: min(760px, 100%);
+            background: #0f1b38;
+            border-radius: 24px;
+            padding: 24px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+            position: relative;
+        }
+
+        .echeances-panel h2 {
+            margin-bottom: 4px;
+            color: #f8fafc;
+            font-size: 22px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .modal-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 24px;
+        }
+
+        .echeances-columns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+
+            .echeance-item {
+                padding: 6px 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .echeance-agent {
+                font-weight: 700;
+                display: block;
+                color: #fff;
+            }
+
+            .echeance-aptitude {
+                opacity: 0.85;
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.75);
+            }
+
+            .echeance-date {
+                font-weight: 700;
+                color: #ffd166;
+                font-size: 12px;
+                white-space: nowrap;
+            }
+        }
+
+        .echeances-column {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 18px;
+            border-radius: 16px;
+            min-height: 200px;
+        }
+
+        .echeances-column h3 {
+            font-size: 14px;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+            color: #9cb4d6;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .echeances-list {
+            font-size: 12px;
+            line-height: 1.5;
+            color: #f0f4ff;
+        }
+
+        .empty-state {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(255, 255, 255, 0.12);
+            border: none;
+            color: #fff;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .planning-container {
@@ -663,124 +987,96 @@
 <body>
     <div class="container">
         <header>
-            <h1>📅 Planning</h1>
-
-            <nav>
-                <a href="/">Agents</a>
-                <a href="/planning" class="active">Planning</a>
-                <a href="/generator">Générateur</a>
-                <a href="/api/download-excel" style="background: #e67e22;">📥 Télécharger Excel</a>
-            </nav>
-
-            <div class="view-tabs">
-                <button class="view-tab" onclick="changeView('annuel')">📆 Annuel</button>
-                <button class="view-tab" onclick="changeView('trimestriel')">📊 Trimestriel</button>
-                <button class="view-tab active" onclick="changeView('mensuel')">📅 Mensuel</button>
-                <button class="view-tab" onclick="changeView('bihebdo')">📋 Bi-hebdo</button>
-            </div>
-
-            <div class="controls">
-                <div
-                    style="display: flex; flex-direction: column; gap: 5px; padding: 10px; background: white; border-radius: 8px; border: 2px solid #e0e0e0;">
-                    <label style="font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Groupes :</label>
-                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="all" checked
-                            onchange="toggleAllGroups(this)"> Tous</label>
-                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Encadrant"
-                            checked onchange="filterByGroup()"> Encadrant</label>
-                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox"
-                            value="Surveillant de travaux" checked onchange="filterByGroup()"> Surveillant de
-                        travaux</label>
-                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox"
-                            value="Encadrant Propreté" checked onchange="filterByGroup()"> Encadrant Propreté</label>
-                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Agents Voirie"
-                            checked onchange="filterByGroup()"> Agents Voirie</label>
-                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Agent EV"
-                            checked onchange="filterByGroup()"> Agent EV</label>
-                    <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox"
-                            value="COMMUN - Magasinier" checked onchange="filterByGroup()"> COMMUN - Magasinier</label>
-                </div>
-
-                <select id="periodSelector">
-                    <option value="">Sélectionner une période...</option>
-                </select>
-
-                <input type="file" id="excelUpload" accept=".xlsx,.xlsm" style="display: none;"
-                    onchange="loadExcelPlanning(event)">
-                <button class="btn-print" onclick="document.getElementById('excelUpload').click()"
-                    style="background: #3498db;">📂 Charger Excel</button>
-
-                <button class="btn-print" onclick="refreshPlanning()" style="background: #27ae60;">🔄
-                    Actualiser</button>
-
-                <select id="printOrientation" style="min-width: 150px;">
-                    <option value="portrait">A3 Portrait</option>
-                    <option value="landscape">A3 Paysage</option>
-                </select>
-
-                <button class="btn-print" onclick="window.print()">🖨️ Imprimer</button>
-            </div>
-
-            <div style="display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; align-items: center;">
-                <div style="font-weight: 600; color: #2c3e50;">Légende :</div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #00ff00; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;" title="Présence — code: P">Présence (P)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #ff00ff; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;" title="Prév. Congés — code: PC">Prév Congés (PC)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #8000ff; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;" title="Formation — code: F">Formation (F)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #0000ff; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;" title="Astreinte — code: AST">Astreinte (AST)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #ffff00; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;" title="Congés Annuel — code: CA">Congés Annuel (CA)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #ffff80; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;" title="RTT — Réduction du temps de travail">RTT</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #00ffff; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;" title="Congés exceptionnels — code: CEX">Congés Exc (CEX)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #ff0000; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;" title="Réserve — code: R">Réserve (R)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #ff8000; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;" title="Maladie — code: M">Maladie (M)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #ff4000; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;" title="Accident du travail — code: AT">Accident Travail (AT)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #0080ff; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;" title="Travail à distance — code: TAD">Travail Distance (TAD)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #ffff80; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;" title="Temps partiel — code: TP">Temps Partiel (TP)</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #e74c3c; opacity: 0.3; border-radius: 4px;">
+            <div class="header-top">
+                <div class="header-logo">
+                    <div class="header-logo-icon"></div>
+                    <div>
+                        <p class="header-kicker">BM-ST8 • Pilotage du planning</p>
+                        <h1>Planning des équipes</h1>
                     </div>
-                    <span style="font-size: 14px;">Week-end</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <div style="width: 20px; height: 20px; background: #ff9800; border-radius: 4px;"></div>
-                    <span style="font-size: 14px;">Jour férié</span>
                 </div>
             </div>
+            <nav
+                style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                <div style="display: flex; gap: 4px;">
+                    <a href="/">Agents</a>
+                    <a href="/planning" class="active">Planning</a>
+                    <a href="/generator">Générateur</a>
+                </div>
+
+                <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                    <button class="view-tab" onclick="changeView('annuel')"
+                        style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; color: rgba(255,255,255,0.8); font-size: 11px; cursor: pointer; transition: all 0.2s;">📆
+                        Annuel</button>
+                    <button class="view-tab" onclick="changeView('trimestriel')"
+                        style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; color: rgba(255,255,255,0.8); font-size: 11px; cursor: pointer; transition: all 0.2s;">📊
+                        Trimestriel</button>
+                    <button class="view-tab active" onclick="changeView('mensuel')"
+                        style="padding: 6px 12px; background: rgba(255,184,28,0.3); border: 1px solid #FFB81C; border-radius: 20px; color: #fff; font-size: 11px; cursor: pointer; transition: all 0.2s;">📅
+                        Mensuel</button>
+                    <button class="view-tab" onclick="changeView('bihebdo')"
+                        style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; color: rgba(255,255,255,0.8); font-size: 11px; cursor: pointer; transition: all 0.2s;">📋
+                        Bi-hebdo</button>
+
+                    <select id="groupFilterNav" onchange="filterByGroupNav()"
+                        style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; color: #fff; font-size: 11px; cursor: pointer;">
+                        <option value="all" style="background: #2c3e50; color: #fff;">👥 Tous</option>
+                        <option value="Encadrant" style="background: #2c3e50; color: #fff;">Encadrant</option>
+                        <option value="Surveillant de travaux" style="background: #2c3e50; color: #fff;">Surveillant de
+                            travaux</option>
+                        <option value="Encadrant Propreté" style="background: #2c3e50; color: #fff;">Encadrant Propreté
+                        </option>
+                        <option value="Agents Voirie" style="background: #2c3e50; color: #fff;">Agents Voirie</option>
+                        <option value="Agent EV" style="background: #2c3e50; color: #fff;">Agent EV</option>
+                        <option value="COMMUN - Magasinier" style="background: #2c3e50; color: #fff;">COMMUN -
+                            Magasinier</option>
+                    </select>
+
+                    <select id="periodSelectorNav"
+                        style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; color: #fff; font-size: 11px; cursor: pointer; min-width: 150px;">
+                        <option value="" style="background: #2c3e50; color: #fff;">Janvier 2026</option>
+                    </select>
+
+                    <input type="file" id="excelUploadNav" accept=".xlsx,.xlsm" style="display: none;"
+                        onchange="loadExcelPlanning(event)">
+                    <button onclick="document.getElementById('excelUploadNav').click()"
+                        style="padding: 6px 12px; background: rgba(52,152,219,0.2); border: 1px solid rgba(52,152,219,0.4); border-radius: 20px; color: #fff; font-size: 11px; cursor: pointer; transition: all 0.2s;">📂
+                        Charger Excel</button>
+
+                    <button onclick="refreshPlanning()"
+                        style="padding: 6px 12px; background: rgba(39,174,96,0.2); border: 1px solid rgba(39,174,96,0.4); border-radius: 20px; color: #fff; font-size: 11px; cursor: pointer; transition: all 0.2s;">🔄
+                        Actualiser</button>
+
+                    <select id="printOrientationNav"
+                        style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 20px; color: #fff; font-size: 11px; cursor: pointer;">
+                        <option value="portrait" style="background: #2c3e50; color: #fff;">A3 Portrait</option>
+                        <option value="landscape" style="background: #2c3e50; color: #fff;">A3 Paysage</option>
+                    </select>
+
+                    <button onclick="window.print()"
+                        style="padding: 6px 12px; background: rgba(155,89,182,0.2); border: 1px solid rgba(155,89,182,0.4); border-radius: 20px; color: #fff; font-size: 11px; cursor: pointer; transition: all 0.2s;">🖨️
+                        Imprimer</button>
+                </div>
+            </nav>
         </header>
+
+        <div id="echeancesModal" class="echeances-modal" aria-hidden="true">
+            <div class="echeances-panel" role="dialog" aria-modal="true" aria-label="Échéanciers">
+                <button class="modal-close" type="button" aria-label="Fermer" onclick="closeEcheancesModal()">×</button>
+                <h2>Échéanciers terrain</h2>
+                <p class="modal-subtitle">Validités et aptitudes classées par horizon de renouvellement.</p>
+                <div class="echeances-columns">
+                    <div class="echeances-column">
+                        <h3>Prochains 3 mois <span id="modalCount3m">0</span></h3>
+                        <div id="modalList3m" class="echeances-list"></div>
+                    </div>
+                    <div class="echeances-column">
+                        <h3>12 prochains mois <span id="modalCount1an">0</span></h3>
+                        <div id="modalList1an" class="echeances-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Barre de progression -->
         <div id="progressContainer"
@@ -816,6 +1112,113 @@
                     <button class="btn-cancel" onclick="closeGenerateModal()">Annuler</button>
                     <button class="btn-generate" onclick="generatePlanningFromModal()">Générer</button>
                 </div>
+            </div>
+        </div>
+
+        <div class="view-tabs" style="display: none;">
+            <button class="view-tab" onclick="changeView('annuel')">📆 Annuel</button>
+            <button class="view-tab" onclick="changeView('trimestriel')">📊 Trimestriel</button>
+            <button class="view-tab active" onclick="changeView('mensuel')">📅 Mensuel</button>
+            <button class="view-tab" onclick="changeView('bihebdo')">📋 Bi-hebdo</button>
+        </div>
+
+        <div class="controls" style="display: none;">
+            <div
+                style="display: flex; flex-direction: column; gap: 5px; padding: 10px; background: white; border-radius: 8px; border: 2px solid #e0e0e0;">
+                <label style="font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Groupes :</label>
+                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="all" checked
+                        onchange="toggleAllGroups(this)"> Tous</label>
+                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Encadrant" checked
+                        onchange="filterByGroup()"> Encadrant</label>
+                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox"
+                        value="Surveillant de travaux" checked onchange="filterByGroup()"> Surveillant de
+                    travaux</label>
+                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Encadrant Propreté"
+                        checked onchange="filterByGroup()"> Encadrant Propreté</label>
+                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Agents Voirie"
+                        checked onchange="filterByGroup()"> Agents Voirie</label>
+                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Agent EV" checked
+                        onchange="filterByGroup()"> Agent EV</label>
+                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="COMMUN - Magasinier"
+                        checked onchange="filterByGroup()"> COMMUN - Magasinier</label>
+            </div>
+
+            <select id="periodSelector">
+                <option value="">Sélectionner une période...</option>
+            </select>
+
+            <input type="file" id="excelUpload" accept=".xlsx,.xlsm" style="display: none;"
+                onchange="loadExcelPlanning(event)">
+            <button class="btn-print" onclick="document.getElementById('excelUpload').click()"
+                style="background: #3498db;">📂 Charger Excel</button>
+
+            <button class="btn-print" onclick="refreshPlanning()" style="background: #27ae60;">🔄 Actualiser</button>
+
+            <select id="printOrientation" style="min-width: 150px;">
+                <option value="portrait">A3 Portrait</option>
+                <option value="landscape">A3 Paysage</option>
+            </select>
+
+            <button class="btn-print" onclick="window.print()">🖨️ Imprimer</button>
+        </div>
+
+        <div style="display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; align-items: center;">
+            <div style="font-weight: 600; color: #2c3e50;">Légende :</div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #00ff00; border-radius: 4px;"></div>
+                <span style="font-size: 14px;" title="Présence — code: P">Présence (P)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #ff00ff; border-radius: 4px;"></div>
+                <span style="font-size: 14px;" title="Prév. Congés — code: PC">Prév Congés (PC)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #8000ff; border-radius: 4px;"></div>
+                <span style="font-size: 14px;" title="Formation — code: F">Formation (F)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #0000ff; border-radius: 4px;"></div>
+                <span style="font-size: 14px;" title="Astreinte — code: AST">Astreinte (AST)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #ffff00; border-radius: 4px;"></div>
+                <span style="font-size: 14px;" title="Congés Annuel — code: CA">Congés Annuel (CA)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #ffff80; border-radius: 4px;"></div>
+                <span style="font-size: 14px;" title="RTT — Réduction du temps de travail">RTT</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #00ffff; border-radius: 4px;"></div>
+                <span style="font-size: 14px;" title="Congés exceptionnels — code: CEX">Congés Exc (CEX)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #ff0000; border-radius: 4px;"></div>
+                <span style="font-size: 14px;" title="Réserve — code: R">Réserve (R)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #ff8000; border-radius: 4px;"></div>
+                <span style="font-size: 14px;" title="Maladie — code: M">Maladie (M)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #ff4000; border-radius: 4px;"></div>
+                <span style="font-size: 14px;" title="Accident du travail — code: AT">Accident Travail (AT)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #0080ff; border-radius: 4px;"></div>
+                <span style="font-size: 14px;" title="Travail à distance — code: TAD">Travail Distance (TAD)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #ffff80; border-radius: 4px;"></div>
+                <span style="font-size: 14px;" title="Temps partiel — code: TP">Temps Partiel (TP)</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #e74c3c; opacity: 0.3; border-radius: 4px;"></div>
+                <span style="font-size: 14px;">Week-end</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;">
+                <div style="width: 20px; height: 20px; background: #ff9800; border-radius: 4px;"></div>
+                <span style="font-size: 14px;">Jour férié</span>
             </div>
         </div>
 
@@ -2297,6 +2700,113 @@
             try { adjustMonthlyTableToFit(); } catch (e) { /* ignore */ }
         }, 120));
 
+        function updateStats() {
+            const today = new Date();
+            const threeMonthsLater = new Date();
+            threeMonthsLater.setMonth(today.getMonth() + 3);
+            const oneYearLater = new Date();
+            oneYearLater.setFullYear(today.getFullYear() + 1);
+
+            const expiring3Months = [];
+            const expiring1Year = [];
+
+            allAgents.forEach(agent => {
+                agent.aptitudes.forEach(apt => {
+                    if (apt.dateObj && apt.dateObj >= today) {
+                        const expiration = {
+                            agent: `${agent.nom} ${agent.prenom}`,
+                            aptitude: apt.nom,
+                            date: apt.valeur,
+                            dateObj: apt.dateObj
+                        };
+
+                        if (apt.dateObj <= threeMonthsLater) {
+                            expiring3Months.push(expiration);
+                        } else if (apt.dateObj <= oneYearLater) {
+                            expiring1Year.push(expiration);
+                        }
+                    }
+                });
+            });
+
+            expiring3Months.sort((a, b) => a.dateObj - b.dateObj);
+            expiring1Year.sort((a, b) => a.dateObj - b.dateObj);
+
+            const totalEcheances = expiring3Months.length + expiring1Year.length;
+            const echeancesBadge = document.getElementById('echeancesBadge');
+            if (echeancesBadge) {
+                echeancesBadge.textContent = totalEcheances;
+            }
+
+            const statsStamp = document.getElementById('statsUpdatedAt');
+            if (statsStamp) {
+                statsStamp.textContent = today.toLocaleString('fr-FR', {
+                    day: '2-digit',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+
+            const renderList = (target, list, fallback) => {
+                if (!target) return;
+                if (!list.length) {
+                    target.innerHTML = `<div class="empty-state">${fallback}</div>`;
+                    return;
+                }
+
+                target.innerHTML = list.map(exp => `
+                    <div class="echeance-item">
+                        <div>
+                            <span class="echeance-agent">${exp.agent}</span>
+                            <span class="echeance-aptitude">${exp.aptitude}</span>
+                        </div>
+                        <span class="echeance-date">${exp.date}</span>
+                    </div>
+                `).join('');
+            };
+
+            const modalCount3m = document.getElementById('modalCount3m');
+            const modalCount1an = document.getElementById('modalCount1an');
+            const modalList3m = document.getElementById('modalList3m');
+            const modalList1an = document.getElementById('modalList1an');
+
+            if (modalCount3m) modalCount3m.textContent = expiring3Months.length;
+            if (modalCount1an) modalCount1an.textContent = expiring1Year.length;
+
+            renderList(modalList3m, expiring3Months, 'Aucune échéance dans les 3 mois.');
+            renderList(modalList1an, expiring1Year, 'Aucune échéance répertoriée d’ici 12 mois.');
+        }
+
+        function openEcheancesModal() {
+            const modal = document.getElementById('echeancesModal');
+            if (!modal) return;
+            modal.classList.add('visible');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeEcheancesModal() {
+            const modal = document.getElementById('echeancesModal');
+            if (!modal) return;
+            modal.classList.remove('visible');
+            document.body.classList.remove('modal-open');
+        }
+
+        const echeancesModal = document.getElementById('echeancesModal');
+        if (echeancesModal) {
+            echeancesModal.addEventListener('click', (ev) => {
+                if (ev.target === echeancesModal) {
+                    closeEcheancesModal();
+                }
+            });
+        }
+
+        document.addEventListener('keyup', (ev) => {
+            if (ev.key === 'Escape') {
+                closeEcheancesModal();
+            }
+        });
+
         // --- PRINT HELPERS -------------------------------------------------
         // When printing, browsers may use the inline heights we set via JS.
         // Remove those fixed heights before printing so the layout can reflow
@@ -2399,6 +2909,7 @@
         // Charger les agents au démarrage
         loadAgents().then(() => {
             updatePeriodSelector();
+            updateStats();
         });
     </script>
 </body>

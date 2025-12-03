@@ -13,79 +13,248 @@
         }
 
         body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, 'Helvetica Neue', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: #f5f5f5;
             min-height: 100vh;
             padding: 0;
-            color: #333;
+            color: #1a1a2e;
+            line-height: 1.4;
+            -webkit-font-smoothing: antialiased;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1400px;
             margin: 0 auto;
-            animation: slideUp 0.9s ease-out;
         }
 
         header {
-            background: #2d2d2d;
-            padding: 16px 24px;
-            border-radius: 0;
-            margin-bottom: 0;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-            border: 1px solid #1a1a1a;
-            border-bottom: 1px solid #1a1a1a;
-            position: relative;
-            overflow: visible;
+            background: linear-gradient(135deg, #8B1538 0%, #6B0F2A 50%, #4A0A1C 100%);
+            padding: 0;
+            border-bottom: 4px solid #FFB81C;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: stretch;
+            margin: 0 0 20px;
+            box-shadow: 0 8px 32px rgba(139, 21, 56, 0.4);
+            position: relative;
+            overflow: hidden;
         }
 
         header::before {
-            display: none;
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -80px;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(0, 168, 89, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: -60px;
+            left: -90px;
+            width: 260px;
+            height: 260px;
+            background: radial-gradient(circle, rgba(255, 184, 28, 0.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 28px 40px;
+            position: relative;
+            z-index: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-logo-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #8B1538, #00A859);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+            border: 3px solid #FFB81C;
+            box-shadow: 0 4px 12px rgba(139, 21, 56, 0.3);
+        }
+
+        .header-kicker {
+            font-size: 11px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.65);
+            margin: 0;
         }
 
         h1 {
             color: #fff;
             margin: 0;
-            font-size: 18px;
-            font-weight: 700;
-            letter-spacing: 0px;
+            font-size: 28px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        h1::before {
+            content: '';
+            margin-right: 0;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .header-search {
+            width: min(260px, 40vw);
+        }
+
+        .header-search input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .header-search input::placeholder {
+            color: rgba(255, 255, 255, 0.65);
+        }
+
+        .header-cta {
+            border: none;
+            border-radius: 999px;
+            padding: 12px 22px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            cursor: pointer;
+            background: linear-gradient(135deg, #FFB81C 0%, #FFA500 100%);
+            color: #8B1538;
+            box-shadow: 0 8px 20px rgba(255, 184, 28, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .header-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(255, 184, 28, 0.6);
+        }
+
+        .header-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 40px;
+            flex-wrap: wrap;
+            gap: 14px;
+            z-index: 1;
         }
 
         nav {
             display: flex;
-            gap: 0;
+            gap: 4px;
             margin: 0;
             background: transparent;
+            padding: 0 40px 20px;
+            position: relative;
+            z-index: 1;
         }
 
         nav a {
-            padding: 12px 16px;
+            padding: 10px 20px;
             background: transparent;
-            color: #ccc;
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            border-radius: 0;
-            font-weight: 600;
+            border-radius: 24px;
+            font-weight: 700;
             font-size: 12px;
             transition: all 0.2s ease;
             border: none;
             text-transform: uppercase;
-            letter-spacing: 0.4px;
-            border-bottom: 3px solid transparent;
+            letter-spacing: 0.5px;
+            position: relative;
         }
 
         nav a:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(0, 168, 89, 0.25);
             color: #fff;
         }
 
         nav a.active {
-            background: transparent;
+            color: #fff;
+            background: rgba(255, 184, 28, 0.2);
+            box-shadow: 0 0 16px rgba(255, 184, 28, 0.6);
+        }
+
+        .header-bottom .header-bottom-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .echeances-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 20px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
             color: #fff;
             font-weight: 700;
-            border-bottom: 3px solid #fff;
-            box-shadow: none;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.35);
+            transition: all 0.3s ease;
+        }
+
+        .echeances-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .echeances-counter {
+            padding: 2px 9px;
+            border-radius: 12px;
+            background: #FFB81C;
+            color: #8B1538;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .stats-meta {
+            font-size: 11px;
+            letter-spacing: 0.4px;
+            color: rgba(255, 255, 255, 0.75);
         }
 
         .generator-box {
@@ -145,7 +314,7 @@
             box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
         }
 
-        button {
+        .generator-box button {
             width: 100%;
             padding: 14px 20px;
             border: none;
@@ -160,11 +329,11 @@
             letter-spacing: 0.5px;
         }
 
-        button:hover {
+        .generator-box button:hover {
             background: #357abd;
         }
 
-        button:active {
+        .generator-box button:active {
             background: #2a5a8f;
         }
 
@@ -266,14 +435,151 @@
             text-transform: uppercase;
             letter-spacing: 0.8px;
         }
+
+        body.modal-open {
+            overflow: hidden;
+        }
+
+        .echeances-modal {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(10, 14, 30, 0.85);
+            padding: 24px 16px;
+            z-index: 1100;
+        }
+
+        .echeances-modal.visible {
+            display: flex;
+        }
+
+        .echeances-panel {
+            width: min(760px, 100%);
+            background: #0f1b38;
+            border-radius: 24px;
+            padding: 24px 28px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+            position: relative;
+        }
+
+        .echeances-panel h2 {
+            margin-bottom: 4px;
+            color: #f8fafc;
+            font-size: 22px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+        }
+
+        .modal-subtitle {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 24px;
+        }
+
+        .echeances-columns {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .echeances-column {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 18px;
+            border-radius: 16px;
+            min-height: 220px;
+        }
+
+        .echeances-column h3 {
+            font-size: 14px;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+            color: #9cb4d6;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .echeances-list {
+            max-height: 220px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.5;
+            color: #f0f4ff;
+        }
+
+        .echeance-item {
+            padding: 6px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .echeance-agent {
+            font-weight: 700;
+            display: block;
+            color: #fff;
+        }
+
+        .echeance-aptitude {
+            opacity: 0.85;
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.75);
+        }
+
+        .echeance-date {
+            font-weight: 700;
+            color: #ffd166;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(255, 255, 255, 0.12);
+            border: none;
+            color: #fff;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <header>
-            <h1>🎯 Générateur de Planning</h1>
 
+        <header>
+            <div class="header-top">
+                <div class="header-logo">
+                    <div class="header-logo-icon"></div>
+                    <div>
+                        <p class="header-kicker">Service Technique 88</p>
+                        <h1>Générateur de Planning</h1>
+                    </div>
+                </div>
+            </div>
             <nav>
                 <a href="/">Agents</a>
                 <a href="/planning">Planning</a>
@@ -284,14 +590,6 @@
         <div class="generator-box">
             <h2>Configuration</h2>
 
-            <div style="margin-bottom:18px;">
-                <button
-                    style="padding:10px 16px; background:rgba(102,126,234,0.1); color:#667eea; border-radius:8px; border:2px solid #667eea; cursor:pointer; margin-bottom:8px; font-size:13px; width:auto; font-weight:600; transition:all 0.3s;"
-                    onmouseover="this.style.background='linear-gradient(135deg,rgba(102,126,234,0.2),rgba(118,75,162,0.1))'"
-                    onmouseout="this.style.background='rgba(102,126,234,0.1)'" onclick="reloadExcel()">🔄 Recharger
-                    Excel</button>
-                <span id="reloadStatus" style="margin-left:12px;color:#667eea;font-size:13px;font-weight:500;"></span>
-            </div>
 
             <div class="form-group">
                 <label>🗓️ Semaine</label>
@@ -337,6 +635,24 @@
                     <li>Gestion des compétences</li>
                     <li>Export Excel instantané</li>
                 </ul>
+            </div>
+        </div>
+    </div>
+
+    <div id="echeancesModal" class="echeances-modal" role="dialog" aria-modal="true" aria-labelledby="echeancesTitle">
+        <div class="echeances-panel">
+            <button class="modal-close" type="button" aria-label="Fermer" onclick="closeEcheancesModal()">×</button>
+            <h2 id="echeancesTitle">Échéances &agrave; surveiller</h2>
+            <p class="modal-subtitle">Préparez vos équipes et habilitations sur les trois prochains mois.</p>
+            <div class="echeances-columns">
+                <div class="echeances-column">
+                    <h3>3 mois <span id="modalCount3m">0</span></h3>
+                    <div id="modalList3m" class="echeances-list"></div>
+                </div>
+                <div class="echeances-column">
+                    <h3>12 mois <span id="modalCount1an">0</span></h3>
+                    <div id="modalList1an" class="echeances-list"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -544,10 +860,195 @@
                 }
                 const date = new Date(data.mtime * 1000).toLocaleString('fr-FR');
                 status.textContent = `OK — ${data.sheets.length} feuilles — modifié: ${date}`;
+                await loadAgents();
+                updateStats();
             } catch (e) {
                 status.textContent = 'Erreur: ' + e.message;
             }
         }
+
+        let allAgents = [];
+        const groupes = {
+            'Encadrant': ['DEBREYNE', 'LUTARD', 'HAUTDECOEUR', 'GRENET', 'FOURCADE', 'GONCALVES', 'SIGALA', 'BETTINGER', 'TUCOULET', 'VRBOVSKA'],
+            'Surveillant de travaux': ['BOURGOIN', 'MERCADIEU', 'GARCIA', 'LARROUDE', 'SAMITIER', 'PIEL'],
+            'Encadrant Propreté': ['GOURVIAT', 'LARTIGUE', 'TRIQUENEAUX', 'ESPERON', 'ROUGLAN', 'NOURRI'],
+            'Agents Voirie': ['BERRIO-GAUDNER', 'FONTENEAU', 'GUIJARRO', 'GOUREAU', 'LABORIE', 'LARRIEU', 'LEVIGNAT', 'MARTIN-HERNANDEZ', 'PIERRE', 'SOLA', 'WEISS'],
+            'Agent EV': ['DELANDE', 'DA SILVA REIS', 'ELMAGROUD', 'ESTEVE', 'KADRI', 'MALLET', 'MAURY', 'MOINGT', 'REY', 'TADJROUNA', 'VILLENEUVE'],
+            'COMMUN - Magasinier': ['VOL', 'GENNA', 'BERNARD', 'HAUBRAICHE']
+        };
+
+        async function loadAgents() {
+            try {
+                const response = await fetch('/api/agents');
+                const data = await response.json();
+
+                if (data.success) {
+                    allAgents = data.agents.map((agent, index) => {
+                        const aptitudes = [];
+                        agent.data.forEach((val, idx) => {
+                            const header = data.headers[idx];
+                            if (header && idx >= 7) {
+                                if (val !== null && val !== undefined && String(val).trim() !== '') {
+                                    let dateObj = null;
+                                    let display = '';
+
+                                    const parsed = new Date(val);
+                                    if (!isNaN(parsed.getTime())) {
+                                        dateObj = parsed;
+                                        try {
+                                            display = parsed.toLocaleDateString('fr-FR');
+                                        } catch (e) {
+                                            display = String(val);
+                                        }
+                                    } else if (typeof val === 'string' && val.trim().toLowerCase() === 'x') {
+                                        display = '✓';
+                                    } else {
+                                        display = String(val).trim();
+                                    }
+
+                                    aptitudes.push({
+                                        nom: header,
+                                        valeur: display,
+                                        dateObj: dateObj
+                                    });
+                                }
+                            }
+                        });
+
+                        const nom = agent.nom.toUpperCase().trim();
+                        let groupe = 'default';
+
+                        for (const [groupeName, noms] of Object.entries(groupes)) {
+                            if (noms.some(n => nom === n)) {
+                                groupe = groupeName;
+                                break;
+                            }
+                        }
+
+                        return {
+                            index,
+                            matricule: agent.matricule,
+                            nom: agent.nom,
+                            prenom: agent.prenom,
+                            fullName: `${agent.nom} ${agent.prenom}`,
+                            aptitudes,
+                            groupe
+                        };
+                    });
+                }
+            } catch (error) {
+                console.error('Erreur chargement agents:', error);
+            }
+        }
+
+        function updateStats() {
+            const today = new Date();
+            const threeMonthsLater = new Date();
+            threeMonthsLater.setMonth(today.getMonth() + 3);
+            const oneYearLater = new Date();
+            oneYearLater.setFullYear(today.getFullYear() + 1);
+
+            const expiring3Months = [];
+            const expiring1Year = [];
+
+            allAgents.forEach(agent => {
+                agent.aptitudes.forEach(apt => {
+                    if (apt.dateObj && apt.dateObj >= today) {
+                        const expiration = {
+                            agent: `${agent.nom} ${agent.prenom}`,
+                            aptitude: apt.nom,
+                            date: apt.valeur,
+                            dateObj: apt.dateObj
+                        };
+
+                        if (apt.dateObj <= threeMonthsLater) {
+                            expiring3Months.push(expiration);
+                        } else if (apt.dateObj <= oneYearLater) {
+                            expiring1Year.push(expiration);
+                        }
+                    }
+                });
+            });
+
+            expiring3Months.sort((a, b) => a.dateObj - b.dateObj);
+            expiring1Year.sort((a, b) => a.dateObj - b.dateObj);
+
+            const totalEcheances = expiring3Months.length + expiring1Year.length;
+            const echeancesBadge = document.getElementById('echeancesBadge');
+            if (echeancesBadge) {
+                echeancesBadge.textContent = totalEcheances;
+            }
+
+            const statsStamp = document.getElementById('statsUpdatedAt');
+            if (statsStamp) {
+                statsStamp.textContent = today.toLocaleString('fr-FR', {
+                    day: '2-digit',
+                    month: 'short',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+
+            const renderList = (target, list, fallback) => {
+                if (!target) return;
+                if (!list.length) {
+                    target.innerHTML = `<div class="empty-state">${fallback}</div>`;
+                    return;
+                }
+
+                target.innerHTML = list.map(exp => `
+                    <div class="echeance-item">
+                        <div>
+                            <span class="echeance-agent">${exp.agent}</span>
+                            <span class="echeance-aptitude">${exp.aptitude}</span>
+                        </div>
+                        <span class="echeance-date">${exp.date}</span>
+                    </div>
+                `).join('');
+            };
+
+            const modalCount3m = document.getElementById('modalCount3m');
+            const modalCount1an = document.getElementById('modalCount1an');
+            const modalList3m = document.getElementById('modalList3m');
+            const modalList1an = document.getElementById('modalList1an');
+
+            if (modalCount3m) modalCount3m.textContent = expiring3Months.length;
+            if (modalCount1an) modalCount1an.textContent = expiring1Year.length;
+
+            renderList(modalList3m, expiring3Months, 'Aucune échéance dans les 3 mois.');
+            renderList(modalList1an, expiring1Year, 'Aucune échéance répertoriée d’ici 12 mois.');
+        }
+
+        function openEcheancesModal() {
+            const modal = document.getElementById('echeancesModal');
+            if (!modal) return;
+            modal.classList.add('visible');
+            document.body.classList.add('modal-open');
+        }
+
+        function closeEcheancesModal() {
+            const modal = document.getElementById('echeancesModal');
+            if (!modal) return;
+            modal.classList.remove('visible');
+            document.body.classList.remove('modal-open');
+        }
+
+        const echeancesModal = document.getElementById('echeancesModal');
+        if (echeancesModal) {
+            echeancesModal.addEventListener('click', (ev) => {
+                if (ev.target === echeancesModal) {
+                    closeEcheancesModal();
+                }
+            });
+        }
+
+        document.addEventListener('keyup', (ev) => {
+            if (ev.key === 'Escape') {
+                closeEcheancesModal();
+            }
+        });
+
+        loadAgents().then(() => updateStats());
     </script>
 </body>
 
