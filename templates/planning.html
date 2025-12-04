@@ -1131,53 +1131,6 @@
             </div>
         </div>
 
-        <div class="view-tabs">
-            <button class="view-tab" onclick="changeView('annuel')">📆 Annuel</button>
-            <button class="view-tab" onclick="changeView('trimestriel')">📊 Trimestriel</button>
-            <button class="view-tab active" onclick="changeView('mensuel')">📅 Mensuel</button>
-            <button class="view-tab" onclick="changeView('bihebdo')">📋 Bi-hebdo</button>
-        </div>
-
-        <div class="controls">
-            <div
-                style="display: flex; flex-direction: column; gap: 5px; padding: 10px; background: white; border-radius: 8px; border: 2px solid #e0e0e0;">
-                <label style="font-weight: 600; color: #2c3e50; margin-bottom: 5px;">Groupes :</label>
-                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="all" checked
-                        onchange="toggleAllGroups(this)"> Tous</label>
-                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Encadrant" checked
-                        onchange="filterByGroup()"> Encadrant</label>
-                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox"
-                        value="Surveillant de travaux" checked onchange="filterByGroup()"> Surveillant de
-                    travaux</label>
-                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Encadrant Propreté"
-                        checked onchange="filterByGroup()"> Encadrant Propreté</label>
-                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Agents Voirie"
-                        checked onchange="filterByGroup()"> Agents Voirie</label>
-                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="Agent EV" checked
-                        onchange="filterByGroup()"> Agent EV</label>
-                <label style="cursor: pointer;"><input type="checkbox" class="groupCheckbox" value="COMMUN - Magasinier"
-                        checked onchange="filterByGroup()"> COMMUN - Magasinier</label>
-            </div>
-
-            <select id="periodSelector">
-                <option value="">Sélectionner une période...</option>
-            </select>
-
-            <input type="file" id="excelUpload" accept=".xlsx,.xlsm" style="display: none;"
-                onchange="loadExcelPlanning(event)">
-            <button class="btn-print" onclick="document.getElementById('excelUpload').click()"
-                style="background: #3498db;">📂 Charger Excel</button>
-
-            <button class="btn-print" onclick="refreshPlanning()" style="background: #27ae60;">🔄 Actualiser</button>
-
-            <select id="printOrientation" style="min-width: 150px;">
-                <option value="portrait">A3 Portrait</option>
-                <option value="landscape">A3 Paysage</option>
-            </select>
-
-            <button class="btn-print" onclick="window.print()">🖨️ Imprimer</button>
-        </div>
-
         <div style="display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; align-items: center;">
             <div style="font-weight: 600; color: #2c3e50;">Légende :</div>
             <div style="display: flex; align-items: center; gap: 5px;">
