@@ -1181,51 +1181,51 @@
         <div style="display: flex; gap: 15px; margin-top: 15px; flex-wrap: wrap; align-items: center;">
             <div style="font-weight: 600; color: #2c3e50;">Légende :</div>
             <div style="display: flex; align-items: center; gap: 5px;">
-                <div style="width: 20px; height: 20px; background: #00ff00; border-radius: 4px;"></div>
+                <div style="width: 20px; height: 20px; background: #d4d4d4; border-radius: 4px;"></div>
                 <span style="font-size: 14px;" title="Présence — code: P">Présence (P)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
-                <div style="width: 20px; height: 20px; background: #ff00ff; border-radius: 4px;"></div>
+                <div style="width: 20px; height: 20px; background: #b8a8d4; border-radius: 4px;"></div>
                 <span style="font-size: 14px;" title="Prév. Congés — code: PC">Prév Congés (PC)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
-                <div style="width: 20px; height: 20px; background: #8000ff; border-radius: 4px;"></div>
+                <div style="width: 20px; height: 20px; background: #c9b1d0; border-radius: 4px;"></div>
                 <span style="font-size: 14px;" title="Formation — code: F">Formation (F)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
-                <div style="width: 20px; height: 20px; background: #0000ff; border-radius: 4px;"></div>
+                <div style="width: 20px; height: 20px; background: #a8c8d4; border-radius: 4px;"></div>
                 <span style="font-size: 14px;" title="Astreinte — code: AST">Astreinte (AST)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
-                <div style="width: 20px; height: 20px; background: #ffff00; border-radius: 4px;"></div>
+                <div style="width: 20px; height: 20px; background: #ffd89b; border-radius: 4px;"></div>
                 <span style="font-size: 14px;" title="Congés Annuel — code: CA">Congés Annuel (CA)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
-                <div style="width: 20px; height: 20px; background: #ffff80; border-radius: 4px;"></div>
+                <div style="width: 20px; height: 20px; background: #ffd89b; border-radius: 4px;"></div>
                 <span style="font-size: 14px;" title="RTT — Réduction du temps de travail">RTT</span>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
-                <div style="width: 20px; height: 20px; background: #00ffff; border-radius: 4px;"></div>
+                <div style="width: 20px; height: 20px; background: #a8c8d4; border-radius: 4px;"></div>
                 <span style="font-size: 14px;" title="Congés exceptionnels — code: CEX">Congés Exc (CEX)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
-                <div style="width: 20px; height: 20px; background: #ff0000; border-radius: 4px;"></div>
+                <div style="width: 20px; height: 20px; background: #d9c9b8; border-radius: 4px;"></div>
                 <span style="font-size: 14px;" title="Réserve — code: R">Réserve (R)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
-                <div style="width: 20px; height: 20px; background: #ff8000; border-radius: 4px;"></div>
+                <div style="width: 20px; height: 20px; background: #a8d5ba; border-radius: 4px;"></div>
                 <span style="font-size: 14px;" title="Maladie — code: M">Maladie (M)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
-                <div style="width: 20px; height: 20px; background: #ff4000; border-radius: 4px;"></div>
+                <div style="width: 20px; height: 20px; background: #e8b4b8; border-radius: 4px;"></div>
                 <span style="font-size: 14px;" title="Accident du travail — code: AT">Accident Travail (AT)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
-                <div style="width: 20px; height: 20px; background: #0080ff; border-radius: 4px;"></div>
+                <div style="width: 20px; height: 20px; background: #c8d9b8; border-radius: 4px;"></div>
                 <span style="font-size: 14px;" title="Travail à distance — code: TAD">Travail Distance (TAD)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
-                <div style="width: 20px; height: 20px; background: #ffff80; border-radius: 4px;"></div>
+                <div style="width: 20px; height: 20px; background: #c8d9b8; border-radius: 4px;"></div>
                 <span style="font-size: 14px;" title="Temps partiel — code: TP">Temps Partiel (TP)</span>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
@@ -1826,31 +1826,43 @@
                         // Si pas de statut et que c'est un jour travaillé
                         if (!status && !isWeekend && !isFerie) {
                             cellContent = 'P';
-                            cellStyle = 'background: #d4edda; color: #155724; font-weight: bold;';
+                            cellStyle = 'background: #d4d4d4; color: #333; font-weight: bold;';
                         } else if (status === 'P') {
-                            cellStyle = 'background: #d4edda; color: #155724; font-weight: bold;';
+                            cellStyle = 'background: #d4d4d4; color: #333; font-weight: bold;';
+                            cellContent = 'P';
                         } else if (status === 'PC') {
-                            cellStyle = 'background: #e2e3e5; color: #383d41; font-weight: bold;';
+                            cellStyle = 'background: #b8a8d4; color: #333; font-weight: bold;';
+                            cellContent = 'PC';
                         } else if (status === 'F') {
-                            cellStyle = 'background: #cce5ff; color: #004085; font-weight: bold;';
+                            cellStyle = 'background: #c9b1d0; color: #333; font-weight: bold;';
+                            cellContent = 'F';
                         } else if (status === 'AST') {
-                            cellStyle = 'background: #d1ecf1; color: #0c5460; font-weight: bold;';
+                            cellStyle = 'background: #a8c8d4; color: #333; font-weight: bold;';
+                            cellContent = 'AST';
                         } else if (status === 'CA') {
-                            cellStyle = 'background: #fff3cd; color: #856404; font-weight: bold;';
+                            cellStyle = 'background: #ffd89b; color: #333; font-weight: bold;';
+                            cellContent = 'CA';
                         } else if (status === 'RTT') {
-                            cellStyle = 'background: #fff3cd; color: #856404; font-weight: bold;';
+                            cellStyle = 'background: #ffd89b; color: #333; font-weight: bold;';
+                            cellContent = 'RTT';
                         } else if (status === 'CEX') {
-                            cellStyle = 'background: #d1ecf1; color: #0c5460; font-weight: bold;';
+                            cellStyle = 'background: #a8c8d4; color: #333; font-weight: bold;';
+                            cellContent = 'CEX';
                         } else if (status === 'R') {
-                            cellStyle = 'background: #f8d7da; color: #721c24; font-weight: bold;';
+                            cellStyle = 'background: #d9c9b8; color: #333; font-weight: bold;';
+                            cellContent = 'R';
                         } else if (status === 'M') {
-                            cellStyle = 'background: #f8d7da; color: #721c24; font-weight: bold;';
+                            cellStyle = 'background: #a8d5ba; color: #333; font-weight: bold;';
+                            cellContent = 'M';
                         } else if (status === 'AT') {
-                            cellStyle = 'background: #f8d7da; color: #721c24; font-weight: bold;';
+                            cellStyle = 'background: #e8b4b8; color: #333; font-weight: bold;';
+                            cellContent = 'AT';
                         } else if (status === 'TAD') {
-                            cellStyle = 'background: #e7d4f5; color: #663399; font-weight: bold;';
+                            cellStyle = 'background: #c8d9b8; color: #333; font-weight: bold;';
+                            cellContent = 'TAD';
                         } else if (status === 'TP') {
-                            cellStyle = 'background: #fff3cd; color: #856404; font-weight: bold;';
+                            cellStyle = 'background: #c8d9b8; color: #333; font-weight: bold;';
+                            cellContent = 'TP';
                         } else if (isWeekend) {
                             cellStyle = 'background: #f5f5f5;';
                         } else if (isFerie) {
