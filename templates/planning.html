@@ -1605,14 +1605,14 @@
 
                     let status = agent.days[d] || '';
 
-                    // Ne mettre "Présent" que si c'est un jour ouvré et qu'il n'y a pas de statut
+                    // Ne mettre "P" que si c'est un jour ouvré et qu'il n'y a pas de statut
                     if (!status && !isWeekend && !isFerie) {
-                        status = 'Présent';
+                        status = 'P';
                     }
 
                     let cellClass = 'day-cell';
                     let cellStyle = '';
-                    let cellContent = status;
+                    let cellContent = status || '';
 
                     if (isWeekend || isFerie) {
                         cellClass += ' weekend';
@@ -1622,37 +1622,44 @@
                             cellStyle = 'background: #e74c3c44;';
                         }
                     } else if (status === 'P') {
-                        cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
+                        cellStyle = 'background: #d4d4d4; color: #333; font-weight: bold;';
+                        cellContent = 'P';
                         if (agentInfo) {
                             cellContent = `P<br>${getAgentBadges(agentInfo)}`;
                         }
                     } else if (status === 'PC') {
-                        cellStyle = 'background: #ff00ff; color: white; font-weight: bold;';
+                        cellStyle = 'background: #b8a8d4; color: #333; font-weight: bold;';
+                        cellContent = 'PC';
                     } else if (status === 'F') {
-                        cellStyle = 'background: #8000ff; color: white; font-weight: bold;';
+                        cellStyle = 'background: #c9b1d0; color: #333; font-weight: bold;';
+                        cellContent = 'F';
                     } else if (status === 'AST') {
-                        cellStyle = 'background: #0000ff; color: white; font-weight: bold;';
+                        cellStyle = 'background: #a8c8d4; color: #333; font-weight: bold;';
+                        cellContent = 'AST';
                     } else if (status === 'CA') {
-                        cellStyle = 'background: #ffff00; color: black; font-weight: bold;';
+                        cellStyle = 'background: #ffd89b; color: #333; font-weight: bold;';
+                        cellContent = 'CA';
                     } else if (status === 'RTT') {
-                        cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
+                        cellStyle = 'background: #ffd89b; color: #333; font-weight: bold;';
+                        cellContent = 'RTT';
                     } else if (status === 'CEX') {
-                        cellStyle = 'background: #00ffff; color: black; font-weight: bold;';
+                        cellStyle = 'background: #a8c8d4; color: #333; font-weight: bold;';
+                        cellContent = 'CEX';
                     } else if (status === 'R') {
-                        cellStyle = 'background: #ff0000; color: white; font-weight: bold;';
+                        cellStyle = 'background: #d9c9b8; color: #333; font-weight: bold;';
+                        cellContent = 'R';
                     } else if (status === 'M') {
-                        cellStyle = 'background: #ff8000; color: white; font-weight: bold;';
+                        cellStyle = 'background: #a8d5ba; color: #333; font-weight: bold;';
+                        cellContent = 'M';
                     } else if (status === 'AT') {
-                        cellStyle = 'background: #ff4000; color: white; font-weight: bold;';
+                        cellStyle = 'background: #e8b4b8; color: #333; font-weight: bold;';
+                        cellContent = 'AT';
                     } else if (status === 'TAD') {
-                        cellStyle = 'background: #0080ff; color: white; font-weight: bold;';
+                        cellStyle = 'background: #c8d9b8; color: #333; font-weight: bold;';
+                        cellContent = 'TAD';
                     } else if (status === 'TP') {
-                        cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
-                    } else if (status === 'Présent') {
-                        cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
-                        if (agentInfo) {
-                            cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
-                        }
+                        cellStyle = 'background: #c8d9b8; color: #333; font-weight: bold;';
+                        cellContent = 'TP';
                     }
 
                     html += `<td class="${cellClass}" style="${cellStyle}" data-status="${status}"><div class="cell-inner">${cellContent}</div></td>`;
@@ -1813,7 +1820,7 @@
                         const isFerie = isJourFerie(year, monthData.month, d);
 
                         const status = days[d - 1] || '';
-                        let cellContent = status;
+                        let cellContent = status || '';
                         let cellStyle = '';
 
                         // Si pas de statut et que c'est un jour travaillé
@@ -2080,10 +2087,10 @@
                             let cellContent = status;
 
                             if (!status && !isWeekend && !isFerie) {
-                                status = 'Présent';
-                                cellContent = 'Présent';
+                                status = 'P';
+                                cellContent = 'P';
                                 if (agentInfo) {
-                                    cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
+                                    cellContent = `P<br>${getAgentBadges(agentInfo)}`;
                                 }
                             }
 
@@ -2095,38 +2102,52 @@
                                     cellStyle = 'background: #ff9800; color: white;';
                                 }
                             } else if (status === 'P') {
-                                cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
+                                cellStyle = 'background: #d4d4d4; color: #333; font-weight: bold;';
+                                cellContent = 'P';
                                 if (agentInfo) {
                                     cellContent = `P<br>${getAgentBadges(agentInfo)}`;
                                 }
                             } else if (status === 'PC') {
-                                cellStyle = 'background: #ff00ff; color: white; font-weight: bold;';
+                                cellStyle = 'background: #b8a8d4; color: #333; font-weight: bold;';
+                                cellContent = 'PC';
                             } else if (status === 'F') {
-                                cellStyle = 'background: #8000ff; color: white; font-weight: bold;';
+                                cellStyle = 'background: #c9b1d0; color: #333; font-weight: bold;';
+                                cellContent = 'F';
                             } else if (status === 'AST') {
-                                cellStyle = 'background: #0000ff; color: white; font-weight: bold;';
+                                cellStyle = 'background: #a8c8d4; color: #333; font-weight: bold;';
+                                cellContent = 'AST';
                             } else if (status === 'CA') {
-                                cellStyle = 'background: #ffff00; color: black; font-weight: bold;';
+                                cellStyle = 'background: #ffd89b; color: #333; font-weight: bold;';
+                                cellContent = 'CA';
                             } else if (status === 'RTT') {
-                                cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
+                                cellStyle = 'background: #ffd89b; color: #333; font-weight: bold;';
+                                cellContent = 'RTT';
                             } else if (status === 'CEX') {
-                                cellStyle = 'background: #00ffff; color: black; font-weight: bold;';
+                                cellStyle = 'background: #a8c8d4; color: #333; font-weight: bold;';
+                                cellContent = 'CEX';
                             } else if (status === 'R') {
-                                cellStyle = 'background: #ff0000; color: white; font-weight: bold;';
+                                cellStyle = 'background: #d9c9b8; color: #333; font-weight: bold;';
+                                cellContent = 'R';
                             } else if (status === 'M') {
-                                cellStyle = 'background: #ff8000; color: white; font-weight: bold;';
+                                cellStyle = 'background: #a8d5ba; color: #333; font-weight: bold;';
+                                cellContent = 'M';
                             } else if (status === 'AT') {
-                                cellStyle = 'background: #ff4000; color: white; font-weight: bold;';
+                                cellStyle = 'background: #e8b4b8; color: #333; font-weight: bold;';
+                                cellContent = 'AT';
                             } else if (status === 'TAD') {
-                                cellStyle = 'background: #0080ff; color: white; font-weight: bold;';
+                                cellStyle = 'background: #c8d9b8; color: #333; font-weight: bold;';
+                                cellContent = 'TAD';
                             } else if (status === 'TP') {
-                                cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
+                                cellStyle = 'background: #c8d9b8; color: #333; font-weight: bold;';
+                                cellContent = 'TP';
                             } else if (status === 'MA') {
-                                cellStyle = 'background: #1abc9c; color: white; font-weight: bold;';
+                                cellStyle = 'background: #d4c8b8; color: #333; font-weight: bold;';
+                                cellContent = 'MA';
                             } else if (status === 'Présent') {
-                                cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
+                                cellStyle = 'background: #d4d4d4; color: #333; font-weight: bold;';
+                                cellContent = 'P';
                                 if (agentInfo) {
-                                    cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
+                                    cellContent = `P<br>${getAgentBadges(agentInfo)}`;
                                 }
                             }
 
@@ -2188,10 +2209,10 @@
                         let cellContent = status;
 
                         if (!status && !isWeekend && !isFerie) {
-                            status = 'Présent';
-                            cellContent = 'Présent';
+                            status = 'P';
+                            cellContent = 'P';
                             if (agentInfo) {
-                                cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
+                                cellContent = `P<br>${getAgentBadges(agentInfo)}`;
                             }
                         }
 
@@ -2203,36 +2224,49 @@
                                 cellStyle = 'background: #ff9800; color: white;';
                             }
                         } else if (status === 'P') {
-                            cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
+                            cellStyle = 'background: #d4d4d4; color: #333; font-weight: bold;';
+                            cellContent = 'P';
                             if (agentInfo) {
                                 cellContent = `P<br>${getAgentBadges(agentInfo)}`;
                             }
                         } else if (status === 'PC') {
-                            cellStyle = 'background: #ff00ff; color: white; font-weight: bold;';
+                            cellStyle = 'background: #b8a8d4; color: #333; font-weight: bold;';
+                            cellContent = 'PC';
                         } else if (status === 'F') {
-                            cellStyle = 'background: #8000ff; color: white; font-weight: bold;';
+                            cellStyle = 'background: #c9b1d0; color: #333; font-weight: bold;';
+                            cellContent = 'F';
                         } else if (status === 'AST') {
-                            cellStyle = 'background: #0000ff; color: white; font-weight: bold;';
+                            cellStyle = 'background: #a8c8d4; color: #333; font-weight: bold;';
+                            cellContent = 'AST';
                         } else if (status === 'CA') {
-                            cellStyle = 'background: #ffff00; color: black; font-weight: bold;';
+                            cellStyle = 'background: #ffd89b; color: #333; font-weight: bold;';
+                            cellContent = 'CA';
                         } else if (status === 'RTT') {
-                            cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
+                            cellStyle = 'background: #ffd89b; color: #333; font-weight: bold;';
+                            cellContent = 'RTT';
                         } else if (status === 'CEX') {
-                            cellStyle = 'background: #00ffff; color: black; font-weight: bold;';
+                            cellStyle = 'background: #a8c8d4; color: #333; font-weight: bold;';
+                            cellContent = 'CEX';
                         } else if (status === 'R') {
-                            cellStyle = 'background: #ff0000; color: white; font-weight: bold;';
+                            cellStyle = 'background: #d9c9b8; color: #333; font-weight: bold;';
+                            cellContent = 'R';
                         } else if (status === 'M') {
-                            cellStyle = 'background: #ff8000; color: white; font-weight: bold;';
+                            cellStyle = 'background: #a8d5ba; color: #333; font-weight: bold;';
+                            cellContent = 'M';
                         } else if (status === 'AT') {
-                            cellStyle = 'background: #ff4000; color: white; font-weight: bold;';
+                            cellStyle = 'background: #e8b4b8; color: #333; font-weight: bold;';
+                            cellContent = 'AT';
                         } else if (status === 'TAD') {
-                            cellStyle = 'background: #0080ff; color: white; font-weight: bold;';
+                            cellStyle = 'background: #c8d9b8; color: #333; font-weight: bold;';
+                            cellContent = 'TAD';
                         } else if (status === 'TP') {
-                            cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
+                            cellStyle = 'background: #c8d9b8; color: #333; font-weight: bold;';
+                            cellContent = 'TP';
                         } else if (status === 'Présent') {
-                            cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
+                            cellStyle = 'background: #d4d4d4; color: #333; font-weight: bold;';
+                            cellContent = 'P';
                             if (agentInfo) {
-                                cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
+                                cellContent = `P<br>${getAgentBadges(agentInfo)}`;
                             }
                         }
 
