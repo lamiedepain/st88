@@ -28,9 +28,8 @@
         }
 
         header {
-            background: linear-gradient(135deg, #8B1538 0%, #6B0F2A 50%, #4A0A1C 100%);
+            background: #DC3363;
             padding: 0;
-            border-bottom: 4px solid #FFB81C;
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
@@ -82,16 +81,32 @@
         .header-logo-icon {
             width: 56px;
             height: 56px;
-            background: linear-gradient(135deg, #8B1538, #00A859);
+            background: #DC3363;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 28px;
+            font-size: 18px;
             font-weight: 900;
             color: white;
-            border: 3px solid #FFB81C;
-            box-shadow: 0 4px 12px rgba(139, 21, 56, 0.3);
+            border: 3px solid white;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .header-logo-icon::before {
+            content: 'ST8';
+            position: absolute;
+        }
+
+        0%,
+        100% {
+            transform: translateY(0px);
+        }
+
+        50% {
+            transform: translateY(-8px);
+        }
         }
 
         .header-kicker {
@@ -189,27 +204,28 @@
         nav a {
             padding: 10px 20px;
             background: transparent;
-            color: rgba(255, 255, 255, 0.7);
+            color: white;
             text-decoration: none;
-            border-radius: 24px;
+            border-radius: 8px;
             font-weight: 700;
             font-size: 12px;
             transition: all 0.2s ease;
-            border: none;
+            border: 2px solid white;
             text-transform: uppercase;
             letter-spacing: 0.5px;
             position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15), 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         nav a:hover {
-            background: rgba(0, 168, 89, 0.25);
-            color: #fff;
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.15);
         }
 
         nav a.active {
-            color: #fff;
-            background: rgba(255, 184, 28, 0.2);
-            box-shadow: 0 0 16px rgba(255, 184, 28, 0.6);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2), 0 3px 6px rgba(0, 0, 0, 0.15);
         }
 
         .header-bottom .group-filter {
@@ -516,11 +532,11 @@
 
         th,
         td {
-            padding: 10px 12px;
+            padding: 14px 16px;
             border-bottom: 1px solid #e8ebf0;
             text-align: center;
-            font-size: 12px;
-            min-width: 48px;
+            font-size: 14px;
+            min-width: 56px;
             vertical-align: middle;
         }
 
@@ -533,9 +549,9 @@
             z-index: 20;
             border-bottom: 2px solid #4a90e2;
             text-transform: uppercase;
-            font-size: 11px;
+            font-size: 12px;
             letter-spacing: 0.5px;
-            padding: 12px 10px;
+            padding: 14px 12px;
         }
 
         .agent-cell {
@@ -545,16 +561,16 @@
             position: sticky;
             left: 0;
             z-index: 15;
-            min-width: 240px;
-            max-width: 320px;
-            padding: 14px 16px;
+            min-width: 280px;
+            max-width: 380px;
+            padding: 16px 18px;
             border-right: 1px solid #e8e8e8;
             box-shadow: none;
         }
 
         .agent-name {
-            font-size: 13px;
-            margin-bottom: 4px;
+            font-size: 15px;
+            margin-bottom: 6px;
             font-weight: 900;
             background: #4a90e2;
             -webkit-background-clip: text;
@@ -1802,39 +1818,36 @@
 
                         // Si pas de statut et que c'est un jour travaillé
                         if (!status && !isWeekend && !isFerie) {
-                            cellContent = 'Présent';
-                            cellStyle = 'background: #00ff00; color: black;';
-                            if (agentInfo) {
-                                cellContent = `Présent<br>${getAgentBadges(agentInfo)}`;
-                            }
+                            cellContent = 'P';
+                            cellStyle = 'background: #d4edda; color: #155724; font-weight: bold;';
                         } else if (status === 'P') {
-                            cellStyle = 'background: #00ff00; color: black; font-weight: bold;';
+                            cellStyle = 'background: #d4edda; color: #155724; font-weight: bold;';
                         } else if (status === 'PC') {
-                            cellStyle = 'background: #ff00ff; color: white; font-weight: bold;';
+                            cellStyle = 'background: #e2e3e5; color: #383d41; font-weight: bold;';
                         } else if (status === 'F') {
-                            cellStyle = 'background: #8000ff; color: white; font-weight: bold;';
+                            cellStyle = 'background: #cce5ff; color: #004085; font-weight: bold;';
                         } else if (status === 'AST') {
-                            cellStyle = 'background: #0000ff; color: white; font-weight: bold;';
+                            cellStyle = 'background: #d1ecf1; color: #0c5460; font-weight: bold;';
                         } else if (status === 'CA') {
-                            cellStyle = 'background: #ffff00; color: black; font-weight: bold;';
+                            cellStyle = 'background: #fff3cd; color: #856404; font-weight: bold;';
                         } else if (status === 'RTT') {
-                            cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
+                            cellStyle = 'background: #fff3cd; color: #856404; font-weight: bold;';
                         } else if (status === 'CEX') {
-                            cellStyle = 'background: #00ffff; color: black; font-weight: bold;';
+                            cellStyle = 'background: #d1ecf1; color: #0c5460; font-weight: bold;';
                         } else if (status === 'R') {
-                            cellStyle = 'background: #ff0000; color: white; font-weight: bold;';
+                            cellStyle = 'background: #f8d7da; color: #721c24; font-weight: bold;';
                         } else if (status === 'M') {
-                            cellStyle = 'background: #ff8000; color: white; font-weight: bold;';
+                            cellStyle = 'background: #f8d7da; color: #721c24; font-weight: bold;';
                         } else if (status === 'AT') {
-                            cellStyle = 'background: #ff4000; color: white; font-weight: bold;';
+                            cellStyle = 'background: #f8d7da; color: #721c24; font-weight: bold;';
                         } else if (status === 'TAD') {
-                            cellStyle = 'background: #0080ff; color: white; font-weight: bold;';
+                            cellStyle = 'background: #e7d4f5; color: #663399; font-weight: bold;';
                         } else if (status === 'TP') {
-                            cellStyle = 'background: #ffff80; color: black; font-weight: bold;';
+                            cellStyle = 'background: #fff3cd; color: #856404; font-weight: bold;';
                         } else if (isWeekend) {
-                            cellStyle = 'background: #e74c3c44;';
+                            cellStyle = 'background: #f5f5f5;';
                         } else if (isFerie) {
-                            cellStyle = 'background: #e67e2244;';
+                            cellStyle = 'background: #e8e8e8;';
                         }
 
                         html += `<td class="day-cell" style="${cellStyle}"><div class="cell-inner">${cellContent}</div></td>`;
